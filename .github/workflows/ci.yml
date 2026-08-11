@@ -21,12 +21,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: lycheeverse/lychee-action@v2
         with:
-          # eval/results holds generated reports whose model outputs contain
-          # example URLs (api.example.com, placeholders) — not documentation, so
-          # excluded here just as they are from markdownlint. Publishers that
-          # block automated checkers are in .lycheeignore. Genuine 404/410/DNS
-          # failures still fail the build; retry smooths transient timeouts.
-          args: --no-progress --include-fragments --exclude-path eval/results --max-retries 2 --retry-wait-time 3 './**/*.md'
+          # Explicit input set: every docs tree EXCEPT eval/results, whose
+          # generated reports contain model-output example URLs (api.example.com,
+          # placeholders) that are not real links — the same reason it is ignored
+          # by markdownlint. Publishers that block automated checkers are in
+          # .lycheeignore. Genuine 404/410/DNS failures still fail the build.
+          args: --no-progress --include-fragments --max-retries 2 --retry-wait-time 3 './*.md' './.github/**/*.md' './docs/**/*.md' './en/**/*.md' './id/**/*.md' './eval/README.md'
 
   parity:
     runs-on: ubuntu-latest
