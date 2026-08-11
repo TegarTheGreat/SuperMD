@@ -22,7 +22,13 @@ SuperMD tidak menyediakan satu file per profesi — yang disediakan adalah **sep
 | `marketing-sales/` | Pemasaran, periklanan, SEO, penjualan, PR, e-commerce |
 | `science-research/` | Riset akademik, penelitian laboratorium, analisis data, pengelolaan hibah |
 | `engineering-manufacturing/` | Teknik mesin, sipil, elektro, industri, konstruksi, QA |
-| `public-service/` | Pemerintahan, kebijakan publik, organisasi nirlaba, layanan kedaruratan, pekerjaan sosial |
+| `public-service/` | Pemerintahan, kebijakan publik, organisasi nirlaba, layanan kedaruratan, pekerjaan sosial, penegakan hukum |
+| `skilled-trades/` | Kelistrikan, pipa ledeng, HVAC, reparasi otomotif, pengelasan, pertukangan |
+| `hospitality-tourism/` | Kuliner, manajemen hotel dan restoran, perencanaan acara, layanan makanan |
+| `agriculture-environment/` | Agronomi, kedokteran hewan, kehutanan, pertanian berkelanjutan, kerja lingkungan |
+| `transportation-logistics/` | Rantai pasok, penerbangan, maritim, angkutan truk dan operasi armada |
+| `arts-entertainment/` | Desain game, seni pertunjukan, animasi dan VFX, pertunjukan musik |
+| `sports-fitness/` | Kepelatihan, personal training, manajemen olahraga, nutrisi olahraga |
 
 ## Menemukan bidang Anda
 

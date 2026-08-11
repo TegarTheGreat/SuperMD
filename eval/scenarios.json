@@ -145,6 +145,41 @@
       "prompt": "Write a roadmap update explaining why we're prioritizing a new onboarding flow next quarter."
     },
     {
+      "id": "menu-description",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/hospitality-tourism/_category.md", "en/domains/hospitality-tourism/culinary-arts.md"],
+      "prompt": "Write a menu description for a grilled salmon dish with lemon-butter sauce and roasted vegetables."
+    },
+    {
+      "id": "beginner-strength-program",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/sports-fitness/_category.md", "en/domains/sports-fitness/personal-training.md"],
+      "prompt": "Describe a beginner strength-training program for a new client who has never lifted weights."
+    },
+    {
+      "id": "dead-outlets-troubleshoot",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/skilled-trades/_category.md", "en/domains/skilled-trades/electrician.md"],
+      "prompt": "A homeowner says the outlets in one bedroom stopped working. Write the first troubleshooting steps."
+    },
+    {
+      "id": "match3-core-loop",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/arts-entertainment/_category.md", "en/domains/arts-entertainment/game-design.md"],
+      "prompt": "Describe the core gameplay loop of a match-3 mobile puzzle game for a design document."
+    },
+    {
+      "id": "id-menu-description",
+      "type": "standard",
+      "lang": "id",
+      "systemFiles": ["id/SUPERMD.md", "id/domains/hospitality-tourism/_category.md", "id/domains/hospitality-tourism/culinary-arts.md"],
+      "prompt": "Tuliskan deskripsi menu untuk hidangan salmon panggang dengan saus lemon-butter dan sayuran panggang."
+    },
+    {
       "id": "id-ai-feature-pitch",
       "type": "standard",
       "lang": "id",

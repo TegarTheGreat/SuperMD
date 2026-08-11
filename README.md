@@ -17,7 +17,7 @@ AI output defaults to slop: filler openers, inflated vocabulary, invented citati
 - **Behavior** — confident claims that cannot be trusted (fabrication, sycophancy, false certainty)
 - **Format** — structure standing in for substance, ignored format contracts
 
-The claims are tested, not asserted: `eval/` contains the harness (banned-pattern scans plus blind pairwise LLM judging on slop-bait tasks) that every release must pass.
+The claims are tested, not asserted: `eval/` contains the harness (banned-pattern scans plus blind pairwise LLM judging on slop-bait tasks) that every release must pass. The patterns it bans are grounded in published research on the statistical signatures of machine text — see [`RESEARCH.md`](RESEARCH.md).
 
 ### Quick start
 
@@ -32,7 +32,7 @@ en/SUPERMD.md                                ← always (the core)
 + en/styles/formal.md                        ← optional register
 ```
 
-Your profession isn't shipped? [`en/adapters/UNIVERSAL-ADAPTER.md`](en/adapters/UNIVERSAL-ADAPTER.md) instantiates the core for **any** field in one step — a beekeeper, a ferry captain, a tax auditor. That composition model, ten categories plus an adapter, is how a small repo covers tens of thousands of professions without a file for each. Details: [`en/docs/taxonomy.md`](en/docs/taxonomy.md).
+Your profession isn't shipped? [`en/adapters/UNIVERSAL-ADAPTER.md`](en/adapters/UNIVERSAL-ADAPTER.md) instantiates the core for **any** field in one step — a beekeeper, a ferry captain, a tax auditor. That composition model, 16 categories plus a universal adapter, is how a small repo covers tens of thousands of professions without a file for each. Details: [`en/docs/taxonomy.md`](en/docs/taxonomy.md).
 
 ### Repository layout
 
@@ -40,7 +40,7 @@ Your profession isn't shipped? [`en/adapters/UNIVERSAL-ADAPTER.md`](en/adapters/
 en/  id/                  ← identical trees, one per language (CI enforces parity)
 ├── SUPERMD.md            ← the assembled core: one file, ready to paste
 ├── core/                 ← the same rules split by concern, with fuller examples
-├── domains/<category>/   ← 10 industry categories, each with sub-field modules
+├── domains/<category>/   ← 16 industry categories, 90+ sub-field modules
 ├── adapters/             ← the universal adapter for uncovered fields
 ├── styles/               ← optional register: formal / conversational / technical
 └── docs/                 ← how-to-use, taxonomy, philosophy
@@ -71,7 +71,7 @@ Output AI secara bawaan cenderung *slop*: kalimat pembuka kosong, kosakata bomba
 - **Perilaku** — klaim percaya diri yang tidak bisa dipercaya (fabrikasi, menjilat, keyakinan palsu)
 - **Format** — struktur yang menggantikan substansi, kontrak format yang dilanggar
 
-Klaimnya diuji, bukan sekadar ditulis: folder `eval/` berisi harness pengujian (pemindaian pola terlarang plus penilaian berpasangan oleh LLM juri secara buta) yang wajib lolos di setiap rilis.
+Klaimnya diuji, bukan sekadar ditulis: folder `eval/` berisi harness pengujian (pemindaian pola terlarang plus penilaian berpasangan oleh LLM juri secara buta) yang wajib lolos di setiap rilis. Pola yang dilarang ter-ground pada riset terpublikasi tentang tanda-tanda statistik teks mesin — lihat [`RESEARCH.md`](RESEARCH.md).
 
 ### Mulai cepat
 
@@ -86,7 +86,7 @@ id/SUPERMD.md                                ← selalu (inti)
 + id/styles/formal.md                        ← register opsional
 ```
 
-Profesi Anda belum tersedia? [`id/adapters/UNIVERSAL-ADAPTER.md`](id/adapters/UNIVERSAL-ADAPTER.md) menginstansiasi inti untuk bidang **apa pun** dalam satu langkah — peternak lebah, nakhoda feri, auditor pajak. Model komposisi itulah — sepuluh kategori plus satu adapter — yang membuat repo kecil ini mencakup puluhan ribu profesi tanpa satu file per profesi. Detail: [`id/docs/taxonomy.md`](id/docs/taxonomy.md).
+Profesi Anda belum tersedia? [`id/adapters/UNIVERSAL-ADAPTER.md`](id/adapters/UNIVERSAL-ADAPTER.md) menginstansiasi inti untuk bidang **apa pun** dalam satu langkah — peternak lebah, nakhoda feri, auditor pajak. Model komposisi itulah — 16 kategori plus satu adapter universal — yang membuat repo kecil ini mencakup puluhan ribu profesi tanpa satu file per profesi. Detail: [`id/docs/taxonomy.md`](id/docs/taxonomy.md).
 
 ### Struktur repo
 
@@ -94,7 +94,7 @@ Profesi Anda belum tersedia? [`id/adapters/UNIVERSAL-ADAPTER.md`](id/adapters/UN
 en/  id/                  ← dua pohon identik, satu per bahasa (paritas dijaga CI)
 ├── SUPERMD.md            ← inti rakitan: satu file, siap tempel
 ├── core/                 ← aturan yang sama dipecah per aspek, dengan contoh lebih lengkap
-├── domains/<kategori>/   ← 10 kategori industri, masing-masing dengan modul sub-bidang
+├── domains/<kategori>/   ← 16 kategori industri, 90+ modul sub-bidang
 ├── adapters/             ← adapter universal untuk bidang yang belum tercakup
 ├── styles/               ← register opsional: formal / conversational / technical
 └── docs/                 ← cara pakai, taksonomi, filosofi

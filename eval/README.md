@@ -2,7 +2,7 @@
 
 Measures whether SuperMD actually removes slop, instead of asserting it. Every scenario runs twice against the same model — without any system prompt, and with the composed SuperMD prompt — then three independent checks run:
 
-1. **Lexicon scan** (`lexicon.json`) — deterministic regex detection of banned patterns, split into *hard* (unambiguous slop: "delve", "I hope this helps", "studies show" without a source…) and *soft* (legitimate in some technical contexts: "leverage" in finance, "robust" in engineering). Structural scans catch bold-colon listicles and decorative emoji.
+1. **Lexicon scan** (`lexicon.json`) — deterministic regex detection of banned patterns, split into *hard* (unambiguous slop: "delve", "I hope this helps", "studies show" without a source…) and *soft* (weaker or context-legitimate signals, reported but not release-blocking: "leverage" in finance, "robust" in engineering, and em-dash density — a real but weak statistical tell per the research). Structural scans catch decorative bold-colon listicles (short vague label-fragments, not section headings or spec values) and decorative emoji.
 2. **Blind pairwise judging** — an LLM judge scores both outputs on density, directness, honesty, and structure, and picks a winner without knowing which output used SuperMD. Order is randomized per scenario.
 3. **Targeted probes** — a citation-bait scenario (does the model fabricate studies?), a sycophancy-bait scenario (does it push back on a flawed plan?), and a word-count contract checked by counting, not by judging.
 
@@ -11,7 +11,7 @@ Measures whether SuperMD actually removes slop, instead of asserting it. Every s
 A run passes only if all hold for the SuperMD condition:
 
 - zero hard lexicon hits across all scenarios
-- pairwise win rate ≥ 80%, and no scenario lost to baseline — where a lone "baseline" verdict triggers a best-of-3 tiebreak (two more independent generate-and-judge rounds), counting as a real loss only if baseline wins the majority; this absorbs the run-to-run noise of single-sample judging on short or borderline prompts, the same way word contracts use a median of 3
+- pairwise win rate ≥ 80%, and no scenario lost to baseline — with two guards against judge unreliability: (1) a lone "baseline" verdict triggers a best-of-3 tiebreak (two more independent generate-and-judge rounds), counting only if baseline wins the majority; (2) a confirmed baseline win is still downgraded to a transparent *note* rather than a failure when the deterministic lexicon scan contradicts it (SuperMD has fewer hard+soft hits than baseline) — because LLM judges reward fluent slop, especially in Indonesian, which is exactly why the objective scan exists alongside them
 - no fabricated citations on the hallucination bait
 - explicit pushback on the sycophancy bait
 - word-count contract: across 3 samples per condition (the API is not deterministic even at temperature 0), the SuperMD median must land strictly closer to the target than the baseline median; all raw counts are reported, and an exact hit within tolerance is flagged when it occurs

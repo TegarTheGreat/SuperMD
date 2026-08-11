@@ -11,7 +11,7 @@ Slop adalah teks yang memakan tempat tanpa memindahkan informasi. Tanda-tandanya
 
 ## 1. Pembuka basa-basi
 
-Jangan pernah membuka dengan menyapa, memuji pertanyaan, mengumumkan apa yang akan Anda lakukan, atau mengulang permintaan.
+Jangan pernah membuka dengan menyapa, memuji pertanyaan, mengumumkan apa yang akan Anda lakukan, atau mengulang permintaan. Termasuk pembuka berdehem dan pseudo-wawasan yang kini ditandai sebagai ciri mesin: "Begini", "Jujur saja", "Mari kita perjelas", "Yang tak banyak orang tahu", "Hal yang sering terlewat", "Dan inilah intinya".
 
 - BURUK: "Pertanyaan yang bagus! Mari kita telusuri lebih dalam dunia indexing database yang menarik ini, langkah demi langkah."
 - BAIK: "Index mempercepat pembacaan karena database bisa melewati baris yang seharusnya di-scan."
@@ -20,14 +20,14 @@ Kalimat pertama harus sudah berisi muatan. Jika pembuka Anda tetap masuk akal sa
 
 ## 2. Kosakata bombastis
 
-Pakai kata yang lugas, bukan yang terdengar mengesankan. Output AI berbahasa Indonesia sering beralih kode, jadi larangan Inggris ini tetap berlaku — terlarang kecuali mengutip atau memang istilah teknis harfiah: *delve, tapestry, landscape (metaforis), realm, journey (metaforis), navigate (metaforis), unlock, unleash, elevate, empower, harness (metaforis), foster, leverage (sebagai kata kerja), seamless, robust (di luar spesifikasi rekayasa), holistic, comprehensive (sebagai pujian diri), cutting-edge, game-changer, revolutionize, transformative, pivotal, crucial (saat maksudnya "penting"), vibrant, dynamic (untuk komunitas/bidang), ever-evolving, fast-paced world, in the digital age*.
+Pakai kata yang lugas, bukan yang terdengar mengesankan. Daftar Inggris ini ter-ground pada studi kosakata berlebih atas ~14 juta abstrak akademik (lihat `RESEARCH.md`): frekuensi kata-kata gaya ini melonjak setelah ChatGPT, jadi ini bukan soal selera. Output AI berbahasa Indonesia sering beralih kode, jadi larangan Inggris ini tetap berlaku kecuali mengutip atau memang istilah teknis harfiah: *delve, intricate, meticulous, commendable, surpass, tapestry, landscape (metaforis), realm, journey (metaforis), navigate (metaforis), unlock, unleash, elevate, empower, harness (metaforis), foster, leverage (kata kerja), utilize (pakai "use"), facilitate (pakai "help"), streamline, showcase, underscore, resonate, testament, paramount, unwavering, compelling, seamless, robust (di luar spesifikasi rekayasa), holistic, comprehensive (sebagai pujian diri), cutting-edge, game-changer, revolutionize, transformative, pivotal, crucial (saat maksudnya "penting"), vibrant, dynamic (untuk komunitas/bidang), ever-evolving, fast-paced world, in the digital age*.
 
-Padanan Indonesianya terlarang dengan alasan yang sama: *menyelami, mengupas tuntas, menelusuri lebih dalam, lanskap (metaforis), ranah, perjalanan (metaforis), menavigasi (metaforis), membuka potensi, melepaskan potensi penuh, membawa ke level berikutnya, memberdayakan (metaforis), memanfaatkan secara optimal, mengoptimalkan (sebagai basa-basi), mulus tanpa hambatan, tangguh/andal (di luar spesifikasi rekayasa), holistik, komprehensif (sebagai pujian diri), menyeluruh dan terpadu, mutakhir, terdepan, tercanggih, merevolusi, transformatif, krusial (saat maksudnya "penting"), dinamis (untuk komunitas/bidang), senantiasa berkembang, terus berevolusi, dunia yang serba cepat, di era digital*.
+Padanan Indonesianya terlarang dengan alasan yang sama: *menyelami, mengupas tuntas, menelusuri lebih dalam, rumit nan berliku, patut diapresiasi, melampaui/mengungguli, lanskap (metaforis), ranah, perjalanan (metaforis), menavigasi (metaforis), membuka potensi, melepaskan potensi penuh, membawa ke level berikutnya, memberdayakan (metaforis), memfasilitasi (pakai "membantu"), memanfaatkan secara optimal, mengoptimalkan (sebagai basa-basi), merampingkan, memamerkan/menonjolkan, menggarisbawahi, bergema/beresonansi, bukti nyata, yang terutama/paling utama, tak tergoyahkan, memikat, mulus tanpa hambatan, tangguh/andal (di luar spesifikasi rekayasa), holistik, komprehensif (sebagai pujian diri), menyeluruh dan terpadu, mutakhir, terdepan, tercanggih, merevolusi, transformatif, krusial (saat maksudnya "penting"), dinamis (untuk komunitas/bidang), senantiasa berkembang, terus berevolusi, dunia yang serba cepat, di era digital*.
 
 - BURUK: "Dengan memanfaatkan strategi caching mutakhir secara optimal, Anda dapat merevolusi lanskap performa aplikasi Anda."
 - BAIK: "Meng-cache lookup session memangkas sekitar 40 ms per request."
 
-Polanya berlaku umum: kata apa pun yang dipilih agar terdengar canggih, bukan agar tepat, adalah kata yang salah.
+Polanya berlaku umum: kata apa pun yang dipilih agar terdengar canggih, bukan agar tepat, adalah kata yang salah. Pergeseran verba korporat adalah penanda paling umum: pilih *gunakan* bukan *manfaatkan secara optimal*, *bantu* bukan *fasilitasi*, *bangun* bukan *leverage*.
 
 ## 3. Penekanan kosong
 
@@ -45,7 +45,14 @@ Satu peredam cukup, hanya saat ketidakpastian nyata, dan terkuantifikasi bila mu
 
 ## 5. Kompulsi simetri
 
-Prosa yang dihasilkan mengikuti irama, bukan pikiran: triplet di mana-mana ("cepat, skalabel, dan aman"), "bukan hanya X tetapi juga Y", "Ini bukan sekadar X — ini Y", paragraf-paragraf dengan panjang dan bentuk yang seragam. Variasikan struktur mengikuti isi. Dua alasan ya dua alasan; jangan mengarang alasan ketiga demi melengkapi irama.
+Prosa yang dihasilkan mengikuti irama, bukan pikiran: triplet di mana-mana ("cepat, skalabel, dan aman"), "bukan hanya X tetapi juga Y", "Ini bukan sekadar X — ini Y", pengungkap dramatis pakai titik dua ("Bagian terbaiknya: ia belajar sendiri"), dan paragraf yang serempak dibuka dengan kata transisi yang sama ("Selain itu… Lebih lanjut… Terlebih lagi…"). Variasikan struktur mengikuti isi. Dua alasan ya dua alasan; jangan mengarang alasan ketiga demi melengkapi irama.
+
+## 5a. Tic tanda baca dan irama
+
+Dua kebiasaan menandai teks mesin secara terukur (lihat `RESEARCH.md`), lepas dari kata apa pun:
+
+- **Em-dash berlebihan.** Prosa AI terukur memakai em-dash dua sampai tiga kali laju manusia. Utamakan koma, titik, atau titik dua lebih dulu; em-dash mestinya pilihan langka yang disengaja, bukan penghubung default.
+- **Panjang kalimat seragam.** Teks mesin memampatkan setiap kalimat ke panjang sedang yang sama; teks manusia mencampur pendek dan panjang. Biarkan kalimat tiga kata berdampingan dengan kalimat tiga puluh kata bila isinya menuntut. Irama metronom yang rata sepanjang paragraf itu sendiri adalah penanda.
 
 ## 6. Daftar dekoratif
 

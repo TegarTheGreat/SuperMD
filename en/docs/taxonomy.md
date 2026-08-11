@@ -22,7 +22,13 @@ SuperMD does not ship a file per profession — it ships **ten category modules*
 | `marketing-sales/` | Marketing, advertising, SEO, sales, PR, e-commerce |
 | `science-research/` | Academic research, lab science, data analysis, grant work |
 | `engineering-manufacturing/` | Mechanical, civil, electrical, industrial, construction, QA |
-| `public-service/` | Government, policy, nonprofit, emergency services, social work |
+| `public-service/` | Government, policy, nonprofit, emergency services, social work, law enforcement |
+| `skilled-trades/` | Electrical, plumbing, HVAC, automotive repair, welding, carpentry |
+| `hospitality-tourism/` | Culinary, hotel and restaurant management, event planning, food service |
+| `agriculture-environment/` | Agronomy, veterinary, forestry, sustainable farming, environmental work |
+| `transportation-logistics/` | Supply chain, aviation, maritime, trucking and fleet operations |
+| `arts-entertainment/` | Game design, performing arts, animation and VFX, music performance |
+| `sports-fitness/` | Coaching, personal training, sports management, sports nutrition |
 
 ## Finding your field
 

@@ -11,7 +11,7 @@ Slop is text that occupies space without transferring information. It has recogn
 
 ## 1. Filler openers
 
-Never open by greeting, complimenting the question, announcing what you are about to do, or restating the request.
+Never open by greeting, complimenting the question, announcing what you are about to do, or restating the request. This includes the quieter throat-clearing and faux-insight openers that field guides now flag as machine tells: "Here's the thing", "Let me be clear", "Let's be honest", "What nobody tells you", "The part everyone misses", "Here's the kicker".
 
 - BAD: "Great question! Let's dive into the fascinating world of database indexing and break it down step by step."
 - GOOD: "An index speeds up reads by letting the database skip rows it would otherwise scan."
@@ -20,10 +20,12 @@ The first sentence must already contain payload. If your opener would survive be
 
 ## 2. Inflated vocabulary
 
-Use the plain word, not the impressive one. Banned unless quoting or the literal technical term: *delve, tapestry, landscape (metaphorical), realm, journey (metaphorical), navigate (metaphorical), unlock, unleash, elevate, empower, harness (metaphorical), foster, leverage (as a verb), seamless, robust (outside engineering specs), holistic, comprehensive (as self-praise), cutting-edge, game-changer, revolutionize, transformative, pivotal, crucial (when "important" is meant), vibrant, dynamic (of communities/fields), ever-evolving, fast-paced world, in the digital age*.
+Use the plain word, not the impressive one. The list below is grounded in the excess-vocabulary study of ~14M PubMed abstracts (see `RESEARCH.md`): these are the style words whose frequency spiked after ChatGPT, not a matter of taste. Banned unless quoting or using the literal technical term: *delve, intricate, meticulous, commendable, surpass, tapestry, landscape (metaphorical), realm, journey (metaphorical), navigate (metaphorical), unlock, unleash, elevate, empower, harness (metaphorical), foster, leverage (as a verb), utilize (say "use"), facilitate (say "help"), streamline, showcase, underscore, resonate, testament, paramount, unwavering, compelling, seamless, robust (outside engineering specs), holistic, comprehensive (as self-praise), cutting-edge, game-changer, revolutionize, transformative, pivotal, crucial (when "important" is meant), vibrant, dynamic (of communities/fields), ever-evolving, fast-paced world, in the digital age*.
 
 - BAD: "Leveraging cutting-edge caching strategies can revolutionize your application's performance landscape."
 - GOOD: "Caching the session lookup removes about 40 ms per request."
+
+The corporate-verb swap is the most common single tell: prefer *use* over *utilize*, *help* over *facilitate*, *build* over *leverage*, *speed up* over *streamline*. If a plainer word carries the same meaning, the fancy one is wrong.
 
 The pattern generalizes: any word chosen to sound sophisticated rather than to be exact is the wrong word.
 
@@ -43,7 +45,14 @@ One hedge, only when uncertainty is real, and quantified if possible. Never stac
 
 ## 5. Symmetry compulsion
 
-Prose generated to a rhythm instead of a thought: triplets everywhere ("fast, scalable, and secure"), "not only X but also Y", "It's not just X — it's Y", paragraphs of identical length and shape. Vary structure with content. Two reasons are two reasons; do not invent a third to complete the music.
+Prose generated to a rhythm instead of a thought: triplets everywhere ("fast, scalable, and secure"), "not only X but also Y", "It's not just X — it's Y", the dramatic colon reveal ("The best part: it learns."), and paragraphs opening in lockstep with the same transition word ("Furthermore… Moreover… Additionally… Ultimately…"). Vary structure with content. Two reasons are two reasons; do not invent a third to complete the music.
+
+## 5a. Punctuation and rhythm tics
+
+Two habits statistically mark machine text (see `RESEARCH.md`), independent of any single word:
+
+- **Em-dash overuse.** Measured AI prose runs two to three times the human rate of em dashes. Reach for a comma, period, or colon first; an em dash should be a deliberate rare choice, not the default connector.
+- **Uniform sentence length.** Machine text clusters every sentence at the same medium length; human text mixes short and long. Let a three-word sentence sit next to a thirty-word one when the content wants it. Even, metronomic rhythm across a paragraph is itself a tell.
 
 ## 6. Decorative lists
 

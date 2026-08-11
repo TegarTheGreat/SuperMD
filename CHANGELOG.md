@@ -2,6 +2,19 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [1.3.0] - 2026-08-11
+
+### Added
+
+- **6 new domain categories** (24 sub-fields): `skilled-trades` (electrician, plumbing, HVAC, automotive repair), `hospitality-tourism` (culinary arts, hotel management, event planning, food service), `agriculture-environment` (agronomy, veterinary, forestry, sustainable farming), `transportation-logistics` (supply chain, aviation, maritime, fleet), `arts-entertainment` (game design, performing arts, animation/VFX, music performance), `sports-fitness` (coaching, personal training, sports management, sports nutrition). Coverage now extends well beyond knowledge work.
+- **27 new sub-fields** across the 9 original non-technology categories (consulting, taxation, pharmacy, mental-health counseling, corporate/IP/immigration law, special education, film/photography/copywriting, PR/performance-advertising/social, clinical research/biostatistics/environmental science, electrical/industrial engineering, construction management, urban planning, nonprofit management, law enforcement, and more). 16 categories, 90+ sub-fields total.
+- **`RESEARCH.md`** — the cited evidence base for the anti-slop rules (Kobak et al. excess-vocabulary study of ~14M PubMed abstracts; measurable pattern thresholds). The core's claims are now traceable to named sources.
+
+### Changed
+
+- Core language rules and lexicon strengthened from the research: added the excess-vocabulary focal words (intricate, meticulous, surpass, underscore, resonate, paramount...), corporate-verb inflation (utilize/facilitate/streamline), throat-clearing and faux-insight openers, the dramatic colon reveal, transition-word stacking, and two measurable tics — em-dash density and uniform sentence length. EN and ID.
+- Eval harness: 13 new lexicon detectors (EN + ID) plus a structural em-dash-density check.
+
 ## [1.2.0] - 2026-08-11
 
 ### Added

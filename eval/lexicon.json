@@ -7,6 +7,13 @@
     { "name": "lets-dive", "pattern": "let'?s (dive|delve|jump) (in|into)|dive into the world", "severity": "hard", "langs": ["en"] },
     { "name": "delve", "pattern": "\\bdelv(e|es|ing)\\b", "severity": "hard", "langs": ["en"] },
     { "name": "tapestry", "pattern": "\\btapestry\\b", "severity": "hard", "langs": ["en"] },
+    { "name": "throat-clearing", "pattern": "^(here'?s the thing|let'?s be (clear|honest|real)|let me be clear|here'?s the kicker|the truth is,)", "severity": "hard", "langs": ["en"] },
+    { "name": "faux-insight", "pattern": "what (nobody|no one) tells you|the part (everyone|most people) miss|here'?s what (nobody|most people)|the (secret|thing) (nobody|no one)", "severity": "hard", "langs": ["en"] },
+    { "name": "colon-reveal", "pattern": "the (best|catch|kicker|secret|result|twist|problem)[?]? ?[::] ", "severity": "soft", "langs": ["en"] },
+    { "name": "focal-verbs", "pattern": "\\b(underscore(s|d)?|resonate(s|d)?|surpass(es|ed)?|showcase(s|d)?)\\b", "severity": "soft", "langs": ["en"] },
+    { "name": "focal-adjectives", "pattern": "\\b(intricate|meticulous|commendable|paramount|unwavering|compelling)\\b", "severity": "soft", "langs": ["en"] },
+    { "name": "corporate-verbs", "pattern": "\\b(utiliz(e|es|ing|ation)|facilitate(s|d)?|streamlin(e|es|ing))\\b", "severity": "soft", "langs": ["en"] },
+    { "name": "transition-stack", "pattern": "^(furthermore|moreover|additionally|consequently)\\b", "severity": "soft", "langs": ["en"] },
     { "name": "importance-announce", "pattern": "it'?s (important|worth) (to note|noting|to mention|mentioning)|it is (important|worth) (to note|noting|to mention|mentioning)", "severity": "hard", "langs": ["en"] },
     { "name": "keep-in-mind", "pattern": "keep in mind that|remember that it", "severity": "soft", "langs": ["en"] },
     { "name": "end-of-day", "pattern": "at the end of the day", "severity": "hard", "langs": ["en"] },
@@ -37,10 +44,17 @@
     { "name": "id-digital-era", "pattern": "di era (digital|modern|globalisasi)|dunia yang serba cepat|zaman yang terus berkembang", "severity": "hard", "langs": ["id"] },
     { "name": "id-conclusion", "pattern": "^kesimpulannya|sebagai (kesimpulan|penutup)", "severity": "hard", "langs": ["id"] },
     { "name": "id-hope-helps", "pattern": "semoga (membantu|bermanfaat)|jangan ragu untuk", "severity": "hard", "langs": ["id"] },
-    { "name": "id-studies-vague", "pattern": "penelitian menunjukkan|para ahli (sepakat|mengatakan|menyarankan)|banyak penelitian", "severity": "hard", "langs": ["id"] }
+    { "name": "id-studies-vague", "pattern": "penelitian menunjukkan|para ahli (sepakat|mengatakan|menyarankan)|banyak penelitian", "severity": "hard", "langs": ["id"] },
+    { "name": "id-throat-clearing", "pattern": "^(begini|jujur saja|sejujurnya|perlu diketahui bahwa|mari kita (telusuri|bahas|selami))", "severity": "hard", "langs": ["id"] },
+    { "name": "id-faux-insight", "pattern": "yang (tak|tidak) banyak orang tahu|hal yang sering terlewat(kan)?|rahasianya adalah", "severity": "hard", "langs": ["id"] },
+    { "name": "id-corporate-verbs", "pattern": "\\b(mengoptimalkan|memaksimalkan) secara|solusi (komprehensif|holistik)|tak (dapat|bisa) dipungkiri", "severity": "soft", "langs": ["id"] },
+    { "name": "id-transition-stack", "pattern": "^(selain itu|lebih lanjut|terlebih lagi|oleh karena itu),", "severity": "soft", "langs": ["id"] },
+    { "name": "id-food-slop", "pattern": "menggugah selera|di setiap suapan|kelezatan yang|memanjakan lidah|cita rasa yang (kaya|mewah|istimewa)|berkualitas (tinggi|premium) (yang|nan)|perpaduan (yang )?harmonis", "severity": "soft", "langs": ["id"] },
+    { "name": "id-praise-adjectives", "pattern": "\\b(mewah|elegan|menggugah|istimewa|sempurna|memukau) (di|nan|yang|dan)", "severity": "soft", "langs": ["id"] }
   ],
   "structural": {
     "boldColonThreshold": 5,
-    "comment": "Counted in code: >=threshold occurrences of '**Term:**' followed by a fragment (<8 words before the line break) = hard hit (decorative listicle). Labels followed by full instructions are legitimate document structure and do not count. Any emoji in output = hard hit unless the user's prompt contains emoji."
+    "emDashPerWordThreshold": 0.02,
+    "comment": "Counted in code. Decorative listicle: >=threshold occurrences of '**Term:**' followed by a SHORT fragment (<8 words) that carries NO digit (a concrete spec value like '45-60 minutes' is legitimate structure, not padding). Em-dash density: PROSE em-dashes only (list-item and blockquote lines excluded, since one dash per labeled item is structural, not a prose tic) above emDashPerWordThreshold (0.02/word = 20 per 1000, ~2x the human prose rate per RESEARCH.md), min 3 dashes. Any emoji = hard hit unless the prompt contains emoji."
   }
 }
