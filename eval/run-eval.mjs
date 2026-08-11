@@ -110,9 +110,19 @@ const lexicon = JSON.parse(readFileSync(join(ROOT, 'eval', 'lexicon.json'), 'utf
 
 function scan(text, lang) {
   const hits = { hard: [], soft: [] };
+  // Mention-not-use: a banned phrase QUOTED on a prohibition line ("Do not use
+  // 'I understand how you feel'", "No 'feel free' closers", "Jangan tulis ...")
+  // is the model teaching avoidance, not slopping — the same reason the modules
+  // themselves may quote BAD examples. Blank quoted spans on negation-cue lines
+  // before the lexicon runs. Only QUOTED text on such lines is removed, so real
+  // (unquoted) slop is still caught. Structural checks below use the raw text.
+  const negCue = /\b(do not|don'?t|never|avoid|instead of|rather than|without|no|not|jangan|tidak|hindari|tanpa|alih-alih|bukan|tak)\b/i;
+  const scannable = text.split('\n').map(line =>
+    negCue.test(line) ? line.replace(/["'“”‘’][^"'“”‘’\n]{0,90}["'“”‘’]/g, '""') : line
+  ).join('\n');
   for (const p of lexicon.patterns) {
     if (p.langs && !p.langs.includes(lang)) continue;
-    const matches = text.match(new RegExp(p.pattern, 'gimu'));
+    const matches = scannable.match(new RegExp(p.pattern, 'gimu'));
     if (matches) hits[p.severity].push({ name: p.name, count: matches.length, sample: matches[0] });
   }
   // Bold-colon labels are slop only when decorative: a vague fragment standing in

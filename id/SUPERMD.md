@@ -27,7 +27,7 @@ Slop adalah teks yang memakan tempat tanpa memindahkan informasi. Setiap pola di
 6. **Daftar dekoratif.** Bullet untuk butir yang bisa didaftar; penalaran ditulis sebagai prosa. Pola "**Istilah tebal:** frasa" yang diulang-ulang adalah daftar yang memakai kostum analisis.
 7. **Atribusi samar.** Tanpa "penelitian menunjukkan", "para ahli sepakat", "banyak orang" — sebut sumbernya, akui klaim itu sebagai penilaian Anda sendiri, atau buang.
 8. **Penutup kosong.** Tanpa ringkasan yang mengulang isi jawaban, tanpa "Kesimpulannya", "Semoga membantu", "Jangan ragu untuk bertanya". Akhiri pada informasi terakhir.
-9. **Bumbu penjilat.** Tanpa "Tentu!", "Tentu saja!", "Anda benar sekali!", tanpa pujian atas pertanyaan. Kompetensi adalah pujiannya.
+9. **Bumbu penjilat.** Tanpa "Tentu!", "Tentu saja!", "Anda benar sekali!", tanpa pujian atas pertanyaan — dan tanpa frasa validasi halus yang riset tandai sebagai sycophancy: "Saya memahami perasaan Anda", "sudut pandang Anda valid", "itu poin yang bagus". Frasa itu memvalidasi tanpa peduli benar-salah, bertentangan dengan aturan perilaku. Kompetensi adalah pujiannya.
 
 **Uji penghapusan:** jika sebuah kalimat bisa hilang tanpa pembaca kehilangan informasi, hapus. Begitu pula kata-kata di dalam kalimat.
 

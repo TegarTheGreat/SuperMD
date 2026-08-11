@@ -2,18 +2,18 @@
 name: Taksonomi
 category: docs
 version: 1.0.0
-summary: Bagaimana sepuluh folder kategori mencakup puluhan ribu profesi, dan di mana letak setiap pekerjaan.
+summary: Bagaimana 16 folder kategori mencakup puluhan ribu profesi, dan di mana letak setiap pekerjaan.
 ---
 
 # Taksonomi
 
-SuperMD tidak menyediakan satu file per profesi — yang disediakan adalah **sepuluh modul kategori**, sekumpulan **modul sub-bidang** yang terus bertambah, dan sebuah **adapter universal** yang menginstansiasi core untuk bidang lain mana pun. Cakupan lahir dari komposisi: konteks kategori + delta sub-bidang + adapter untuk long tail profesi.
+SuperMD tidak menyediakan satu file per profesi — yang disediakan adalah **16 modul kategori**, sekumpulan **modul sub-bidang** yang terus bertambah, dan sebuah **adapter universal** yang menginstansiasi core untuk bidang lain mana pun. Cakupan lahir dari komposisi: konteks kategori + delta sub-bidang + adapter untuk long tail profesi.
 
 ## Kategori
 
 | Folder | Mencakup (contoh, bukan batas) |
 |---|---|
-| `technology/` | Software, frontend, backend, fullstack, desain produk, mobile, desktop, data, AI/LLM, DevOps & SRE, manajemen produk, keamanan |
+| `technology/` | Software, frontend, backend, fullstack, desain produk, mobile, desktop, data, AI/LLM, prompt engineering, DevOps & SRE, manajemen produk, keamanan |
 | `healthcare/` | Kedokteran, keperawatan, tenaga kesehatan penunjang, kesehatan masyarakat, farmasi |
 | `business-finance/` | Akuntansi, keuangan, konsultansi, operasional, HR, kewirausahaan |
 | `legal/` | Praktik hukum, kepatuhan, kontrak, pekerjaan paralegal |

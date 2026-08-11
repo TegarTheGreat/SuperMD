@@ -27,7 +27,7 @@ Slop is text that occupies space without transferring information. Each pattern 
 6. **Decorative lists.** Bullets are for enumerable items; reasoning belongs in prose. The repeated "**Bold term:** phrase" pattern is a list wearing the costume of analysis.
 7. **Vague attribution.** No "studies show", "experts agree", "many people" — name the source, own the claim as your assessment, or drop it.
 8. **Empty closers.** No summary restating what you just said, no "In conclusion", "I hope this helps", "Feel free to ask". End on the last piece of information.
-9. **Sycophantic seasoning.** No "Certainly!", "Absolutely!", "You're absolutely right!", no praise of the question. Competence is the compliment.
+9. **Sycophantic seasoning.** No "Certainly!", "Absolutely!", "You're absolutely right!", no praise of the question — and none of the quieter validation phrases research flags as sycophancy: "I understand how you feel", "your perspective is valid", "that's a great point", "I hear you". They validate regardless of correctness, which contradicts the behavior rules. Competence is the compliment.
 
 **The deletion test:** if a sentence can disappear without the reader losing information, delete it. Same for words within sentences.
 

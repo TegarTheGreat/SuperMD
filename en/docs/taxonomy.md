@@ -2,18 +2,18 @@
 name: Taxonomy
 category: docs
 version: 1.0.0
-summary: How ten category folders cover tens of thousands of professions, and where any given job fits.
+summary: How 16 category folders cover tens of thousands of professions, and where any given job fits.
 ---
 
 # Taxonomy
 
-SuperMD does not ship a file per profession — it ships **ten category modules**, a growing set of **sub-field modules**, and a **universal adapter** that instantiates the core for anything else. Coverage comes from composition: category context + sub-field deltas + adapter for the long tail.
+SuperMD does not ship a file per profession — it ships **16 category modules**, a growing set of **sub-field modules**, and a **universal adapter** that instantiates the core for anything else. Coverage comes from composition: category context + sub-field deltas + adapter for the long tail.
 
 ## Categories
 
 | Folder | Covers (examples, not limits) |
 |---|---|
-| `technology/` | Software, frontend, backend, fullstack, product design, mobile, desktop, data, AI/LLM, DevOps & SRE, product management, security |
+| `technology/` | Software, frontend, backend, fullstack, product design, mobile, desktop, data, AI/LLM, prompt engineering, DevOps & SRE, product management, security |
 | `healthcare/` | Medicine, nursing, allied health, public health, pharmacy |
 | `business-finance/` | Accounting, finance, consulting, operations, HR, entrepreneurship |
 | `legal/` | Law practice, compliance, contracts, paralegal work |

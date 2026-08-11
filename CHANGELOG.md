@@ -2,6 +2,18 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [1.4.0] - 2026-08-11
+
+### Added
+
+- `technology/prompt-engineering.md` (EN + ID) — the craft of the prompt itself as a delta from `ai-engineering`: instruction hierarchy, few-shot design, prompt regression testing, and injection defense (prompt injection cited as OWASP LLM Top 10 LLM01). 16 categories, 93 sub-fields.
+- Sycophancy detection: the core sycophantic-seasoning rule and the eval lexicon now ban the quieter validation phrases research identifies ("I understand you", "your perspective is valid", "that's a great point") in both languages.
+
+### Changed
+
+- `RESEARCH.md` deepened with three more findings: the formal slop taxonomy of Shaib et al. (*Measuring AI "Slop" in Text*, arXiv:2509.19163) whose three themes map onto SuperMD's three rule files; the result that leading models reach only 0.08–0.12 recall detecting slop (why SuperMD prevents at generation rather than detecting after); and the sycophancy literature (ELEPHANT benchmark, *Science* 2025 on prosocial harm). Indonesian AI-writing tells now carry Indonesian-language sources.
+- All 92 domain modules passed a strict audit: 157 named citations web-verified as correct; one deltas-only duplication fixed.
+
 ## [1.3.0] - 2026-08-11
 
 ### Added
