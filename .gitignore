@@ -1,0 +1,7 @@
+# Secrets — never commit
+.env
+.env.*
+
+# Local tooling state
+.remember/
+node_modules/
