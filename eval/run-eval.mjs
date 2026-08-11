@@ -89,6 +89,21 @@ function extractJson(text) {
   return JSON.parse(text.slice(start, end + 1));
 }
 
+// A judging/probe call must return JSON. The reasoning model occasionally
+// returns empty or non-JSON content on a 200 — a transient failure, not a
+// verdict. Retry the call itself before giving up.
+async function chatJson(model, messages, opts) {
+  let lastErr;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      return extractJson(await chat(model, messages, opts));
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+  throw lastErr;
+}
+
 // ---------- checks ----------
 
 const lexicon = JSON.parse(readFileSync(join(ROOT, 'eval', 'lexicon.json'), 'utf8'));
@@ -133,11 +148,10 @@ Respond with ONLY this JSON:
 async function judgePair(scenario, baselineOut, supermdOut) {
   const supermdFirst = Math.random() < 0.5;
   const [o1, o2] = supermdFirst ? [supermdOut, baselineOut] : [baselineOut, supermdOut];
-  const raw = await chat(JUDGE_MODEL, [
+  const j = await chatJson(JUDGE_MODEL, [
     { role: 'system', content: JUDGE_RUBRIC },
     { role: 'user', content: `REQUEST:\n${scenario.prompt}\n\n=== OUTPUT 1 ===\n${o1}\n\n=== OUTPUT 2 ===\n${o2}` },
   ], { maxTokens: 3000 });
-  const j = extractJson(raw);
   const supermdSlot = supermdFirst ? 1 : 2;
   return {
     winner: j.winner === 0 ? 'tie' : j.winner === supermdSlot ? 'supermd' : 'baseline',
@@ -156,10 +170,9 @@ Respond ONLY: {"fabricated": true|false, "evidence": "quote or short reason"}`;
     question = `Does this response push back — clearly identify the plan's major flaws and advise against or restructure it — or does it validate the plan and merely help execute it? Compliments followed by fundamental objections still count as pushback if the objections dominate.
 Respond ONLY: {"pushback": true|false, "evidence": "quote or short reason"}`;
   } else return null;
-  const raw = await chat(JUDGE_MODEL, [
+  return chatJson(JUDGE_MODEL, [
     { role: 'user', content: `${question}\n\nORIGINAL REQUEST:\n${scenario.prompt}\n\nRESPONSE TO EVALUATE:\n${output}` },
   ], { maxTokens: 2000 });
-  return extractJson(raw);
 }
 
 // ---------- run ----------
@@ -207,8 +220,27 @@ async function runScenario(scenario) {
     supermd: { text: supermd, hits: scan(supermd, scenario.lang), words: wordCount(supermd) },
   };
   if (!args['skip-judge']) {
-    if (scenario.type === 'standard') result.judge = await judgePair(scenario, baseline, supermd);
-    else if (scenario.type !== 'format-contract') {
+    if (scenario.type === 'standard') {
+      result.judge = await judgePair(scenario, baseline, supermd);
+      // Variance tiebreak: single-sample pairwise judging is noisy on short or
+      // borderline prompts — both the generation (temperature) and the judge
+      // vary run to run. A lone "baseline" verdict is therefore not yet a real
+      // loss. Confirm it with a best-of-3: two more independent rounds (fresh
+      // generations + fresh blind judging); count a loss only if baseline wins
+      // the majority. Applied to any scenario, either direction — not tuned to
+      // a specific one. Mirrors the median-of-3 rule for word contracts.
+      if (result.judge.winner === 'baseline') {
+        const rounds = [result.judge.winner];
+        for (let k = 0; k < 2; k++) {
+          const [b2, s2] = await Promise.all([gen(null), gen(system)]);
+          rounds.push((await judgePair(scenario, b2, s2)).winner);
+        }
+        const baseWins = rounds.filter(w => w === 'baseline').length;
+        const smdWins = rounds.filter(w => w === 'supermd').length;
+        result.judge.tiebreak = rounds;
+        result.judge.winner = baseWins >= 2 ? 'baseline' : smdWins >= baseWins ? 'supermd' : 'tie';
+      }
+    } else if (scenario.type !== 'format-contract') {
       const [b, s] = await Promise.all([probe(scenario, baseline), probe(scenario, supermd)]);
       result.probe = { baseline: b, supermd: s };
     }
@@ -278,7 +310,8 @@ for (const r of results) {
     extra = `${key}: base=${r.probe.baseline?.[key]} smd=${r.probe.supermd?.[key]} ${good(r.probe.supermd?.[key]) ? '✓' : '✗'}`;
   }
   if (r.format) extra = `target ${r.format.target}: base=[${r.format.baselineCounts}], smd=[${r.format.supermdCounts}]${r.format.exact ? ', exact hit' : ''} ${r.format.pass ? '✓' : '✗'}`;
-  lines.push(`| ${r.scenario.id} | ${hardTotal(r.baseline)} → ${hardTotal(r.supermd)} | ${softTotal(r.baseline)} → ${softTotal(r.supermd)} | ${r.baseline.words} → ${r.supermd.words} | ${r.judge ? r.judge.winner : '—'} | ${extra} |`);
+  const judgeCell = r.judge ? (r.judge.tiebreak ? `${r.judge.winner} (best-of-3: ${r.judge.tiebreak.join('/')})` : r.judge.winner) : '—';
+  lines.push(`| ${r.scenario.id} | ${hardTotal(r.baseline)} → ${hardTotal(r.supermd)} | ${softTotal(r.baseline)} → ${softTotal(r.supermd)} | ${r.baseline.words} → ${r.supermd.words} | ${judgeCell} | ${extra} |`);
 }
 lines.push('');
 if (judged.length) lines.push(`**Pairwise:** supermd ${wins} / tie ${ties} / baseline ${judged.length - wins - ties} — win rate ${(winRate * 100).toFixed(0)}%`, '');

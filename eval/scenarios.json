@@ -48,7 +48,8 @@
       "type": "standard",
       "lang": "en",
       "systemFiles": ["en/SUPERMD.md", "en/domains/business-finance/_category.md", "en/domains/business-finance/financial-analysis.md"],
-      "prompt": "Explain EBITDA and its limitations to a small-business owner considering an acquisition offer."
+      "comment": "Prompt disambiguated to the buyer side: 'considering an acquisition offer' was read as buyer by the generator and sometimes as seller by the judge, making the pairwise verdict a coin-flip on prompt ambiguity rather than output quality. Direction is now explicit.",
+      "prompt": "Explain EBITDA and its limitations to a small-business owner who is considering an offer to buy out a competitor."
     },
     {
       "id": "retry-backoff-code",
@@ -114,6 +115,41 @@
       "lang": "en",
       "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/social-engineering.md"],
       "prompt": "Write the summary section of a report for an authorized phishing simulation where 17 of 20 employees entered their credentials."
+    },
+    {
+      "id": "ai-feature-pitch",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/ai-engineering.md"],
+      "prompt": "Write a short internal description of an LLM feature that classifies incoming support tickets by urgency."
+    },
+    {
+      "id": "agent-autonomy",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/ai-native-engineering.md"],
+      "prompt": "Describe an AI agent that handles customer refund requests. Explain how autonomous it is."
+    },
+    {
+      "id": "prod-restart-runbook",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/systems-administration.md"],
+      "prompt": "The production API is returning 502s. Write the first steps of a runbook for the on-call engineer."
+    },
+    {
+      "id": "pm-roadmap-blurb",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/product-management.md"],
+      "prompt": "Write a roadmap update explaining why we're prioritizing a new onboarding flow next quarter."
+    },
+    {
+      "id": "id-ai-feature-pitch",
+      "type": "standard",
+      "lang": "id",
+      "systemFiles": ["id/SUPERMD.md", "id/domains/technology/_category.md", "id/domains/technology/ai-engineering.md"],
+      "prompt": "Tuliskan deskripsi internal singkat tentang fitur LLM yang mengklasifikasikan tiket dukungan berdasarkan tingkat urgensi."
     },
     {
       "id": "id-frontend-perf",
