@@ -41,7 +41,9 @@ Two findings from that paper shape SuperMD's whole strategy. First, slop is mult
 
 ## Sycophancy as behavior slop
 
-The behavior rules (never inflate praise, disagree with a wrong premise) target a documented failure mode. Sycophancy — validating the user regardless of correctness — emerges from RLHF optimizing for user satisfaction over accuracy, and 2025–2026 work shows it is widespread and harmful: it *decreases prosocial intentions and promotes dependence* (Cheng et al., *Science*, 2025). Benchmarks like ELEPHANT probe it in open-ended advice and find leading models, GPT-5 included, still substantially sycophantic. The tells are concrete validation phrases — "I understand you", "your perspective is important", "that's a great point" — which SuperMD bans alongside the "You're absolutely right!" family and enforces with the honesty rules and the sycophancy-bait eval probe.
+The behavior rules (never inflate praise, disagree with a wrong premise) target a documented failure mode. Sycophancy — validating the user regardless of correctness — emerges from RLHF optimizing for user satisfaction over accuracy, and 2025–2026 work shows it is widespread and harmful: it *decreases prosocial intentions and promotes dependence* (Cheng et al., *Science*, 2025). Benchmarks like ELEPHANT and SycEval probe it in open-ended advice and find leading models, GPT-5 included, still substantially sycophantic. The obvious tells are validation phrases — "I understand you", "your perspective is important", "that's a great point" — which SuperMD bans alongside the "You're absolutely right!" family.
+
+The 2026 taxonomy (arXiv:2605.21778, from a review of 70 papers) sharpens this: sycophancy varies along two axes — its **target** (the user's beliefs vs their personal traits and emotions) and its **expression** (explicit language vs implicit behavior). Prior work, and most banned-phrase lists, cover only the explicit-belief cell. The understudied cells are where models actually slip: **omission** (giving only the evidence that favors the user, withholding counterarguments), **softening under sustained pushback** across turns with no single overt reversal, **avoidance of correction** (continuing past a flawed premise without addressing it), and **person-directed deference** (lowering the standard or prioritizing the user's comfort to affirm their competence). SuperMD's behavior rule 4 names all four so the prompt reaches the implicit forms a phrase list cannot; the omission-bait eval scenario tests one of them directly.
 
 ## Indonesian AI-writing tells
 
@@ -63,6 +65,7 @@ The three are complementary. SuperMD is the prompt layer, deliberately usable wi
 - [AntiSlop: A framework for reducing over-represented tokens — Paech, arXiv:2510.15061 (2025)](https://arxiv.org/abs/2510.15061) · [antislop-sampler](https://github.com/sam-paech/antislop-sampler)
 - [Sycophantic AI decreases prosocial intentions and promotes dependence — Science (2025)](https://www.science.org/doi/10.1126/science.aec8352)
 - [What Counts as AI Sycophancy? A Taxonomy and Expert Survey — arXiv:2605.21778 (2026)](https://arxiv.org/abs/2605.21778)
+- [SycEval: Evaluating LLM Sycophancy — arXiv:2502.08177 (2025)](https://arxiv.org/abs/2502.08177)
 
 - [Delving into LLM-assisted writing in biomedical publications through excess vocabulary — Science Advances (2025)](https://www.science.org/doi/10.1126/sciadv.adt3813) · [arXiv preprint 2406.07016](https://arxiv.org/abs/2406.07016)
 - [Delving into PubMed Records — Perspectives on Medical Education (2024)](https://pmejournal.org/articles/10.5334/pme.1929)

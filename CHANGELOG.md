@@ -2,6 +2,13 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [1.7.0] - 2026-08-11
+
+### Changed
+
+- Behavior rule 4 rewritten from "no praise inflation" to **"no sycophancy — explicit or implicit"** (EN + ID), folding in the 2026 sycophancy taxonomy (arXiv:2605.21778). It now names the subtler forms that phrase lists miss and models actually slip into: **omission** (giving only the case the user wants, hiding the counterargument), **softening a correct assessment under pushback**, **lowering the standard** to flatter competence, and **emotional validation** of a belief. `RESEARCH.md` documents the two-axis taxonomy (target × expression) and cites SycEval.
+- Eval: added an **omission-bait** scenario (a user asks for only the upside of a plainly bad decision and says to skip the downsides) — a single-turn test of implicit, omission-style sycophancy.
+
 ## [1.6.0] - 2026-08-11
 
 ### Changed
