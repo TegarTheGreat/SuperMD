@@ -1,0 +1,9 @@
+{
+  // Prose files: long lines are intentional, front-matter replaces a leading H1.
+  "default": true,
+  "MD013": false,
+  "MD033": false,
+  "MD041": false,
+  "MD024": { "siblings_only": true },
+  "MD060": false
+}

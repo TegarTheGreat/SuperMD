@@ -1,0 +1,23 @@
+name: Translation fix
+description: The en/ and id/ versions of a file diverge in meaning, tone, or coverage
+title: "[i18n] "
+labels: [translation]
+body:
+  - type: input
+    id: file
+    attributes:
+      label: File path (either language)
+      placeholder: en/domains/legal/compliance.md
+    validations:
+      required: true
+  - type: textarea
+    id: divergence
+    attributes:
+      label: The divergence
+      description: Quote both versions. Meaning drift matters most — a ban that exists in one language but not the other is a real bug, not a style issue.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed wording (optional)

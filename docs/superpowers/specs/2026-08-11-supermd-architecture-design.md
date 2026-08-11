@@ -21,7 +21,7 @@ Empat keputusan kunci, semuanya sudah dikonfirmasi pemilik proyek:
 
 Pengguna merakit system prompt dari lapisan:
 
-```
+```text
 SYSTEM PROMPT = CORE (wajib) + DOMAIN (pilih satu/lebih) + STYLE (opsional)
 ```
 
@@ -32,7 +32,7 @@ SYSTEM PROMPT = CORE (wajib) + DOMAIN (pilih satu/lebih) + STYLE (opsional)
 
 ## Struktur repo
 
-```
+```text
 SuperMD/
 ├── README.md                      ← bilingual (EN di atas, ID di bawah)
 ├── LICENSE                        ← CC BY 4.0

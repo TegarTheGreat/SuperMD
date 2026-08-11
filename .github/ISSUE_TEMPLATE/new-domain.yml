@@ -1,0 +1,48 @@
+name: New domain module
+description: Propose or request a module for a field that isn't covered yet
+title: "[domain] "
+labels: [domain-module]
+body:
+  - type: input
+    id: field
+    attributes:
+      label: Field / profession
+      placeholder: e.g. veterinary medicine, maritime logistics
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Closest existing category
+      options:
+        - technology
+        - healthcare
+        - business-finance
+        - legal
+        - education
+        - creative-media
+        - marketing-sales
+        - science-research
+        - engineering-manufacturing
+        - public-service
+        - none of these fit (explain below)
+    validations:
+      required: true
+  - type: textarea
+    id: deltas
+    attributes:
+      label: What the universal adapter misses
+      description: A module earns shipping only if its deltas are non-obvious. Which regulations, artifact formats, or field-specific slop patterns would a generic fill-in get wrong?
+    validations:
+      required: true
+  - type: dropdown
+    id: contribute
+    attributes:
+      label: Will you write it yourself?
+      description: Modules need both en/ and id/ versions — partial contributions are welcome with the needs-translation label.
+      options:
+        - Yes, I'll open a PR
+        - I can draft one language only
+        - Request only
+    validations:
+      required: true

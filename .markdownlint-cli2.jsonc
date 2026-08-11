@@ -1,0 +1,8 @@
+{
+  // Generated eval reports and tool state are not subject to authoring lint.
+  "ignores": [
+    "node_modules/**",
+    "eval/results/**",
+    ".remember/**"
+  ]
+}

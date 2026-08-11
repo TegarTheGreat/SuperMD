@@ -1,0 +1,42 @@
+name: Slop report
+description: A model running SuperMD still produced a slop pattern — that's a bug in the core
+title: "[slop] "
+labels: [slop-report]
+body:
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      placeholder: e.g. deepseek-chat, gpt-5.2, claude-fable-5
+    validations:
+      required: true
+  - type: textarea
+    id: prompt
+    attributes:
+      label: Exact system prompt composition
+      description: Which SuperMD files, in which order, plus any additions of your own.
+      placeholder: |
+        en/SUPERMD.md + en/domains/legal/_category.md (v1.0.0, unmodified)
+    validations:
+      required: true
+  - type: textarea
+    id: input
+    attributes:
+      label: User input that triggered it
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Offending output (mark the slop)
+      description: Paste the output and point at the pattern — filler phrase, invented citation, praise inflation, format violation…
+    validations:
+      required: true
+  - type: checkboxes
+    id: class
+    attributes:
+      label: Failure class
+      options:
+        - label: Language (filler, inflated vocabulary, empty closers…)
+        - label: Behavior (fabrication, sycophancy, false certainty…)
+        - label: Format (decorative structure, broken format contract…)
