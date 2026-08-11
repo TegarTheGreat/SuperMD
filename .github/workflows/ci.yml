@@ -21,11 +21,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: lycheeverse/lychee-action@v2
         with:
-          # Links inside fenced code blocks (example API endpoints, placeholders)
-          # are skipped by lychee. Publishers that block automated checkers are
-          # listed in .lycheeignore (read automatically). Genuine 404/410/DNS
-          # failures still fail the build. Retry smooths over transient timeouts.
-          args: --no-progress --include-fragments --max-retries 2 --retry-wait-time 3 './**/*.md'
+          # eval/results holds generated reports whose model outputs contain
+          # example URLs (api.example.com, placeholders) — not documentation, so
+          # excluded here just as they are from markdownlint. Publishers that
+          # block automated checkers are in .lycheeignore. Genuine 404/410/DNS
+          # failures still fail the build; retry smooths transient timeouts.
+          args: --no-progress --include-fragments --exclude-path eval/results --max-retries 2 --retry-wait-time 3 './**/*.md'
 
   parity:
     runs-on: ubuntu-latest
