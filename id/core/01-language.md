@@ -11,7 +11,7 @@ Slop adalah teks yang memakan tempat tanpa memindahkan informasi. Tanda-tandanya
 
 ## 1. Pembuka basa-basi
 
-Jangan pernah membuka dengan menyapa, memuji pertanyaan, mengumumkan apa yang akan Anda lakukan, atau mengulang permintaan. Termasuk pembuka berdehem dan pseudo-wawasan yang kini ditandai sebagai ciri mesin: "Begini", "Jujur saja", "Mari kita perjelas", "Yang tak banyak orang tahu", "Hal yang sering terlewat", "Dan inilah intinya".
+Jangan pernah membuka dengan menyapa, memuji pertanyaan, mengumumkan apa yang akan Anda lakukan, atau mengulang permintaan. Termasuk pembuka berdehem ("Begini", "Mari kita perjelas"), **kejujuran teatrikal** ("Jujur saja", "Sejujurnya", "Terus terang", "Sebenarnya" sebagai pembuka — melabeli kejujuran bukan sama dengan jujur), dan **framing merendahkan** ("Yang tak banyak orang tahu", "Hal yang sering terlewat", "Kebanyakan orang tak sadar", "Yang salah dipahami banyak orang"). Jika satu-satunya tugas sebuah kalimat adalah menjanjikan wawasan, potong dan langsung sampaikan wawasannya.
 
 - BURUK: "Pertanyaan yang bagus! Mari kita telusuri lebih dalam dunia indexing database yang menarik ini, langkah demi langkah."
 - BAIK: "Index mempercepat pembacaan karena database bisa melewati baris yang seharusnya di-scan."
@@ -31,7 +31,7 @@ Polanya berlaku umum: kata apa pun yang dipilih agar terdengar canggih, bukan ag
 
 ## 3. Penekanan kosong
 
-Terlarang: *penting untuk dicatat bahwa, perlu diingat bahwa, perlu diketahui bahwa, tak dapat dipungkiri bahwa, pada dasarnya, intinya, sederhananya, pada akhirnya (sebagai pengisi), yang tak kalah penting* — beserta bentuk Inggrisnya: *it's important to note that, it's worth mentioning that, keep in mind that, remember that, notably, essentially, basically, simply put, at the end of the day, ultimately (sebagai pengisi)*. Jika sesuatu penting, kalimat yang menyatakannya harus memperlihatkan alasannya. Mengumumkan kepentingan tidak sama dengan membuktikannya.
+Terlarang: *penting untuk dicatat bahwa, perlu diingat bahwa, perlu diketahui bahwa, tak dapat dipungkiri bahwa, pada dasarnya, intinya, sederhananya, pada akhirnya (sebagai pengisi), yang tak kalah penting, ketika berbicara tentang (sebagai transisi pengisi)* — beserta label sok-penting yang jarang menepati janjinya (*wawasan kuncinya, kebenaran pahitnya, ironisnya, membuka rahasia*) — dan bentuk Inggrisnya: *it's important to note that, it's worth mentioning that, keep in mind that, remember that, notably, essentially, basically, simply put, at the end of the day, ultimately (sebagai pengisi)*. Jika sesuatu penting, kalimat yang menyatakannya harus memperlihatkan alasannya. Mengumumkan kepentingan tidak sama dengan membuktikannya.
 
 - BURUK: "Penting untuk dicatat bahwa password harus di-hash."
 - BAIK: "Hash password dengan bcrypt atau argon2; penyimpanan plaintext mengubah kebocoran database apa pun menjadi kebocoran kredensial total."
@@ -53,6 +53,8 @@ Dua kebiasaan menandai teks mesin secara terukur (lihat `RESEARCH.md`), lepas da
 
 - **Em-dash berlebihan.** Prosa AI terukur memakai em-dash dua sampai tiga kali laju manusia. Utamakan koma, titik, atau titik dua lebih dulu; em-dash mestinya pilihan langka yang disengaja, bukan penghubung default.
 - **Panjang kalimat seragam.** Teks mesin memampatkan setiap kalimat ke panjang sedang yang sama; teks manusia mencampur pendek dan panjang. Biarkan kalimat tiga kata berdampingan dengan kalimat tiga puluh kata bila isinya menuntut. Irama metronom yang rata sepanjang paragraf itu sendiri adalah penanda.
+- **Applause line.** Kalimat deklaratif pendek nan bertenaga yang diselipkan sebagai tanda baca emosional — "Struktur itu penting." "Di situlah kerja sesungguhnya." "Dan itu mengubah segalanya." — menyatakan vonis yang seharusnya sudah dibuktikan teks di sekitarnya. Potong, atau ganti dengan klaim spesifik yang sebenarnya ia tuju.
+- **Keseragaman templat.** Jangan paksa setiap paragraf ke bentuk kalimat-topik → bukti → penutup yang sama, atau setiap seksi ke panjang yang sama. Keseragaman formulaik ini ("templatedness") adalah salah satu dimensi slop terukur (lihat `RESEARCH.md`); biarkan isi menentukan bentuk tiap paragraf.
 
 ## 6. Daftar dekoratif
 

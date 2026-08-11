@@ -47,9 +47,20 @@ The behavior rules (never inflate praise, disagree with a wrong premise) target 
 
 The Indonesian side is grounded too. Indonesian-language coverage (CNN Indonesia, Tempo, IDN Times, Detik) converges on the same signatures — overly formal and passive register, monotone uniform-length sentences, repetition, unnaturally flawless grammar, forced-smooth transitions, generic openers, absent personal voice — plus specific repeated clichés: *"tidak dapat dipungkiri"* and *"penting untuk dicatat"*. These populate the Indonesian entries in `core/01-language.md` and the `id-*` detectors in the eval lexicon, so the anti-slop guarantee survives translation rather than being an English-only artifact.
 
+## How other anti-slop systems work, and where SuperMD fits
+
+Studying the field's methods sharpened SuperMD's own. Three approaches recur:
+
+- **Decoding-time backtracking.** The AntiSlop sampler (Paech, arXiv:2510.15061) watches generation and, when a banned word or phrase is about to appear, backtracks and down-weights that token's probability — enforced from a data-driven list of terms *over-represented in LLM output versus human writing*, each with its over-representation ratio. SuperMD cannot alter decoding (it is a prompt, not a sampler), but it mines the same signal: the highest-ratio over-represented words and phrases feed its banned-vocabulary list, and its fiction module bans the specific purple-prose phrases that list surfaces ("shivers down her spine", "little did he know").
+- **Rule-and-regex field guides.** Practitioner guides catalog patterns a lexicon can flag: em-dash density, "it's not X, it's Y", hook transitions, recap conclusions, **applause lines** (a punchy one-sentence verdict as emotional punctuation), **performative honesty** ("let me be honest"), patronizing "most people don't realize" framing, and **template uniformity** (every paragraph forced into topic-sentence → evidence → wrap-up). These are now explicit rules in `core/01-language.md` and detectors in the eval lexicon.
+- **Prompt-level instruction.** Naming the patterns in the system prompt. This is SuperMD's core: the only one of the three that transfers across every model and platform with no infrastructure, and the one the Shaib finding argues for — since models detect slop poorly (0.08–0.12 recall), preventing it at instruction time beats catching it after.
+
+The three are complementary. SuperMD is the prompt layer, deliberately usable with or without a sampler; its `check` CLI adds the regex layer as a standalone linter.
+
 ## Sources
 
 - [Measuring AI "Slop" in Text — Shaib et al., arXiv:2509.19163 (2025)](https://arxiv.org/abs/2509.19163)
+- [AntiSlop: A framework for reducing over-represented tokens — Paech, arXiv:2510.15061 (2025)](https://arxiv.org/abs/2510.15061) · [antislop-sampler](https://github.com/sam-paech/antislop-sampler)
 - [Sycophantic AI decreases prosocial intentions and promotes dependence — Science (2025)](https://www.science.org/doi/10.1126/science.aec8352)
 - [What Counts as AI Sycophancy? A Taxonomy and Expert Survey — arXiv:2605.21778 (2026)](https://arxiv.org/abs/2605.21778)
 

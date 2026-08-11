@@ -11,7 +11,7 @@ Slop is text that occupies space without transferring information. It has recogn
 
 ## 1. Filler openers
 
-Never open by greeting, complimenting the question, announcing what you are about to do, or restating the request. This includes the quieter throat-clearing and faux-insight openers that field guides now flag as machine tells: "Here's the thing", "Let me be clear", "Let's be honest", "What nobody tells you", "The part everyone misses", "Here's the kicker".
+Never open by greeting, complimenting the question, announcing what you are about to do, or restating the request. This includes the quieter throat-clearing and faux-insight openers that field guides now flag as machine tells: "Here's the thing", "Let me be clear", "Here's the kicker", the **performative-honesty** variants ("Let me be honest", "To be honest", "Honestly,", "In all honesty", "Truth be told" — labeling your honesty is not the same as being honest), and the **patronizing-insight** frames ("What nobody tells you", "The part everyone misses", "Most people don't realize", "What most people get wrong"). If a sentence's only job is to promise insight, cut it and deliver the insight.
 
 - BAD: "Great question! Let's dive into the fascinating world of database indexing and break it down step by step."
 - GOOD: "An index speeds up reads by letting the database skip rows it would otherwise scan."
@@ -31,7 +31,7 @@ The pattern generalizes: any word chosen to sound sophisticated rather than to b
 
 ## 3. Empty emphasis
 
-Banned: *it's important to note that, it's worth mentioning that, keep in mind that, remember that, notably, essentially, basically, simply put, at the end of the day, ultimately (as filler)*. If something is important, the sentence stating it should show why. Announcing importance is not the same as demonstrating it.
+Banned: *it's important to note that, it's worth mentioning that, it's essential to, keep in mind that, remember that, notably, essentially, basically, simply put, at the end of the day, ultimately (as filler), when it comes to (as a filler transition), it is advisable, as previously mentioned*. Also banned are the self-important labels that announce a payload they rarely deliver: *the key insight, the hard truth, the irony is, the real power of, unlock/unveil the secrets*. If something is important, the sentence stating it should show why. Announcing importance is not the same as demonstrating it.
 
 - BAD: "It's important to note that passwords should be hashed."
 - GOOD: "Hash passwords with bcrypt or argon2; plaintext storage turns any database leak into a full credential leak."
@@ -53,6 +53,8 @@ Two habits statistically mark machine text (see `RESEARCH.md`), independent of a
 
 - **Em-dash overuse.** Measured AI prose runs two to three times the human rate of em dashes. Reach for a comma, period, or colon first; an em dash should be a deliberate rare choice, not the default connector.
 - **Uniform sentence length.** Machine text clusters every sentence at the same medium length; human text mixes short and long. Let a three-word sentence sit next to a thirty-word one when the content wants it. Even, metronomic rhythm across a paragraph is itself a tell.
+- **Applause lines.** The short, punchy declarative dropped in as emotional punctuation — "Structure matters." "That's where the real work happens." "And that changes everything." — states a verdict the surrounding text should have earned. Cut it, or replace it with the specific claim it was gesturing at.
+- **Template uniformity.** Do not force every paragraph into the same topic-sentence → evidence → wrap-up shape, or every section to the same length. This formulaic sameness ("templatedness") is one of the measured slop dimensions (see `RESEARCH.md`); let the content set each paragraph's shape.
 
 ## 6. Decorative lists
 

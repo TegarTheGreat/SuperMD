@@ -2,6 +2,14 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [1.6.0] - 2026-08-11
+
+### Changed
+
+- Studied how other anti-slop systems work (decoding-time backtracking à la the AntiSlop sampler, arXiv:2510.15061; rule-and-regex field guides) and folded their findings into SuperMD's prompt layer. New `RESEARCH.md` section positions the three approaches and cites the sources.
+- New core rules (EN + ID): **applause lines** (the punchy one-sentence verdict as emotional punctuation), **performative honesty** ("let me be honest", "to be honest"), **patronizing-insight framing** ("most people don't realize"), and **template uniformity** (every paragraph forced into the same topic-sentence → evidence → wrap-up shape). New banned phrases: "when it comes to" (as filler), "it's essential to", "the key insight", "the hard truth", "the irony is", "unlock the secrets".
+- Eval lexicon: added detectors for all of the above (EN + ID), plus a soft `fiction-cliche` detector mined from the over-represented-phrase list ("little did he know", "shivers down her spine"). The `creative-media/fiction-writing` module now bans that machine purple-prose directly.
+
 ## [1.5.0] - 2026-08-11
 
 ### Added
