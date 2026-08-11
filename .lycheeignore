@@ -1,0 +1,5 @@
+# URLs the link checker should skip. One regex per line.
+# science.org returns HTTP 403 to automated checkers (anti-bot) while the cited
+# DOI is valid for humans; the same paper's arXiv link (checked) sits beside it
+# in RESEARCH.md.
+science\.org

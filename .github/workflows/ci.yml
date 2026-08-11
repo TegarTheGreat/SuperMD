@@ -21,12 +21,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: lycheeverse/lychee-action@v2
         with:
-          # Accept anti-bot / rate-limit codes (403, 429): several publishers
-          # (e.g. science.org) block automated checkers while the links are
-          # valid for humans. Genuinely broken links (404, 410, DNS failure)
-          # still fail the build. Retry to smooth over transient timeouts.
-          args: --no-progress --include-fragments --accept '200..=299,403,429' --max-retries 2 --retry-wait-time 3 './**/*.md'
-          fail: true
+          # Links inside fenced code blocks (example API endpoints, placeholders)
+          # are skipped by lychee. Publishers that block automated checkers are
+          # listed in .lycheeignore (read automatically). Genuine 404/410/DNS
+          # failures still fail the build. Retry smooths over transient timeouts.
+          args: --no-progress --include-fragments --max-retries 2 --retry-wait-time 3 './**/*.md'
 
   parity:
     runs-on: ubuntu-latest
