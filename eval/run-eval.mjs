@@ -15,6 +15,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { scan } from '../lib/slop-scan.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -105,63 +106,8 @@ async function chatJson(model, messages, opts) {
 }
 
 // ---------- checks ----------
-
-const lexicon = JSON.parse(readFileSync(join(ROOT, 'eval', 'lexicon.json'), 'utf8'));
-
-function scan(text, lang) {
-  const hits = { hard: [], soft: [] };
-  // Mention-not-use: a banned phrase QUOTED on a prohibition line ("Do not use
-  // 'I understand how you feel'", "No 'feel free' closers", "Jangan tulis ...")
-  // is the model teaching avoidance, not slopping — the same reason the modules
-  // themselves may quote BAD examples. Blank quoted spans on negation-cue lines
-  // before the lexicon runs. Only QUOTED text on such lines is removed, so real
-  // (unquoted) slop is still caught. Structural checks below use the raw text.
-  const negCue = /\b(do not|don'?t|never|avoid|instead of|rather than|without|no|not|jangan|tidak|hindari|tanpa|alih-alih|bukan|tak)\b/i;
-  const scannable = text.split('\n').map(line =>
-    negCue.test(line) ? line.replace(/["'“”‘’][^"'“”‘’\n]{0,90}["'“”‘’]/g, '""') : line
-  ).join('\n');
-  for (const p of lexicon.patterns) {
-    if (p.langs && !p.langs.includes(lang)) continue;
-    const matches = scannable.match(new RegExp(p.pattern, 'gimu'));
-    if (matches) hits[p.severity].push({ name: p.name, count: matches.length, sample: matches[0] });
-  }
-  // Bold-colon labels are slop only when decorative: a vague fragment standing in
-  // for analysis ("**Scalability:** Important for growth."). A label followed by a
-  // full instruction ("**Lifting:** Nothing heavier than 10 pounds...") or a
-  // concrete spec value ("**Duration:** 45-60 minutes") is legitimate document
-  // structure, not padding. Count a label only when its tail is a short fragment
-  // AND carries no concrete value (no digit) — that is the decorative case.
-  const decorative = [];
-  for (const m of text.matchAll(/\*\*([^*\n]{1,60})[::]\*\*[ \t]*([^\n]*)/g)) {
-    const tail = m[2];
-    const tw = tail.split(/\s+/).filter(Boolean).length;
-    // Decorative = a SHORT, non-numeric fragment on the same line (padding like
-    // "**Scalability:** Important for growth."). Exclude an EMPTY tail (a bold
-    // label introducing the following block is a section heading, not a listicle
-    // item) and a tail with a digit (a concrete spec value is real content).
-    if (tw >= 1 && tw < 8 && !/\d/.test(tail)) decorative.push(m[0]);
-  }
-  if (decorative.length >= lexicon.structural.boldColonThreshold) {
-    hits.hard.push({ name: 'bold-colon-listicle', count: decorative.length, sample: decorative[0] });
-  }
-  const emoji = text.match(/\p{Extended_Pictographic}/gu) || [];
-  if (emoji.length > 0) hits.hard.push({ name: 'emoji-decoration', count: emoji.length, sample: emoji[0] });
-  // Em-dash density: measured AI PROSE runs 2-3x the human rate (see RESEARCH.md).
-  // The tell is em-dashes as the default connector in running prose. A single
-  // em-dash per item inside a labeled list or blockquote is structural, not a
-  // prose tic, so exclude list/quote lines from the numerator. Human prose up to
-  // ~10 per 1000 words; flag above 20 per 1000 (0.02/word), floor of 3.
-  const words = text.split(/\s+/).filter(Boolean).length || 1;
-  const proseLines = text.split('\n').filter(l => !/^\s*([-*>]|\d+[.)])\s/.test(l));
-  const emDashes = (proseLines.join('\n').match(/—/g) || []).length;
-  if (emDashes >= 3 && emDashes / words > lexicon.structural.emDashPerWordThreshold) {
-    // Soft, not hard: the research is explicit that em-dash density is a WEAK
-    // statistical signal ("no single sign convicts"), and legitimate dash-heavy
-    // prose exists. Reported, never a release-blocker on its own.
-    hits.soft.push({ name: 'em-dash-density', count: emDashes, sample: `${(emDashes / words * 1000).toFixed(1)} per 1000 prose words` });
-  }
-  return hits;
-}
+// The lexicon scan lives in lib/slop-scan.mjs so the CLI (`supermd check`) and
+// this harness share one implementation. scan(text, lang) returns { hard, soft }.
 
 const wordCount = text => text.split(/\s+/).filter(Boolean).length;
 

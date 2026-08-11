@@ -34,3 +34,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: bash scripts/check-parity.sh
+
+  cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: node --check bin/supermd.mjs && node --check lib/compose.mjs && node --check lib/slop-scan.mjs
+      - run: node bin/supermd.mjs version
+      - run: node bin/supermd.mjs list > /dev/null
+      - run: node bin/supermd.mjs build software-engineering --style technical > /dev/null
+      - run: node bin/supermd.mjs build keperawatan --lang id > /dev/null
+      - run: node bin/supermd.mjs adapt "beekeeper" > /dev/null
+      - name: check must exit non-zero on hard slop
+        run: |
+          if printf 'In today'"'"'s fast-paced world, delve into the tapestry. I hope this helps!' | node bin/supermd.mjs check; then
+            echo "expected non-zero exit on slop"; exit 1
+          else
+            echo "slop correctly flagged"
+          fi
+      - name: check must pass on clean text
+        run: printf 'Hash passwords with bcrypt. The lookup takes 40 ms.' | node bin/supermd.mjs check

@@ -2,6 +2,18 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [1.5.0] - 2026-08-11
+
+### Added
+
+- **`supermd` CLI** (`bin/supermd.mjs`, zero dependencies, `npx supermd`) — turns the library into a working tool: `build <field>` composes a system prompt (fuzzy field resolution, `--style`, `--lang`, `--out`), `adapt "<field>"` instantiates the universal adapter for any profession, `list` browses the catalog, and `check` is a standalone **slop linter** that scores any text or stdin against the lexicon and exits non-zero on hard slop — ready for a pre-commit hook or CI.
+- **Importable library**: `lib/compose.mjs` (`supermd/compose`) and `lib/slop-scan.mjs` (`supermd/slop-scan`), so the composer and the anti-slop scan can be used programmatically.
+- `package.json` (publishable to npm), `en/docs/cli.md` + `id/docs/cli.md`, and a CI job that smoke-tests the CLI.
+
+### Changed
+
+- The eval harness now imports the shared `lib/slop-scan.mjs` instead of an inline copy, so the CLI's `check` and the release eval use one implementation.
+
 ## [1.4.0] - 2026-08-11
 
 ### Added

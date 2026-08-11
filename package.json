@@ -1,0 +1,50 @@
+{
+  "name": "supermd",
+  "version": "1.5.0",
+  "description": "A universal anti-slop system prompt for any profession — compose prompts and lint text for AI slop. Pure Markdown, bilingual EN/ID, zero dependencies.",
+  "type": "module",
+  "bin": {
+    "supermd": "bin/supermd.mjs"
+  },
+  "exports": {
+    "./compose": "./lib/compose.mjs",
+    "./slop-scan": "./lib/slop-scan.mjs"
+  },
+  "scripts": {
+    "test": "node bin/supermd.mjs list >/dev/null && node bin/supermd.mjs build software-engineering >/dev/null && echo ok",
+    "eval": "node eval/run-eval.mjs"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "en/",
+    "id/",
+    "eval/lexicon.json",
+    "RESEARCH.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "system-prompt",
+    "prompt-engineering",
+    "anti-slop",
+    "llm",
+    "ai-writing",
+    "prompt",
+    "cli",
+    "linter",
+    "bilingual"
+  ],
+  "homepage": "https://github.com/TegarTheGreat/SuperMD",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TegarTheGreat/SuperMD.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TegarTheGreat/SuperMD/issues"
+  },
+  "author": "Tegar Prayuda (TegarTheGreat)",
+  "license": "CC-BY-4.0",
+  "engines": {
+    "node": ">=18"
+  }
+}

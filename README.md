@@ -63,6 +63,19 @@ Paste [`en/SUPERMD.md`](en/SUPERMD.md) into your system prompt. That one file re
 | Copilot-style IDE tools | the workspace instruction file (`.github/copilot-instructions.md`, `CLAUDE.md`) |
 | Local models (Ollama, LM Studio) | the system-prompt field of the modelfile or chat UI |
 
+### Command line — compose and lint from the terminal
+
+The library also ships a zero-dependency CLI. No install needed:
+
+```bash
+npx supermd build nursing --style formal        # assemble a system prompt
+npx supermd adapt "beekeeper"                    # cover any profession via the adapter
+npx supermd list technology                      # browse the catalog
+cat draft.md | npx supermd check                 # lint any text for slop (exits non-zero on hard slop)
+```
+
+`check` is a standalone **slop linter** — the same deterministic scan the eval harness uses — so you can gate a commit or CI on it. Both `compose` and `scan` are importable as a library (`supermd/compose`, `supermd/slop-scan`). Full reference: [`en/docs/cli.md`](en/docs/cli.md).
+
 ### How it works — composition
 
 A SuperMD prompt is a stack of Markdown files. Add only the layers you need:
@@ -201,6 +214,19 @@ Tempel [`id/SUPERMD.md`](id/SUPERMD.md) ke system prompt Anda. Satu file itu sud
 | API (vendor apa pun) | parameter `system` / pesan sistem pertama |
 | Alat IDE ala Copilot | file instruksi workspace (`.github/copilot-instructions.md`, `CLAUDE.md`) |
 | Model lokal (Ollama, LM Studio) | kolom system-prompt di modelfile atau UI chat |
+
+### Baris perintah — rakit dan pindai dari terminal
+
+Pustaka ini juga menyertakan CLI tanpa dependensi. Tanpa instalasi:
+
+```bash
+npx supermd build keperawatan --style formal --lang id   # rakit system prompt
+npx supermd adapt "peternak lebah" --lang id             # cakup profesi apa pun via adapter
+npx supermd list technology                              # jelajah katalog
+cat draft.md | npx supermd check --lang id               # pindai teks apa pun untuk slop
+```
+
+`check` adalah **slop linter** berdiri sendiri — pemindaian deterministik yang sama dengan harness eval — jadi bisa jadi gerbang commit atau CI. Baik `compose` maupun `scan` bisa diimpor sebagai pustaka (`supermd/compose`, `supermd/slop-scan`). Referensi lengkap: [`id/docs/cli.md`](id/docs/cli.md).
 
 ### Cara kerjanya — komposisi
 
