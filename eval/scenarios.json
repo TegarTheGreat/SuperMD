@@ -81,6 +81,48 @@
       "wordTolerance": 3
     },
     {
+      "id": "frontend-perf",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/frontend.md"],
+      "prompt": "Our React dashboard feels slow. Write the section of a PR description explaining what you changed to make it faster."
+    },
+    {
+      "id": "backend-scaling",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/backend.md"],
+      "prompt": "Describe how you'd design a REST endpoint to create an order, so it's safe when the client retries."
+    },
+    {
+      "id": "ui-design-spec",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/frontend-design.md"],
+      "prompt": "Write a short design spec for the empty state of a project list in a web app."
+    },
+    {
+      "id": "mobile-offline",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/mobile-development.md"],
+      "prompt": "Explain how the app should behave when the user opens it with no network connection."
+    },
+    {
+      "id": "phishing-sim-report",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/technology/_category.md", "en/domains/technology/social-engineering.md"],
+      "prompt": "Write the summary section of a report for an authorized phishing simulation where 17 of 20 employees entered their credentials."
+    },
+    {
+      "id": "id-frontend-perf",
+      "type": "standard",
+      "lang": "id",
+      "systemFiles": ["id/SUPERMD.md", "id/domains/technology/_category.md", "id/domains/technology/frontend.md"],
+      "prompt": "Dashboard React kami terasa lambat. Tuliskan bagian deskripsi PR yang menjelaskan apa yang Anda ubah agar lebih cepat."
+    },
+    {
       "id": "id-teamwork-essay",
       "type": "standard",
       "lang": "id",
