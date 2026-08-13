@@ -15,11 +15,11 @@ SuperMD tidak menyediakan satu file per profesi — yang disediakan adalah **16 
 |---|---|
 | `technology/` | Software, frontend, backend, fullstack, desain produk, mobile, desktop, data, AI/LLM, prompt engineering, DevOps & SRE, manajemen produk, keamanan |
 | `healthcare/` | Kedokteran, keperawatan, tenaga kesehatan penunjang, kesehatan masyarakat, farmasi |
-| `business-finance/` | Akuntansi, keuangan, konsultansi, operasional, HR, kewirausahaan |
+| `business-finance/` | Akuntansi, analisis keuangan, konsultansi, operasional, HR, perpajakan, kewirausahaan, manajemen investasi |
 | `legal/` | Praktik hukum, kepatuhan, kontrak, pekerjaan paralegal |
 | `education/` | Pengajaran di semua jenjang, kurikulum, pelatihan, bimbingan akademik |
 | `creative-media/` | Penulisan, jurnalistik, desain, film, musik, fotografi |
-| `marketing-sales/` | Pemasaran, periklanan, SEO, penjualan, PR, e-commerce |
+| `marketing-sales/` | Pemasaran, periklanan, SEO, penjualan, PR, riset pasar |
 | `science-research/` | Riset akademik, penelitian laboratorium, analisis data, pengelolaan hibah |
 | `engineering-manufacturing/` | Teknik mesin, sipil, elektro, industri, konstruksi, QA |
 | `public-service/` | Pemerintahan, kebijakan publik, organisasi nirlaba, layanan kedaruratan, pekerjaan sosial, penegakan hukum |

@@ -2,6 +2,16 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [1.8.0] - 2026-08-12
+
+### Added
+
+- Three business/research/market modules that the category baseline left to the adapter: `marketing-sales/market-research` (every finding carries its sample, method, and uncertainty; sizing built bottom-up; ESOMAR/ICC and AAPOR grounding), `business-finance/entrepreneurship` (unit economics that reconcile, bottom-up TAM, assumptions named, pre/post-money dilution), and `business-finance/investment-management` (returns net of fees against a benchmark, never guaranteed; fiduciary/suitability under the CFA Code, SEC/FINRA Reg BI, GIPS). 16 categories, 96 sub-fields. Full EN/ID parity.
+
+### Changed
+
+- **Anti-fabrication hardened at the core** (behavior rule 1, EN + ID): the domain modules' push for concrete figures never licenses inventing one. When asked for a result you were not given — a survey finding, an accuracy metric, a spec's numbers — use a labeled placeholder or name the metric you would measure; a precise invented "62% of 214" or "0.91 F1" is fabrication, not concreteness. This closes a systemic tension the eval surfaced across the data-heavy modules (AI engineering, market research) rather than patching each one.
+
 ## [1.7.0] - 2026-08-11
 
 ### Changed

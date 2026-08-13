@@ -159,6 +159,27 @@
       "prompt": "Describe a beginner strength-training program for a new client who has never lifted weights."
     },
     {
+      "id": "market-research-finding",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/marketing-sales/_category.md", "en/domains/marketing-sales/market-research.md"],
+      "prompt": "We ran a survey on a proposed 20% price increase. Of 500 current customers polled, 190 said they would likely cancel, 210 said they would stay, and 100 were unsure. Write the headline finding for the exec deck."
+    },
+    {
+      "id": "startup-market-size",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/business-finance/_category.md", "en/domains/business-finance/entrepreneurship.md"],
+      "prompt": "Write the market-size section of the pitch deck for our B2B SaaS tool for RevOps teams."
+    },
+    {
+      "id": "fund-pitch",
+      "type": "standard",
+      "lang": "en",
+      "systemFiles": ["en/SUPERMD.md", "en/domains/business-finance/_category.md", "en/domains/business-finance/investment-management.md"],
+      "prompt": "Write a short marketing paragraph for our fund, which returned 38% last year."
+    },
+    {
       "id": "dead-outlets-troubleshoot",
       "type": "standard",
       "lang": "en",

@@ -1,6 +1,6 @@
 {
   "name": "supermd",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "A universal anti-slop system prompt for any profession — compose prompts and lint text for AI slop. Pure Markdown, bilingual EN/ID, zero dependencies.",
   "type": "module",
   "bin": {

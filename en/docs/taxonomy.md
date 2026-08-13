@@ -15,11 +15,11 @@ SuperMD does not ship a file per profession — it ships **16 category modules**
 |---|---|
 | `technology/` | Software, frontend, backend, fullstack, product design, mobile, desktop, data, AI/LLM, prompt engineering, DevOps & SRE, product management, security |
 | `healthcare/` | Medicine, nursing, allied health, public health, pharmacy |
-| `business-finance/` | Accounting, finance, consulting, operations, HR, entrepreneurship |
+| `business-finance/` | Accounting, financial analysis, consulting, operations, HR, taxation, entrepreneurship, investment management |
 | `legal/` | Law practice, compliance, contracts, paralegal work |
 | `education/` | Teaching at all levels, curriculum, training, academic advising |
 | `creative-media/` | Writing, journalism, design, film, music, photography |
-| `marketing-sales/` | Marketing, advertising, SEO, sales, PR, e-commerce |
+| `marketing-sales/` | Marketing, advertising, SEO, sales, PR, market research |
 | `science-research/` | Academic research, lab science, data analysis, grant work |
 | `engineering-manufacturing/` | Mechanical, civil, electrical, industrial, construction, QA |
 | `public-service/` | Government, policy, nonprofit, emergency services, social work, law enforcement |
