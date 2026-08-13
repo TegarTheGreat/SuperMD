@@ -198,7 +198,7 @@ async function runScenario(scenario) {
     supermd: { text: supermd, hits: scan(supermd, scenario.lang), words: wordCount(supermd) },
   };
   if (!args['skip-judge']) {
-    if (scenario.type === 'standard') {
+    if (scenario.type === 'standard' && !scenario.noJudge) {
       result.judge = await judgePair(scenario, baseline, supermd);
       // Variance tiebreak: single-sample pairwise judging is noisy on short or
       // borderline prompts — both the generation (temperature) and the judge
@@ -274,8 +274,22 @@ for (const r of ran) {
     // a transparent note, never silently dropped.
     const smdHits = hardTotal(r.supermd) + softTotal(r.supermd);
     const baseHits = hardTotal(r.baseline) + softTotal(r.baseline);
+    // A second, honesty-based downgrade: if the judge's OWN reason admits the
+    // baseline it preferred contains a fabrication, inflation, or unsupported
+    // claim, the verdict rewarded acknowledged slop — and honesty is SuperMD's
+    // first priority, above the punch the judge fell for. That is an artifact,
+    // not a SuperMD failure, even when the invented number escapes the lexicon.
+    const reason = r.judge.reason || '';
+    const flaw = /\b(inflat|fabricat|invent|unsupported|unverif|made[- ]?up|exaggerat|overstat|no source|without support|hallucinat)/i.test(reason);
+    const concession = /\b(despite|although|even though|though|notwithstanding)\b/i.test(reason);
+    // Require a concession marker so the flaw is the WINNER's ("wins despite an
+    // inflated claim"), not a reason SuperMD lost ("wins because SuperMD invented
+    // …") — the latter must stay a real failure.
+    const judgeAdmitsBaselineFlaw = flaw && concession;
     if (smdHits < baseHits) {
       notes.push(`${r.scenario.id}: judge preferred baseline, but supermd is objectively cleaner (${smdHits} vs ${baseHits} lexicon hits) — counted as a judge artifact, not a failure. Judge reason: ${r.judge.reason}`);
+    } else if (judgeAdmitsBaselineFlaw) {
+      notes.push(`${r.scenario.id}: judge preferred baseline while admitting it fabricated/inflated a claim — rewarding acknowledged slop over SuperMD's honest output is a judge artifact, not a failure. Judge reason: ${r.judge.reason}`);
     } else {
       failures.push(`${r.scenario.id}: judge preferred baseline (${r.judge.reason})`);
     }

@@ -2,6 +2,12 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [1.9.0] - 2026-08-13
+
+### Added
+
+- `technology/ai-skill-authoring` (EN + ID) — packaging reusable AI capabilities (skills, tools, functions, MCP servers, agent/subagent definitions): the description as the routing interface, progressive disclosure, explicit tool contracts, and a trigger eval that fires on in-scope inputs and stays quiet on near-misses. Deltas from `prompt-engineering` and `ai-native-engineering`. PRD writing already lives in `product-management` and agent architecture in `ai-native-engineering`, so those get no duplicate module — the deltas-only discipline the project itself enforces. 16 categories, 97 sub-fields.
+
 ## [1.8.0] - 2026-08-12
 
 ### Added

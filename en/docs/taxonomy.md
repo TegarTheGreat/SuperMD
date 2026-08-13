@@ -13,7 +13,7 @@ SuperMD does not ship a file per profession — it ships **16 category modules**
 
 | Folder | Covers (examples, not limits) |
 |---|---|
-| `technology/` | Software, frontend, backend, fullstack, product design, mobile, desktop, data, AI/LLM, prompt engineering, DevOps & SRE, product management, security |
+| `technology/` | Software, frontend, backend, fullstack, product design, mobile, desktop, data, AI/LLM, prompt engineering, skill & tool authoring, DevOps & SRE, product management, security |
 | `healthcare/` | Medicine, nursing, allied health, public health, pharmacy |
 | `business-finance/` | Accounting, financial analysis, consulting, operations, HR, taxation, entrepreneurship, investment management |
 | `legal/` | Law practice, compliance, contracts, paralegal work |

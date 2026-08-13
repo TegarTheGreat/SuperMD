@@ -9,7 +9,7 @@ Pure Markdown. Copy, paste, done. Bilingual English / Bahasa Indonesia.
 [![CI](https://github.com/TegarTheGreat/SuperMD/actions/workflows/ci.yml/badge.svg)](https://github.com/TegarTheGreat/SuperMD/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/tag/TegarTheGreat/SuperMD?sort=semver&label=release&color=1f6feb)](https://github.com/TegarTheGreat/SuperMD/releases)
 [![License: CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg)](LICENSE)
-[![Domains](https://img.shields.io/badge/domains-16%20categories%20%C2%B7%2096%20fields-1f6feb)](en/docs/taxonomy.md)
+[![Domains](https://img.shields.io/badge/domains-16%20categories%20%C2%B7%2097%20fields-1f6feb)](en/docs/taxonomy.md)
 ![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ID-informational)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -110,11 +110,11 @@ No library can ship a module for every job. [`en/adapters/UNIVERSAL-ADAPTER.md`]
 Every module ships in both English and Bahasa Indonesia at mirrored paths (`en/…` ↔ `id/…`).
 
 <details>
-<summary><b>16 categories · 96 sub-fields</b> — click to expand</summary>
+<summary><b>16 categories · 97 sub-fields</b> — click to expand</summary>
 
 | Category | Sub-fields |
 |---|---|
-| **Technology** | Software Engineering · Frontend · Backend · Fullstack · Frontend / Product Design · Mobile · Desktop · Data Science · AI Engineering · AI-Native Engineering · Prompt Engineering · DevOps & SRE · Product Management · Cybersecurity · Social Engineering (authorized red-team) |
+| **Technology** | Software Engineering · Frontend · Backend · Fullstack · Frontend / Product Design · Mobile · Desktop · Data Science · AI Engineering · AI-Native Engineering · Prompt Engineering · Skill & Tool Authoring · DevOps & SRE · Product Management · Cybersecurity · Social Engineering (authorized red-team) |
 | **Healthcare** | Clinical Medicine · Nursing · Public Health · Pharmacy · Mental Health Counseling · Physical Therapy |
 | **Business & Finance** | Accounting · Financial Analysis · Human Resources · Management Consulting · Operations Management · Taxation · Entrepreneurship · Investment Management |
 | **Legal** | Contract Drafting · Litigation · Compliance · Corporate Law · Intellectual Property · Immigration Law |
@@ -161,7 +161,7 @@ The banned patterns are not a matter of taste. They are the measurable statistic
 en/  id/                  two identical trees, one per language (CI enforces parity)
 ├── SUPERMD.md            the assembled core: one file, ready to paste
 ├── core/                 the same rules split by concern, with fuller examples
-├── domains/<category>/   16 categories, 96 sub-field modules (_category.md + fields)
+├── domains/<category>/   16 categories, 97 sub-field modules (_category.md + fields)
 ├── adapters/             the universal adapter for uncovered fields
 ├── styles/               optional register: formal / conversational / technical
 └── docs/                 how-to-use · taxonomy · philosophy
@@ -259,7 +259,7 @@ Tak ada pustaka yang bisa menyediakan modul untuk setiap pekerjaan. [`id/adapter
 
 ### Katalog domain
 
-Setiap modul tersedia dalam Bahasa Inggris dan Indonesia di path yang identik (`en/…` ↔ `id/…`). Daftar lengkap 16 kategori dan 96 sub-bidang ada pada bagian English di atas (klik "16 categories · 96 sub-fields"), dan peta lengkapnya di [`id/docs/taxonomy.md`](id/docs/taxonomy.md).
+Setiap modul tersedia dalam Bahasa Inggris dan Indonesia di path yang identik (`en/…` ↔ `id/…`). Daftar lengkap 16 kategori dan 97 sub-bidang ada pada bagian English di atas (klik "16 categories · 97 sub-fields"), dan peta lengkapnya di [`id/docs/taxonomy.md`](id/docs/taxonomy.md).
 
 ### Diuji, bukan sekadar diklaim
 

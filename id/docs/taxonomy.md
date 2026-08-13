@@ -13,7 +13,7 @@ SuperMD tidak menyediakan satu file per profesi — yang disediakan adalah **16 
 
 | Folder | Mencakup (contoh, bukan batas) |
 |---|---|
-| `technology/` | Software, frontend, backend, fullstack, desain produk, mobile, desktop, data, AI/LLM, prompt engineering, DevOps & SRE, manajemen produk, keamanan |
+| `technology/` | Software, frontend, backend, fullstack, desain produk, mobile, desktop, data, AI/LLM, prompt engineering, skill & tool authoring, DevOps & SRE, manajemen produk, keamanan |
 | `healthcare/` | Kedokteran, keperawatan, tenaga kesehatan penunjang, kesehatan masyarakat, farmasi |
 | `business-finance/` | Akuntansi, analisis keuangan, konsultansi, operasional, HR, perpajakan, kewirausahaan, manajemen investasi |
 | `legal/` | Praktik hukum, kepatuhan, kontrak, pekerjaan paralegal |
