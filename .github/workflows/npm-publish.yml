@@ -1,0 +1,60 @@
+name: Publish to npm
+
+# Publishes the package to npm when a version tag (v*) is pushed.
+# Requires a repository secret NPM_TOKEN (an npm Automation token, which bypasses
+# 2FA). The token is read only from the secret — it never appears in the repo.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  id-token: write # enables npm provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      # Smoke-test the CLI from the checked-out tag before publishing anything.
+      - run: node --check bin/supermd.mjs && node --check lib/compose.mjs && node --check lib/slop-scan.mjs
+      - run: node bin/supermd.mjs version
+      - run: node bin/supermd.mjs list > /dev/null
+      - run: node bin/supermd.mjs build software-engineering > /dev/null
+
+      # The tag must match the version in package.json, or we would publish the
+      # wrong thing. Fail loudly on a mismatch.
+      - name: Check tag matches package.json
+        id: ver
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          TAG=${GITHUB_REF_NAME#v}
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::tag $TAG does not match package.json version $PKG"
+            exit 1
+          fi
+          echo "version=$PKG" >> "$GITHUB_OUTPUT"
+
+      # Publishing an existing version errors; skip cleanly if it is already up.
+      - name: Skip if version already published
+        id: check
+        run: |
+          if npm view "supermd@${{ steps.ver.outputs.version }}" version >/dev/null 2>&1; then
+            echo "already=true" >> "$GITHUB_OUTPUT"
+            echo "supermd@${{ steps.ver.outputs.version }} is already on npm — nothing to do."
+          else
+            echo "already=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish
+        if: steps.check.outputs.already == 'false'
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

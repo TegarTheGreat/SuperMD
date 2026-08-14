@@ -36,6 +36,8 @@ Content changes to the core should also pass the eval harness — see `eval/READ
 
 The prompt collection releases under SemVer, tracked in `CHANGELOG.md`. Adding a module is minor; changing a core rule's meaning is major; wording fixes are patch.
 
+Releasing is automated: bump the version in `package.json` and `CITATION.cff`, then push a matching `vX.Y.Z` tag. The `Publish to npm` workflow smoke-tests the CLI, checks the tag matches `package.json`, and publishes to npm with provenance — using the repository secret `NPM_TOKEN` (an npm Automation token, which never touches the repo).
+
 ---
 
 ## Bahasa Indonesia
@@ -64,3 +66,5 @@ Setiap PR menjalankan: `markdownlint`, pemeriksa tautan, dan `scripts/check-pari
 ### Versi
 
 Koleksi prompt dirilis dengan SemVer, dicatat di `CHANGELOG.md`. Menambah modul = minor; mengubah makna aturan inti = major; perbaikan redaksi = patch.
+
+Rilis otomatis: naikkan versi di `package.json` dan `CITATION.cff`, lalu push tag `vX.Y.Z` yang cocok. Workflow `Publish to npm` men-smoke-test CLI, memeriksa tag cocok dengan `package.json`, dan menerbitkan ke npm dengan provenance — memakai repository secret `NPM_TOKEN` (npm Automation token, yang tak pernah menyentuh repo).
