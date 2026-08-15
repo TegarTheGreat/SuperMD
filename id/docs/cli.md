@@ -56,6 +56,8 @@ cat artikel.txt | npx supermd check --lang id
 
 Hit *keras* adalah slop tak ambigu (pembuka basa-basi, frasa otoritas-karangan, penjilatan). Hit *lunak* adalah sinyal lemah atau yang sah dalam konteks tertentu (kepadatan em-dash, "leverage") yang dilaporkan tetapi tak pernah menggagalkan pemeriksaan. Frasa terlarang yang dikutip di baris larangan ("Jangan tulis 'semoga membantu'") dibaca sebagai mengajarkan penghindaran, bukan sebagai slop.
 
+**Apa `check` itu dan bukan.** Ia adalah pendeteksi deterministik atas pola permukaan yang *sudah dikenal* — sebuah blocklist, seperti pemeriksa ejaan. Lolos berarti "tak satu pun penanda yang dikenal muncul", **bukan** "teks ini bebas slop". Slop semantik — teks bertele-tele tanpa isi, angka yang difabrikasi halus, penalaran generik yang berlagak wawasan — bukan regex, dan tak ada kode yang menangkapnya secara andal (bahkan LLM kuat pun buruk mendeteksi rentang slop; lihat `RESEARCH.md`). Pertahanan sesungguhnya adalah **pencegahan**: SuperMD di system prompt menghentikan model memuntahkan slop sejak awal. `check` adalah lini kedua yang murah — berguna untuk pre-commit hook atau CI, bukan sertifikat.
+
 ## Pakai sebagai pustaka
 
 Kedua modul bisa diimpor:

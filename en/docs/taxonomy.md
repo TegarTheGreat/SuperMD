@@ -21,7 +21,7 @@ SuperMD does not ship a file per profession — it ships **16 category modules**
 | `creative-media/` | Writing, journalism, design, film, music, photography |
 | `marketing-sales/` | Marketing, advertising, SEO, sales, PR, market research |
 | `science-research/` | Academic research, lab science, data analysis, grant work |
-| `engineering-manufacturing/` | Mechanical, civil, electrical, industrial, construction, QA |
+| `engineering-manufacturing/` | Mechanical, civil, electrical, industrial, construction, QA, chemical, aerospace, biomedical, robotics, materials, environmental |
 | `public-service/` | Government, policy, nonprofit, emergency services, social work, law enforcement |
 | `skilled-trades/` | Electrical, plumbing, HVAC, automotive repair, welding, carpentry |
 | `hospitality-tourism/` | Culinary, hotel and restaurant management, event planning, food service |

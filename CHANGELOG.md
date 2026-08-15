@@ -2,6 +2,16 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [1.10.0] - 2026-08-15
+
+### Added
+
+- Six engineering disciplines in `engineering-manufacturing/` (EN + ID): `chemical-engineering` (process safety under OSHA PSM, relief sizing per API 520/521), `aerospace-engineering` (margins against a certification basis, DO-178C/AS9100, FAA/EASA), `biomedical-engineering` (medical devices under ISO 13485/14971, IEC 60601/62304, FDA pathways), `robotics-mechatronics` (safety-rated functions and PL/SIL under ISO 10218/TS 15066, ISO 13849), `materials-engineering` (allowables from certificates, failure analysis by mechanism, ASTM/AMS), and `environmental-engineering` (compliance against permit limits under the CWA/CAA/RCRA). 16 categories, 103 sub-fields.
+
+### Changed
+
+- The `check` CLI and its docs no longer overclaim: its success line is "no *known* slop patterns," with an explicit note that it is a detector of known surface patterns, not a proof of slop-freedom — semantic slop escapes any regex, which is why prevention (the prompt) is the real defense.
+
 ## [1.9.0] - 2026-08-13
 
 ### Added

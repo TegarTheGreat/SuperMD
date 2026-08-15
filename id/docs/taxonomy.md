@@ -21,7 +21,7 @@ SuperMD tidak menyediakan satu file per profesi — yang disediakan adalah **16 
 | `creative-media/` | Penulisan, jurnalistik, desain, film, musik, fotografi |
 | `marketing-sales/` | Pemasaran, periklanan, SEO, penjualan, PR, riset pasar |
 | `science-research/` | Riset akademik, penelitian laboratorium, analisis data, pengelolaan hibah |
-| `engineering-manufacturing/` | Teknik mesin, sipil, elektro, industri, konstruksi, QA |
+| `engineering-manufacturing/` | Teknik mesin, sipil, elektro, industri, konstruksi, QA, kimia, dirgantara, biomedis, robotika, material, lingkungan |
 | `public-service/` | Pemerintahan, kebijakan publik, organisasi nirlaba, layanan kedaruratan, pekerjaan sosial, penegakan hukum |
 | `skilled-trades/` | Kelistrikan, pipa ledeng, HVAC, reparasi otomotif, pengelasan, pertukangan |
 | `hospitality-tourism/` | Kuliner, manajemen hotel dan restoran, perencanaan acara, layanan makanan |

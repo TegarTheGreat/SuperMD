@@ -51,7 +51,7 @@ ${bold('EXAMPLES')}
   supermd build --core-only                 # just the universal core
   supermd adapt "beekeeper"                  # any profession, via the adapter
   supermd list technology
-  cat draft.md | supermd check               # score text for AI-slop
+  cat draft.md | supermd check               # flag KNOWN slop patterns (a filter, not a proof)
   supermd check article.txt --lang id
 
 ${bold('OPTIONS')}
@@ -137,7 +137,11 @@ async function cmdCheck(pos, flags) {
   const hits = scan(text, lang, loadLexicon(ROOT));
   const hard = hardTotal(hits), soft = softTotal(hits);
   const words = text.split(/\s+/).filter(Boolean).length;
-  if (hard === 0 && soft === 0) { out(green(`✓ clean — no slop patterns in ${src} (${words} words, ${lang})`)); return; }
+  if (hard === 0 && soft === 0) {
+    out(green(`✓ no known slop patterns in ${src} (${words} words, ${lang})`));
+    err(dim('  (a detector of known surface patterns — not a proof of slop-freedom; semantic slop escapes any regex)'));
+    return;
+  }
   out(`${src} ${dim('· ' + words + ' words · ' + lang)}`);
   for (const h of hits.hard) out(`  ${red('hard')}  ${h.name}${dim(' ×' + h.count)}  ${dim('e.g. ' + JSON.stringify(h.sample).slice(0, 60))}`);
   for (const h of hits.soft) out(`  ${yellow('soft')}  ${h.name}${dim(' ×' + h.count)}  ${dim('e.g. ' + JSON.stringify(h.sample).slice(0, 60))}`);

@@ -57,6 +57,8 @@ llm-output.txt | npx supermd check && echo "clean"
 
 *Hard* hits are unambiguous slop (filler openers, invented-authority phrases, sycophancy). *Soft* hits are weaker or context-legitimate signals (em-dash density, "leverage") that are reported but never fail the check. A banned phrase quoted on a prohibition line ("Do not use 'I hope this helps'") is read as teaching avoidance, not as slop.
 
+**What `check` is and is not.** It is a deterministic detector of *known* surface patterns — a blocklist, like a spell-checker. Passing it means "none of the known tells are present," never "this text is slop-free." Semantic slop — verbose text that says nothing, a subtly fabricated figure, generic reasoning dressed as insight — is not a regex and no code catches it reliably (even strong LLMs score poorly at detecting slop spans; see `RESEARCH.md`). The real defense is prevention: SuperMD in the system prompt stops the model emitting slop in the first place. `check` is a cheap second line, useful in a pre-commit hook or CI, not a certificate.
+
 ## Use it as a library
 
 The two modules are importable:
