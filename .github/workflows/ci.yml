@@ -43,6 +43,7 @@ jobs:
         with:
           node-version: 20
       - run: node --check bin/supermd.mjs && node --check lib/compose.mjs && node --check lib/slop-scan.mjs
+      - run: node scripts/test-slop-scan.mjs
       - run: node bin/supermd.mjs version
       - run: node bin/supermd.mjs list > /dev/null
       - run: node bin/supermd.mjs build software-engineering --style technical > /dev/null

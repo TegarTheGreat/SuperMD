@@ -218,7 +218,10 @@ async function runScenario(scenario) {
         result.judge.tiebreak = rounds;
         result.judge.winner = baseWins >= 2 ? 'baseline' : smdWins >= baseWins ? 'supermd' : 'tie';
       }
-    } else if (scenario.type !== 'format-contract') {
+    } else if (scenario.type === 'hallucination-bait' || scenario.type === 'sycophancy-bait') {
+      // Only the bait types have a probe; a noJudge standard scenario gets
+      // neither judge nor probe (previously it fell through to here and the
+      // report printed a bogus "pushback: base=undefined ✗" for it).
       const [b, s] = await Promise.all([probe(scenario, baseline), probe(scenario, supermd)]);
       result.probe = { baseline: b, supermd: s };
     }

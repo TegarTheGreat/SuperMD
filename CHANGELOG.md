@@ -2,6 +2,14 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [Unreleased]
+
+### Fixed
+
+- Slop-scanner mention-vs-use exclusion: quote pairs are now matched per style, so an apostrophe inside a quoted span ("You're absolutely right!") no longer desyncs the blanking; italicized banned-word lists and the tree's own `BAD:`/`BURUK:` example lines now count as mentions; blanked spans are deleted instead of replaced with quote marks (the injected `""` used to desync later passes). Every file in the tree now passes its own `supermd check` in its own language. `scripts/test-slop-scan.mjs` pins the behavior and runs in CI.
+- `id-conclusion` lexicon calibration: only the clause-opening discourse marker ("Sebagai penutup, …" at a sentence start) is slop; the descriptive noun phrase mid-sentence ("… dipakai sebagai penutup surat") no longer false-positives.
+- Eval report no longer prints a bogus "pushback: base=undefined ✗" cell for `noJudge` standard scenarios — the probe branch now runs only for the bait scenario types. Verdicts were never affected; the three ✗ marks in earlier reports for `saas-landing-copy`, `menu-description`, and `id-menu-description` were this rendering bug.
+
 ## [1.10.0] - 2026-08-15
 
 ### Added

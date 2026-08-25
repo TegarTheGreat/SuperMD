@@ -49,7 +49,7 @@
     { "name": "id-sycophantic-validation", "pattern": "saya (memahami|mengerti) perasaan Anda|sudut pandang Anda (penting|valid|dapat dipahami)|itu (poin|pertanyaan) yang (bagus|tepat|valid|luar biasa)|Anda (mengangkat|menyampaikan|menyoroti) poin yang (bagus|penting|valid|tepat)|Anda benar sekali|betul sekali apa yang Anda", "severity": "hard", "langs": ["id"] },
     { "name": "id-importance", "pattern": "penting untuk (dicatat|diingat|diperhatikan) bahwa|perlu (dicatat|diingat) bahwa", "severity": "hard", "langs": ["id"] },
     { "name": "id-digital-era", "pattern": "di era (digital|modern|globalisasi)|dunia yang serba cepat|zaman yang terus berkembang", "severity": "hard", "langs": ["id"] },
-    { "name": "id-conclusion", "pattern": "^kesimpulannya|sebagai (kesimpulan|penutup)", "severity": "hard", "langs": ["id"] },
+    { "name": "id-conclusion", "pattern": "^kesimpulannya|(^|[.!?]\\s+)sebagai (kesimpulan|penutup)\\b", "severity": "hard", "langs": ["id"] },
     { "name": "id-hope-helps", "pattern": "semoga (membantu|bermanfaat)|jangan ragu untuk", "severity": "hard", "langs": ["id"] },
     { "name": "id-studies-vague", "pattern": "penelitian menunjukkan|para ahli (sepakat|mengatakan|menyarankan)|banyak penelitian", "severity": "hard", "langs": ["id"] },
     { "name": "id-throat-clearing", "pattern": "^(begini|jujur saja|sejujurnya|perlu diketahui bahwa|mari kita (telusuri|bahas|selami))", "severity": "hard", "langs": ["id"] },
