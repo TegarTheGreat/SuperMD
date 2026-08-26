@@ -47,12 +47,15 @@ npx supermd list technology     # sub-bidang satu kategori beserta slug-nya
 
 ## Memindai teks untuk slop — `check`
 
-Nilai teks apa pun terhadap leksikon anti-slop — pemindaian deterministik yang sama dengan yang dipakai harness eval. Ia membaca sebuah file atau standard input, mencetak setiap pola yang ditemukan beserta tingkatnya, dan keluar dengan kode non-nol saat menemukan slop *keras* (tak ambigu), sehingga cocok dijadikan pre-commit hook atau langkah CI:
+Nilai teks apa pun terhadap leksikon anti-slop — pemindaian deterministik yang sama dengan yang dipakai harness eval. Ia membaca sebuah file, sebuah direktori (setiap `.md` di bawahnya, rekursif), atau standard input, mencetak setiap pola yang ditemukan beserta tingkatnya, dan keluar dengan kode non-nol saat menemukan slop *keras* (tak ambigu), sehingga cocok dijadikan pre-commit hook atau langkah CI:
 
 ```bash
 npx supermd check draft.md
-cat artikel.txt | npx supermd check --lang id
+npx supermd check docs/                          # sapu satu pohon penuh, satu baris ringkasan
+cat artikel.txt | npx supermd check
 ```
+
+Bahasa terdeteksi otomatis per file dari kata fungsinya; berikan `--lang en|id` untuk menimpanya — flag menang atas deteksi.
 
 Hit *keras* adalah slop tak ambigu (pembuka basa-basi, frasa otoritas-karangan, penjilatan). Hit *lunak* adalah sinyal lemah atau yang sah dalam konteks tertentu (kepadatan em-dash, "leverage") yang dilaporkan tetapi tak pernah menggagalkan pemeriksaan. Frasa terlarang yang dikutip atau dimiringkan di baris larangan — "Jangan tulis 'semoga membantu'", contoh `BURUK:`, daftar kata terlarang yang ditulis miring — dibaca sebagai mengajarkan penghindaran, bukan sebagai slop.
 

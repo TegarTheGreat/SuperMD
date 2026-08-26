@@ -8,7 +8,7 @@
 // negation line, and quoted slop on a non-negation line, are still slop.
 
 import { strict as assert } from 'node:assert';
-import { scan, hardTotal } from '../lib/slop-scan.mjs';
+import { scan, hardTotal, detectLang } from '../lib/slop-scan.mjs';
 
 let failures = 0;
 function t(name, fn) {
@@ -96,6 +96,70 @@ t('quoted slop on a line with no negation cue is still caught', () => {
 t('Indonesian slop in prose is caught', () => {
   const hits = scan('Penting untuk dicatat bahwa sistem ini aman di dunia yang serba cepat.', 'id');
   assert.ok(hardTotal(hits) >= 2, JSON.stringify(hits.hard));
+});
+
+// --- fenced code blocks are verbatim quotation: excluded from the lexicon
+// scan (a README demo of what slop looks like is a mention, not slop) ---
+
+t('slop inside a fenced code block is a mention', () => {
+  const hits = scan('Ask a raw model and you get this:\n\n```text\nIn today\'s fast-paced world, teamwork is a vibrant tapestry that empowers you.\n```\n\nThat is slop.', 'en');
+  assert.equal(hardTotal(hits), 0, JSON.stringify(hits.hard));
+});
+
+t('an identifier in an inline code span is a mention', () => {
+  const hits = scan('The `unlock-unleash` detector was calibrated in this release.', 'en');
+  assert.equal(hardTotal(hits), 0, JSON.stringify(hits.hard));
+});
+
+t('slop in prose outside the fence is still caught', () => {
+  const hits = scan('```text\nclean code here\n```\n\nThis game-changer will revolutionize everything.', 'en');
+  assert.ok(hardTotal(hits) >= 1, JSON.stringify(hits.hard));
+});
+
+// --- typographic arrows are not emoji decoration ---
+
+t('arrows in technical text are not emoji-decoration', () => {
+  const hits = scan('Two identical trees (`en/…` ↔ `id/…`); undo maps ↩ back to the source.', 'en');
+  assert.equal(hardTotal(hits), 0, JSON.stringify(hits.hard));
+});
+
+t('real emoji decoration is still caught', () => {
+  const hits = scan('Great work team! 🚀 Ship it! ✅', 'en');
+  assert.ok(hits.hard.some(h => h.name === 'emoji-decoration'), JSON.stringify(hits.hard));
+});
+
+// --- "ban"/"bans" as negation cues ---
+
+t('quoted phrases on a "now bans" line are mentions', () => {
+  const hits = scan('The core rule now bans the quieter validation phrases ("your perspective is valid", "I hear you").', 'en');
+  assert.equal(hardTotal(hits), 0, JSON.stringify(hits.hard));
+});
+
+// --- lexicon calibration: unlock-unleash is the metaphorical form
+// ("unlock your potential"), not literal unlocking (a level, a door, a phone) ---
+
+t('literal game-mechanic unlocking is not flagged', () => {
+  const hits = scan('Filling the bar completes the level and unlocks the next. Players unlock the next mechanic after three stars.', 'en');
+  assert.equal(hardTotal(hits), 0, JSON.stringify(hits.hard));
+});
+
+t('metaphorical "unlock your full potential" is still flagged', () => {
+  const hits = scan('This program will unlock your full potential and unleash your inner athlete.', 'en');
+  assert.ok(hits.hard.some(h => h.name === 'unlock-unleash'), JSON.stringify(hits.hard));
+});
+
+// --- language auto-detection (used by `supermd check` when --lang is absent) ---
+
+t('detectLang: Indonesian prose detects as id', () => {
+  assert.equal(detectLang('Tuliskan deskripsi menu untuk hidangan salmon panggang dengan saus lemon dan sayuran, karena ini akan dipakai pada menu utama.'), 'id');
+});
+
+t('detectLang: English prose detects as en', () => {
+  assert.equal(detectLang('Write the description for the grilled salmon dish with lemon butter sauce, because it is going in the main menu.'), 'en');
+});
+
+t('detectLang: Indonesian file quoting English banned words still detects as id', () => {
+  assert.equal(detectLang('Kosakata bombastis dilarang karena ini bukan gaya yang lugas: *delve, tapestry, game-changer, seamless, robust*. Gunakan kata yang sederhana dan jelas untuk pembaca.'), 'id');
 });
 
 if (failures) { console.error(`\n${failures} failing`); process.exit(1); }

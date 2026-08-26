@@ -2,13 +2,26 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
-## [Unreleased]
+## [1.11.0] - 2026-08-26
+
+### Added
+
+- `supermd check <dir>` — sweep every `.md` under a directory recursively, per-file report plus a one-line summary, exit non-zero if any file carries hard slop. Checking both trees is now `supermd check en` / `supermd check id` instead of a shell loop.
+- `check` auto-detects each file's language from its function words when `--lang` is absent (an Indonesian file no longer silently scans against the English lexicon); the explicit flag still wins.
+- CLI integration tests (`scripts/test-cli.mjs`) covering auto-detection, the override, and directory mode — wired into the CI `cli` job alongside the scanner unit tests.
+- CI now runs the anti-slop self-check over both language trees and the front-door files (README, CHANGELOG, CONTRIBUTING): the repo is gated on the rules it teaches. `RESEARCH.md` is exempt by design — it quotes the tells it cites.
+
+### Changed
+
+- `technology/ai-skill-authoring` (EN + ID) sharpened where the eval showed models still slipped: the name and description carry the capability's quantified scope qualifier; triggers and exclusions are one contract (a trigger that absorbs the neighboring capability is a mis-route — the neighbor belongs in the exclusions); "edge cases" pinned to the activation boundary, with operational contingencies named as body content. Validated on the `skill-description` scenario: 1/5 pairwise wins before, 5/5 after.
 
 ### Fixed
 
 - Slop-scanner mention-vs-use exclusion: quote pairs are now matched per style, so an apostrophe inside a quoted span ("You're absolutely right!") no longer desyncs the blanking; italicized banned-word lists and the tree's own `BAD:`/`BURUK:` example lines now count as mentions; blanked spans are deleted instead of replaced with quote marks (the injected `""` used to desync later passes). Every file in the tree now passes its own `supermd check` in its own language. `scripts/test-slop-scan.mjs` pins the behavior and runs in CI.
 - `id-conclusion` lexicon calibration: only the clause-opening discourse marker ("Sebagai penutup, …" at a sentence start) is slop; the descriptive noun phrase mid-sentence ("… dipakai sebagai penutup surat") no longer false-positives.
 - Eval report no longer prints a bogus "pushback: base=undefined ✗" cell for `noJudge` standard scenarios — the probe branch now runs only for the bait scenario types. Verdicts were never affected; the three ✗ marks in earlier reports for `saas-landing-copy`, `menu-description`, and `id-menu-description` were this rendering bug.
+- Three more scanner false-positive classes: fenced code blocks and inline code spans count as verbatim quotation (a README demo of what slop looks like, or a detector name in backticks, is a mention, not slop); typographic arrows (`↔`, `↩`) no longer count as emoji decoration; "ban"/"bans" now counts as a negation cue alongside "banned".
+- `unlock-unleash` lexicon calibration: only the metaphorical form is slop ("unlock your full potential"); literal unlocking — a level, a mechanic, a feature — no longer false-positives (surfaced by the eval's own game-design scenario).
 
 ## [1.10.0] - 2026-08-15
 

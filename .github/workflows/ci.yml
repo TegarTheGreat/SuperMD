@@ -44,11 +44,18 @@ jobs:
           node-version: 20
       - run: node --check bin/supermd.mjs && node --check lib/compose.mjs && node --check lib/slop-scan.mjs
       - run: node scripts/test-slop-scan.mjs
+      - run: node scripts/test-cli.mjs
       - run: node bin/supermd.mjs version
       - run: node bin/supermd.mjs list > /dev/null
       - run: node bin/supermd.mjs build software-engineering --style technical > /dev/null
       - run: node bin/supermd.mjs build keperawatan --lang id > /dev/null
       - run: node bin/supermd.mjs adapt "beekeeper" > /dev/null
+      # The repo is gated on the rules it teaches: both language trees and the
+      # front-door files must pass the anti-slop self-check. RESEARCH.md is
+      # exempt by design — it quotes the tells it cites, so scanning the
+      # blocklist's own bibliography would be circular.
+      - run: node bin/supermd.mjs check en && node bin/supermd.mjs check id
+      - run: node bin/supermd.mjs check README.md && node bin/supermd.mjs check CHANGELOG.md && node bin/supermd.mjs check CONTRIBUTING.md
       - name: check must exit non-zero on hard slop
         run: |
           if printf 'In today'"'"'s fast-paced world, delve into the tapestry. I hope this helps!' | node bin/supermd.mjs check; then

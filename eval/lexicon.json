@@ -27,7 +27,7 @@
     { "name": "ever-evolving", "pattern": "ever-evolving|constantly evolving landscape", "severity": "hard", "langs": ["en"] },
     { "name": "landscape-realm", "pattern": "\\b(landscape|realm) of\\b", "severity": "soft", "langs": ["en"] },
     { "name": "navigate-meta", "pattern": "navigat(e|ing) the (complex|challeng|world|landscape)", "severity": "hard", "langs": ["en"] },
-    { "name": "unlock-unleash", "pattern": "\\bunlock(ing)? (the|your)\\b|\\bunleash", "severity": "hard", "langs": ["en"] },
+    { "name": "unlock-unleash", "pattern": "\\bunlock(ing|s)? (the |your )?(full |true |hidden )?(potential|power|possibilit|secrets?|success|growth|creativity|value)\\b|\\bunleash", "severity": "hard", "langs": ["en"] },
     { "name": "game-changer", "pattern": "game-?changer|revolutioniz", "severity": "hard", "langs": ["en"] },
     { "name": "seamless", "pattern": "\\bseamless(ly)?\\b", "severity": "soft", "langs": ["en"] },
     { "name": "leverage-verb", "pattern": "\\bleverag(e|ing|es)\\b", "severity": "soft", "langs": ["en"] },

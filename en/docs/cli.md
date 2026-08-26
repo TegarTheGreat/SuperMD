@@ -47,13 +47,16 @@ npx supermd list technology     # one category's sub-fields and their slugs
 
 ## Lint text for slop — `check`
 
-Score any text against the anti-slop lexicon — the same deterministic scan the eval harness uses. It reads a file or standard input, prints each pattern it finds with a severity, and exits non-zero when it finds *hard* (unambiguous) slop, so it drops into a pre-commit hook or CI:
+Score any text against the anti-slop lexicon — the same deterministic scan the eval harness uses. It reads a file, a directory (every `.md` under it, recursively), or standard input, prints each pattern it finds with a severity, and exits non-zero when it finds *hard* (unambiguous) slop, so it drops into a pre-commit hook or CI:
 
 ```bash
 npx supermd check draft.md
-cat article.txt | npx supermd check --lang id
+npx supermd check docs/                          # sweep a whole tree, one summary line
+cat article.txt | npx supermd check
 llm-output.txt | npx supermd check && echo "clean"
 ```
+
+The language is auto-detected per file from its function words; pass `--lang en|id` to override — the flag wins over detection.
 
 *Hard* hits are unambiguous slop (filler openers, invented-authority phrases, sycophancy). *Soft* hits are weaker or context-legitimate signals (em-dash density, "leverage") that are reported but never fail the check. A banned phrase quoted or italicized on a prohibition line — "Do not use 'I hope this helps'", a `BAD:` example, an italicized banned-word list — is read as teaching avoidance, not as slop.
 

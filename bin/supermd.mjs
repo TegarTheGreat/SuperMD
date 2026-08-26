@@ -2,11 +2,11 @@
 // supermd — compose anti-slop system prompts and lint text for slop.
 // Zero dependencies; Node 18+. The Markdown tree is the single source of truth.
 
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from 'node:fs';
+import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { catalog, compose, adapt } from '../lib/compose.mjs';
-import { scan, loadLexicon, hardTotal, softTotal } from '../lib/slop-scan.mjs';
+import { scan, loadLexicon, hardTotal, softTotal, detectLang } from '../lib/slop-scan.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
@@ -42,7 +42,7 @@ ${bold('USAGE')}
   supermd build <field...> [--style s] [--lang en|id] [--core-only] [--out f]
   supermd adapt <field description...> [--lang en|id] [--out f]
   supermd list [category]
-  supermd check [file] [--lang en|id]        (reads stdin if no file)
+  supermd check [file|dir] [--lang en|id]    (reads stdin if no target; a directory is swept recursively)
   supermd help | version
 
 ${bold('EXAMPLES')}
@@ -52,10 +52,11 @@ ${bold('EXAMPLES')}
   supermd adapt "beekeeper"                  # any profession, via the adapter
   supermd list technology
   cat draft.md | supermd check               # flag KNOWN slop patterns (a filter, not a proof)
-  supermd check article.txt --lang id
+  supermd check article.txt                  # language auto-detected; --lang overrides
+  supermd check docs/                        # sweep every .md under docs/, exit 1 on hard slop
 
 ${bold('OPTIONS')}
-  --lang en|id     language (default en)
+  --lang en|id     language (build/adapt default en; check auto-detects per file)
   --style NAME     formal | conversational | technical
   --core-only      emit only the universal core
   --out FILE       write to FILE instead of stdout
@@ -123,30 +124,54 @@ async function readStdin() {
   return Buffer.concat(chunks).toString('utf8');
 }
 
-async function cmdCheck(pos, flags) {
-  const lang = flags.lang || 'en';
-  let text, src;
-  if (pos[0] && pos[0] !== '-') {
-    const p = resolve(process.cwd(), pos[0]);
-    if (!existsSync(p)) { err(red(`File not found: ${pos[0]}`)); process.exit(2); }
-    text = readFileSync(p, 'utf8'); src = pos[0];
-  } else {
-    if (process.stdin.isTTY) { err(yellow('Usage: supermd check <file> | ... | supermd check')); process.exit(2); }
-    text = await readStdin(); src = 'stdin';
+function walkMd(dir) {
+  const found = [];
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    if (e.name.startsWith('.') || e.name === 'node_modules') continue;
+    const p = join(dir, e.name);
+    if (e.isDirectory()) found.push(...walkMd(p));
+    else if (e.name.endsWith('.md')) found.push(p);
   }
-  const hits = scan(text, lang, loadLexicon(ROOT));
+  return found.sort();
+}
+
+function checkOne(text, src, flags, lexicon) {
+  const lang = flags.lang || detectLang(text);
+  const hits = scan(text, lang, lexicon);
   const hard = hardTotal(hits), soft = softTotal(hits);
   const words = text.split(/\s+/).filter(Boolean).length;
   if (hard === 0 && soft === 0) {
     out(green(`✓ no known slop patterns in ${src} (${words} words, ${lang})`));
-    err(dim('  (a detector of known surface patterns — not a proof of slop-freedom; semantic slop escapes any regex)'));
-    return;
+    return { hard, soft };
   }
   out(`${src} ${dim('· ' + words + ' words · ' + lang)}`);
   for (const h of hits.hard) out(`  ${red('hard')}  ${h.name}${dim(' ×' + h.count)}  ${dim('e.g. ' + JSON.stringify(h.sample).slice(0, 60))}`);
   for (const h of hits.soft) out(`  ${yellow('soft')}  ${h.name}${dim(' ×' + h.count)}  ${dim('e.g. ' + JSON.stringify(h.sample).slice(0, 60))}`);
   out(`${hard ? red(hard + ' hard') : green('0 hard')}, ${soft} soft ${dim('· hard = unambiguous slop; soft = weak/context signals')}`);
-  if (hard > 0) process.exitCode = 1;
+  return { hard, soft };
+}
+
+async function cmdCheck(pos, flags) {
+  const lexicon = loadLexicon(ROOT);
+  const results = [];
+  if (pos[0] && pos[0] !== '-') {
+    const p = resolve(process.cwd(), pos[0]);
+    if (!existsSync(p)) { err(red(`File not found: ${pos[0]}`)); process.exit(2); }
+    if (statSync(p).isDirectory()) {
+      const files = walkMd(p);
+      if (!files.length) { err(yellow(`No .md files under ${pos[0]}`)); process.exit(2); }
+      for (const f of files) results.push(checkOne(readFileSync(f, 'utf8'), relative(process.cwd(), f) || f, flags, lexicon));
+      const bad = results.filter(r => r.hard > 0).length;
+      out(bad ? red(`${bad} of ${files.length} files with hard slop`) : green(`${files.length} files, no known hard slop`));
+    } else {
+      results.push(checkOne(readFileSync(p, 'utf8'), pos[0], flags, lexicon));
+    }
+  } else {
+    if (process.stdin.isTTY) { err(yellow('Usage: supermd check <file|dir> | ... | supermd check')); process.exit(2); }
+    results.push(checkOne(await readStdin(), 'stdin', flags, lexicon));
+  }
+  err(dim('  (a detector of known surface patterns — not a proof of slop-freedom; semantic slop escapes any regex)'));
+  if (results.some(r => r.hard > 0)) process.exitCode = 1;
 }
 
 const { flags, pos } = parseArgs(process.argv.slice(2));

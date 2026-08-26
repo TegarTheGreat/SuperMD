@@ -8,6 +8,7 @@ Pure Markdown. Copy, paste, done. Bilingual English / Bahasa Indonesia.
 
 [![CI](https://github.com/TegarTheGreat/SuperMD/actions/workflows/ci.yml/badge.svg)](https://github.com/TegarTheGreat/SuperMD/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/tag/TegarTheGreat/SuperMD?sort=semver&label=release&color=1f6feb)](https://github.com/TegarTheGreat/SuperMD/releases)
+[![npm](https://img.shields.io/npm/v/supermd?color=cb3837&logo=npm)](https://www.npmjs.com/package/supermd)
 [![License: CC BY 4.0](https://img.shields.io/badge/license-CC%20BY%204.0-lightgrey.svg)](LICENSE)
 [![Domains](https://img.shields.io/badge/domains-16%20categories%20%C2%B7%20103%20fields-1f6feb)](en/docs/taxonomy.md)
 ![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ID-informational)
@@ -72,6 +73,7 @@ npx supermd build nursing --style formal        # assemble a system prompt
 npx supermd adapt "beekeeper"                    # cover any profession via the adapter
 npx supermd list technology                      # browse the catalog
 cat draft.md | npx supermd check                 # lint any text for slop (exits non-zero on hard slop)
+npx supermd check docs/                          # sweep every .md in a tree; language auto-detected
 ```
 
 `check` is a standalone **slop linter** — the same deterministic scan the eval harness uses — so you can gate a commit or CI on it. Both `compose` and `scan` are importable as a library (`supermd/compose`, `supermd/slop-scan`). Full reference: [`en/docs/cli.md`](en/docs/cli.md).
@@ -139,14 +141,14 @@ Full map with guidance on picking your field: [`en/docs/taxonomy.md`](en/docs/ta
 
 A prompt library about quality that never measured itself would be its own counterexample. [`eval/`](eval/README.md) runs every scenario twice — with and without SuperMD — against the same model, then applies three independent checks: a deterministic banned-pattern scan, a blind pairwise LLM judge, and targeted honesty and format probes.
 
-Latest run (`deepseek-chat` generation, `deepseek-reasoner` blind judge, 29 scenarios):
+Latest run (`deepseek-chat` generation, `deepseek-reasoner` blind judge, 41 scenarios — EN and ID):
 
 | Metric | Result |
 |---|---|
-| Hard slop patterns in SuperMD outputs | **0** across all scenarios (baseline: up to 26 per answer) |
-| Blind pairwise preference | **25 / 26** for SuperMD |
+| Hard slop patterns in SuperMD outputs | **0** across all scenarios (baseline: up to 11 per answer) |
+| Blind pairwise preference | **34 / 34** for SuperMD — win rate 100% |
 | Citation-bait (does it invent studies?) | refuses to fabricate ✓ |
-| Flawed-plan bait (does it push back?) | pushes back ✓ |
+| Flawed-plan, validation & omission baits (does it push back?) | pushes back ✓ |
 | Word-count contract | met ✓ |
 
 Run it against your own model — any OpenAI-compatible API works: see [`eval/README.md`](eval/README.md).
@@ -164,14 +166,16 @@ en/  id/                  two identical trees, one per language (CI enforces par
 ├── domains/<category>/   16 categories, 103 sub-field modules (_category.md + fields)
 ├── adapters/             the universal adapter for uncovered fields
 ├── styles/               optional register: formal / conversational / technical
-└── docs/                 how-to-use · taxonomy · philosophy
+└── docs/                 how-to-use · taxonomy · philosophy · cli
+bin/  lib/                the zero-dependency CLI (npx supermd) and its importable libraries
 eval/                     the anti-slop test harness (any OpenAI-compatible API)
+scripts/                  parity check + unit and CLI tests, all run in CI
 RESEARCH.md               the cited evidence base for the rules
 ```
 
 ### Contributing
 
-Modules for new fields are the most valuable contribution. Start from [`en/domains/_TEMPLATE.md`](en/domains/_TEMPLATE.md), write both language versions, and read [`CONTRIBUTING.md`](CONTRIBUTING.md). The module you submit is subject to the rules it teaches — CI checks Markdown, EN↔ID parity, and internal links on every PR.
+Modules for new fields are the most valuable contribution. Start from [`en/domains/_TEMPLATE.md`](en/domains/_TEMPLATE.md), write both language versions, and read [`CONTRIBUTING.md`](CONTRIBUTING.md). The module you submit is subject to the rules it teaches — CI checks Markdown, EN↔ID parity, internal links, and runs the anti-slop self-check (`supermd check`) over both trees on every PR.
 
 Found slop that leaked past a module? That is a bug in the core — open a **Slop report** issue.
 
@@ -223,7 +227,8 @@ Pustaka ini juga menyertakan CLI tanpa dependensi. Tanpa instalasi:
 npx supermd build keperawatan --style formal --lang id   # rakit system prompt
 npx supermd adapt "peternak lebah" --lang id             # cakup profesi apa pun via adapter
 npx supermd list technology                              # jelajah katalog
-cat draft.md | npx supermd check --lang id               # pindai teks apa pun untuk slop
+cat draft.md | npx supermd check                         # pindai teks untuk slop (bahasa terdeteksi otomatis)
+npx supermd check docs/                                  # sapu semua .md dalam satu pohon
 ```
 
 `check` adalah **slop linter** berdiri sendiri — pemindaian deterministik yang sama dengan harness eval — jadi bisa jadi gerbang commit atau CI. Baik `compose` maupun `scan` bisa diimpor sebagai pustaka (`supermd/compose`, `supermd/slop-scan`). Referensi lengkap: [`id/docs/cli.md`](id/docs/cli.md).
@@ -265,7 +270,7 @@ Setiap modul tersedia dalam Bahasa Inggris dan Indonesia di path yang identik (`
 
 Pustaka soal kualitas yang tak pernah mengukur dirinya sendiri akan jadi contoh tandingannya sendiri. [`eval/`](eval/README.md) menjalankan tiap skenario dua kali — dengan dan tanpa SuperMD — lalu menerapkan tiga pemeriksaan bebas: pemindaian pola terlarang deterministik, LLM juri berpasangan secara buta, serta probe kejujuran dan format.
 
-Hasil terbaru (29 skenario): **0** pola slop keras di semua output SuperMD, **25/26** preferensi juri buta, umpan sitasi dan rencana-cacat lolos. Detail di [`eval/README.md`](eval/README.md).
+Hasil terbaru (41 skenario, EN dan ID): **0** pola slop keras di semua output SuperMD (baseline: hingga 11 per jawaban), **34/34** preferensi juri buta — win rate 100%, umpan sitasi, rencana-cacat, validasi, dan omisi semuanya lolos. Detail di [`eval/README.md`](eval/README.md).
 
 ### Ter-ground pada riset
 
@@ -273,7 +278,7 @@ Pola yang dilarang bukan soal selera — itu tanda statistik terukur dari teks m
 
 ### Kontribusi
 
-Modul untuk bidang baru adalah kontribusi paling berharga. Mulai dari [`id/domains/_TEMPLATE.md`](id/domains/_TEMPLATE.md), tulis kedua versi bahasa, dan baca [`CONTRIBUTING.md`](CONTRIBUTING.md). Modul yang Anda kirim tunduk pada aturan yang diajarkannya sendiri — CI memeriksa Markdown, paritas EN↔ID, dan tautan internal di setiap PR.
+Modul untuk bidang baru adalah kontribusi paling berharga. Mulai dari [`id/domains/_TEMPLATE.md`](id/domains/_TEMPLATE.md), tulis kedua versi bahasa, dan baca [`CONTRIBUTING.md`](CONTRIBUTING.md). Modul yang Anda kirim tunduk pada aturan yang diajarkannya sendiri — CI memeriksa Markdown, paritas EN↔ID, tautan internal, dan menjalankan self-check anti-slop (`supermd check`) atas kedua pohon di setiap PR.
 
 ### Versi & lisensi
 
