@@ -14,9 +14,17 @@ Pure Markdown. Copy, paste, done. Bilingual English / Bahasa Indonesia.
 ![Languages](https://img.shields.io/badge/languages-EN%20%C2%B7%20ID-informational)
 [![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
+[Quick start](#quick-start) · [CLI](#command-line--compose-and-lint-from-the-terminal) · [Catalog](#domain-catalog) · [Eval results](#tested-not-asserted) · [Research](#grounded-in-research) · [Bahasa Indonesia](#bahasa-indonesia)
+
 </div>
 
 > **What it is in one line:** a system prompt that names the patterns of AI "slop" and bans each one — with the concrete behavior that replaces it — so the model gives you the answer instead of a performance of one.
+
+**Why this one:**
+
+- **Composable by profession** — a universal core plus 103 field modules across 16 categories; stack only the layers you need.
+- **Bilingual by construction** — every file exists in English and Bahasa Indonesia at mirrored paths, enforced by CI.
+- **Measured, not asserted** — latest eval: 41 scenarios, 34/34 blind pairwise wins, 0 hard slop patterns ([details](#tested-not-asserted)).
 
 *English first; **Bahasa Indonesia** mengikuti di bagian bawah halaman ini.*
 
@@ -54,7 +62,7 @@ Teams fail when they mistake consensus for correctness.
 
 ### Quick start
 
-Paste [`en/SUPERMD.md`](en/SUPERMD.md) into your system prompt. That one file removes most slop on its own.
+Paste [`en/SUPERMD.md`](en/SUPERMD.md) into your system prompt. That one file removes most slop on its own. Prefer the terminal? `npx supermd build --core-only --out prompt.md` writes the same file, and `npx supermd build <field>` adds your profession's module on top.
 
 | Platform | Where to paste it |
 |---|---|
@@ -66,7 +74,7 @@ Paste [`en/SUPERMD.md`](en/SUPERMD.md) into your system prompt. That one file re
 
 ### Command line — compose and lint from the terminal
 
-The library also ships a zero-dependency CLI. No install needed:
+The library also ships a zero-dependency CLI — `npx` fetches it straight from [npm](https://www.npmjs.com/package/supermd), or `npm i -g supermd` gives you a permanent `supermd` command:
 
 ```bash
 npx supermd build nursing --style formal        # assemble a system prompt
@@ -187,6 +195,14 @@ Released under [SemVer](https://semver.org); changes tracked in [`CHANGELOG.md`]
 
 ## Bahasa Indonesia
 
+[Mulai cepat](#mulai-cepat) · [CLI](#baris-perintah--rakit-dan-pindai-dari-terminal) · [Katalog](#katalog-domain) · [Hasil eval](#diuji-bukan-sekadar-diklaim) · [English](#english)
+
+**Kenapa yang ini:**
+
+- **Terkomposisi per profesi** — core universal plus 103 modul bidang dalam 16 kategori; tumpuk hanya lapisan yang Anda perlukan.
+- **Bilingual sepenuhnya** — setiap file ada dalam bahasa Inggris dan Indonesia di path yang tercermin, ditegakkan CI.
+- **Terukur, bukan sekadar klaim** — eval terbaru: 41 skenario, 34/34 kemenangan juri buta, 0 pola slop keras ([detail](#diuji-bukan-sekadar-diklaim)).
+
 ### Masalahnya
 
 Minta model mentah "menulis tentang kerja sama tim", dan Anda dapat ini:
@@ -209,7 +225,7 @@ Dengan SuperMD di system prompt, permintaan yang sama menghasilkan jawaban yang 
 
 ### Mulai cepat
 
-Tempel [`id/SUPERMD.md`](id/SUPERMD.md) ke system prompt Anda. Satu file itu sudah menghilangkan sebagian besar slop.
+Tempel [`id/SUPERMD.md`](id/SUPERMD.md) ke system prompt Anda. Satu file itu sudah menghilangkan sebagian besar slop. Lebih suka terminal? `npx supermd build --core-only --lang id --out prompt.md` menulis file yang sama, dan `npx supermd build <bidang> --lang id` menambahkan modul profesi Anda di atasnya.
 
 | Platform | Tempat menempelkannya |
 |---|---|
@@ -221,7 +237,7 @@ Tempel [`id/SUPERMD.md`](id/SUPERMD.md) ke system prompt Anda. Satu file itu sud
 
 ### Baris perintah — rakit dan pindai dari terminal
 
-Pustaka ini juga menyertakan CLI tanpa dependensi. Tanpa instalasi:
+Pustaka ini juga menyertakan CLI tanpa dependensi — `npx` mengambilnya langsung dari [npm](https://www.npmjs.com/package/supermd), atau `npm i -g supermd` memberi Anda perintah `supermd` permanen:
 
 ```bash
 npx supermd build keperawatan --style formal --lang id   # rakit system prompt
