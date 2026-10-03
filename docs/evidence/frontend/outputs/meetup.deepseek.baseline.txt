@@ -1,0 +1,570 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jakarta Rust Night · monthly meetup</title>
+  <style>
+    /* ---------- RESET & GLOBAL ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0b0e14;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      color: #e6edf3;
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .page {
+      max-width: 1100px;
+      width: 100%;
+    }
+
+    /* ---------- TYPOGRAPHY & ACCENTS ---------- */
+    h1, h2, h3 {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #f0b37e 0%, #e06c4b 80%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.25rem;
+    }
+
+    .subhead {
+      font-size: 1.2rem;
+      color: #9aa9b9;
+      margin-bottom: 2rem;
+      border-left: 4px solid #e06c4b;
+      padding-left: 1rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #f0e9e0;
+    }
+
+    h2::before {
+      content: "◆";
+      color: #e06c4b;
+      font-size: 1.4rem;
+      font-weight: 400;
+    }
+
+    h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.25rem;
+      color: #f0e9e0;
+    }
+
+    /* ---------- CARDS & LAYOUT ---------- */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: #151b24;
+      border-radius: 24px;
+      padding: 1.75rem 1.75rem 2rem;
+      border: 1px solid #2a3440;
+      box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.6);
+      transition: border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: #3f4d5e;
+    }
+
+    .schedule-item {
+      display: flex;
+      gap: 1.25rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid #232e3a;
+    }
+
+    .schedule-item:last-child {
+      border-bottom: none;
+    }
+
+    .time {
+      font-weight: 600;
+      color: #e06c4b;
+      min-width: 85px;
+      font-size: 0.95rem;
+      letter-spacing: 0.02em;
+    }
+
+    .talk-info {
+      flex: 1;
+    }
+
+    .talk-title {
+      font-weight: 600;
+      color: #f0e9e0;
+      margin-bottom: 0.2rem;
+    }
+
+    .speaker {
+      font-size: 0.9rem;
+      color: #9aa9b9;
+    }
+
+    .speaker span {
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+
+    /* ---------- SPEAKER CARDS ---------- */
+    .speaker-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .speaker-card {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      background: #10171f;
+      padding: 1rem 1.25rem;
+      border-radius: 18px;
+      border: 1px solid #26313d;
+    }
+
+    .avatar {
+      width: 56px;
+      height: 56px;
+      background: #2a3440;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: #e06c4b;
+      flex-shrink: 0;
+      border: 2px solid #e06c4b40;
+    }
+
+    .speaker-details h3 {
+      margin-bottom: 0.15rem;
+    }
+
+    .speaker-details p {
+      font-size: 0.9rem;
+      color: #9aa9b9;
+    }
+
+    /* ---------- VENUE ---------- */
+    .venue-card {
+      background: #151b24;
+      border-radius: 24px;
+      padding: 1.75rem;
+      border: 1px solid #2a3440;
+      margin-bottom: 2.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .venue-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .venue-name {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #f0e9e0;
+    }
+
+    .venue-address {
+      color: #9aa9b9;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .venue-address::before {
+      content: "📍";
+      font-size: 1.1rem;
+      filter: grayscale(0.3);
+    }
+
+    .venue-note {
+      background: #1e2a36;
+      padding: 0.6rem 1.2rem;
+      border-radius: 40px;
+      font-size: 0.9rem;
+      color: #b9c7d6;
+      border: 1px solid #33414f;
+    }
+
+    /* ---------- RSVP FORM ---------- */
+    .rsvp-section {
+      background: #151b24;
+      border-radius: 28px;
+      padding: 2rem 2rem 2.25rem;
+      border: 1px solid #2a3440;
+      box-shadow: 0 20px 35px -12px #00000080;
+    }
+
+    .rsvp-section h2 {
+      margin-bottom: 1.75rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #b9c7d6;
+      letter-spacing: 0.02em;
+    }
+
+    input, select, textarea {
+      background: #0e141c;
+      border: 1px solid #2e3b48;
+      border-radius: 14px;
+      padding: 0.85rem 1rem;
+      font-family: inherit;
+      font-size: 1rem;
+      color: #e6edf3;
+      outline: none;
+      transition: border 0.15s, box-shadow 0.15s;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #e06c4b;
+      box-shadow: 0 0 0 3px #e06c4b30;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0.5rem 0 1.25rem;
+    }
+
+    .checkbox-group input {
+      width: 20px;
+      height: 20px;
+      accent-color: #e06c4b;
+      margin: 0;
+    }
+
+    .checkbox-group label {
+      font-size: 0.95rem;
+      color: #cbd5e1;
+    }
+
+    .btn {
+      background: #e06c4b;
+      color: #0b0e14;
+      font-weight: 700;
+      font-size: 1.1rem;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 60px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: 0.02em;
+      width: 100%;
+      box-shadow: 0 8px 18px -6px #e06c4b80;
+    }
+
+    .btn:hover {
+      background: #f07e5a;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .form-message {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      text-align: center;
+      min-height: 1.5rem;
+      color: #7ee0b0;
+      font-weight: 500;
+    }
+
+    /* ---------- FOOTER ---------- */
+    .footer-note {
+      margin-top: 2.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #5f6f80;
+      border-top: 1px solid #1f2a35;
+      padding-top: 1.5rem;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 750px) {
+      body { padding: 1.5rem 1rem; }
+      h1 { font-size: 2.2rem; }
+      .grid-2 { grid-template-columns: 1fr; gap: 1.5rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .venue-card { flex-direction: column; align-items: flex-start; }
+      .rsvp-section { padding: 1.5rem; }
+      .schedule-item { flex-direction: column; gap: 0.3rem; }
+      .time { min-width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- HEADER -->
+    <header>
+      <h1>Jakarta Rust Night</h1>
+      <div class="subhead">Monthly meetup · every 3rd Thursday · 18:30 WIB</div>
+    </header>
+
+    <!-- SCHEDULE + SPEAKERS (2 columns) -->
+    <div class="grid-2">
+      <!-- SCHEDULE CARD -->
+      <section class="card">
+        <h2>Schedule</h2>
+        <div class="schedule-item">
+          <div class="time">18:30</div>
+          <div class="talk-info">
+            <div class="talk-title">Doors open · Pizza &amp; networking</div>
+            <div class="speaker">Sponsored by <span>Rust Indonesia</span></div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="time">19:00</div>
+          <div class="talk-info">
+            <div class="talk-title">Async Rust in production: tokio at scale</div>
+            <div class="speaker"><span>Rina Wijaya</span> · Software Engineer, Tokopedia</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="time">19:45</div>
+          <div class="talk-info">
+            <div class="talk-title">Zero-cost abstractions in embedded Rust</div>
+            <div class="speaker"><span>Budi Santoso</span> · Firmware Lead, eFishery</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="time">20:30</div>
+          <div class="talk-info">
+            <div class="talk-title">Lightning talks + Q&amp;A</div>
+            <div class="speaker">Open mic · 5 min each</div>
+          </div>
+        </div>
+        <div class="schedule-item">
+          <div class="time">21:15</div>
+          <div class="talk-info">
+            <div class="talk-title">Afterparty &amp; informal hangout</div>
+            <div class="speaker">Nearby warung kopi</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SPEAKERS CARD -->
+      <section class="card">
+        <h2>Speakers</h2>
+        <div class="speaker-grid">
+          <div class="speaker-card">
+            <div class="avatar">RW</div>
+            <div class="speaker-details">
+              <h3>Rina Wijaya</h3>
+              <p>Async runtime, distributed systems. Maintainer of <em>tokio-rs</em> community projects.</p>
+            </div>
+          </div>
+          <div class="speaker-card">
+            <div class="avatar">BS</div>
+            <div class="speaker-details">
+              <h3>Budi Santoso</h3>
+              <p>Embedded Rust, no_std, and IoT. Speaker at RustConf Asia 2024.</p>
+            </div>
+          </div>
+          <div class="speaker-card">
+            <div class="avatar">+</div>
+            <div class="speaker-details">
+              <h3>Lightning speakers</h3>
+              <p>You? Sign up at the door — 5 minutes, any Rust topic.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- VENUE -->
+    <section class="venue-card">
+      <div class="venue-info">
+        <div class="venue-name">GoWork Coworking · SCBD</div>
+        <div class="venue-address">Lot 8, Jl. Jend. Sudirman Kav. 52-53, Jakarta Selatan</div>
+      </div>
+      <div class="venue-note">2nd floor · look for the Rustacean flag</div>
+    </section>
+
+    <!-- RSVP FORM -->
+    <section class="rsvp-section">
+      <h2>RSVP · limited seats</h2>
+      <form id="rsvpForm" novalidate>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Full name *</label>
+            <input type="text" id="name" name="name" placeholder="e.g. Andi Pratama" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="andi@example.com" required>
+          </div>
+          <div class="form-group">
+            <label for="role">I'm a ...</label>
+            <select id="role" name="role">
+              <option value="developer">Developer</option>
+              <option value="student">Student</option>
+              <option value="hobbyist">Hobbyist</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="diet">Dietary preference</label>
+            <select id="diet" name="diet">
+              <option value="none">No restrictions</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="vegan">Vegan</option>
+              <option value="halal">Halal</option>
+            </select>
+          </div>
+          <div class="form-group full-width">
+            <label for="message">Anything else? (optional)</label>
+            <textarea id="message" name="message" placeholder="Questions, lightning talk idea, or just say hi..."></textarea>
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" id="lightning" name="lightning">
+          <label for="lightning">I'd like to give a 5-min lightning talk</label>
+        </div>
+
+        <button type="submit" class="btn">Confirm RSVP →</button>
+        <div id="formFeedback" class="form-message"></div>
+      </form>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="footer-note">
+      Jakarta Rust Night · community-run · free to attend · code of conduct applies
+    </div>
+  </div>
+
+  <!-- INLINE JAVASCRIPT -->
+  <script>
+    (function() {
+      const form = document.getElementById('rsvpForm');
+      const feedback = document.getElementById('formFeedback');
+
+      // simple validation + fake submission
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+
+        // reset feedback
+        feedback.textContent = '';
+        feedback.style.color = '#7ee0b0';
+
+        if (!name) {
+          feedback.textContent = 'Please enter your full name.';
+          feedback.style.color = '#f28b82';
+          return;
+        }
+
+        if (!email) {
+          feedback.textContent = 'Please enter your email address.';
+          feedback.style.color = '#f28b82';
+          return;
+        }
+
+        // very basic email pattern
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          feedback.textContent = 'Please enter a valid email address.';
+          feedback.style.color = '#f28b82';
+          return;
+        }
+
+        // simulate successful RSVP (no backend)
+        feedback.textContent = `Thanks, ${name}! Your RSVP is confirmed. See you at Jakarta Rust Night. 🦀`;
+        feedback.style.color = '#7ee0b0';
+
+        // optional: reset form fields (but keep name/email for demo? we reset all)
+        // form.reset();  // uncomment if you want to clear after success
+        // but we keep values so user sees what they submitted; we just show message.
+        // However, to avoid double-submit confusion, we could disable button briefly.
+        const btn = form.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        btn.textContent = 'RSVP sent ✓';
+        btn.style.background = '#3f5a4b';
+        btn.style.color = '#b0e0c0';
+        btn.style.cursor = 'default';
+
+        // re-enable after 3 seconds (for demo purposes)
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.textContent = 'Confirm RSVP →';
+          btn.style.background = '#e06c4b';
+          btn.style.color = '#0b0e14';
+          btn.style.cursor = 'pointer';
+        }, 3000);
+      });
+
+      // small extra: if user clicks checkbox, no action needed.
+      // but we can add a tiny touch: show lightning talk hint in message? not necessary.
+    })();
+  </script>
+</body>
+</html>
+```

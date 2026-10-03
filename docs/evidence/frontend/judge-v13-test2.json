@@ -1,0 +1,230 @@
+[
+  {
+    "prompt": "portfolio",
+    "generator": "claude",
+    "subject": "v13",
+    "against": "baseline",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 is a cohesive, editorial film-contact-sheet design that covers intro, work, services and contact and uses honest 'sample' placeholders. Page 2 is striking, but it invents stats ('240+ sesi', '9 th') and an anecdote-heavy bio, and its gallery grid has gaps and an orphaned tile."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 is a complete, cohesive page with a film-strip motif, specific captions, clear services and a contact form, and it avoids invented stats like \"240+ sesi\". Page 1 looks polished but has made-up numbers, a repetitive gallery with an orphaned tile, and visible sections that fall below the cut."
+      }
+    ]
+  },
+  {
+    "prompt": "portfolio",
+    "generator": "claude",
+    "subject": "v13",
+    "against": "v11",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 looks designed, with a film-strip concept, consistent type and colour, and specific local wording, while Page 1 is dominated by bracketed placeholders ('[Photographer Name]', '[confirm: ...]') that make it feel unfinished; Page 2's invented prices and invented name are a minor credibility risk but are flagged as sample."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 reads as a finished, designed site with a film-strip concept, a specific name and intro, and concrete service details, while Page 2 is dominated by bracketed [confirm:] placeholders and an unfilled name and intro. Page 1's invented prices are a minor credibility risk, but they are flagged as samples."
+      }
+    ]
+  },
+  {
+    "prompt": "portfolio",
+    "generator": "claude",
+    "subject": "v13",
+    "against": "v12",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 has a more distinctive film-strip concept and stronger visual rhythm, and it covers intro, work, services and contact in a clean 3,600px. Page 2 is polished, but it is more generic, and its contact section is cut off, so it can't be judged complete."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 has a more distinctive and cohesive design: a film-strip hero, alternating light and dark sections, a filterable contact-sheet gallery, and a real contact form. Page 1 is clean but more generic, and its full-page view is cut off before the contact section."
+      }
+    ]
+  },
+  {
+    "prompt": "portfolio",
+    "generator": "deepseek",
+    "subject": "v13",
+    "against": "baseline",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 has a clear serif/sans hierarchy, a hero with an image grid, services with specific IDR prices and deliverables, and a working contact layout. Page 2 is more generic: emoji icons, grey placeholder tiles, an empty right half in the hero, and an 'all images are placeholders' footer."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 looks designed rather than templated: it has a nav, a serif and sans type pairing, a hero with a photo grid, services with clear tiers, and a contact form with a studio address. It does invent prices and frame counts. Page 1 is cleaner but generic, with emoji icons, flat numbered placeholder tiles, and a hero that leaves the right half empty."
+      }
+    ]
+  },
+  {
+    "prompt": "portfolio",
+    "generator": "deepseek",
+    "subject": "v13",
+    "against": "v11",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 fills its hero and work grid with colour-toned tiles and has a clear hero with CTAs, a balanced services section and a tidy contact area. Page 1 has an empty right half in the hero and blank striped placeholder boxes that dominate the work section, so it looks unfinished. Page 2's weaknesses are the invented frame counts and the \"300+ images\" claim."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 fills its hero and work grid with warm gradient tiles, has a clear hierarchy, and its specific service packages and pricing make it feel finished; Page 2 has a large empty right half in the hero and striped, empty work placeholders, so it looks unfinished."
+      }
+    ]
+  },
+  {
+    "prompt": "portfolio",
+    "generator": "deepseek",
+    "subject": "v13",
+    "against": "v12",
+    "result": "tie (passes disagree)",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 2 has more specific, credible local content (Kotagede, Laweyan, Malioboro) and consistent card typography across sections. Page 1 is competent and has a working-looking contact form, but its dark gradient tiles, invented frame counts and a form that admits it's a demo make it feel more templated."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 has a more distinctive and cohesive look, with a serif display type, a warm rust accent, a hero image grid, a tinted services band and clear calls to action. Page 1 is cleaner but more generic, with a large blank hero image and a mix of serif and sans type. Page 2 has weaker points: a demo contact form that doesn't send, and invented frame counts. These are minor next to its stronger polish."
+      }
+    ]
+  },
+  {
+    "prompt": "docs",
+    "generator": "claude",
+    "subject": "v13",
+    "against": "baseline",
+    "result": "baseline",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "baseline",
+        "why": "Page 2 has a more distinctive look, but its request and response code blocks render as unreadable blank bars, which a design lead couldn't ship. Page 1 is a conventional but polished, complete doc with working code samples, a full sidebar and a language-tabbed request example."
+      },
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 1 has a more distinctive look, but its request and response code blocks render as unreadable light bars, so the core examples look broken, while Page 2 is a complete, legible and credible reference with language tabs, a line-item table and readable code samples."
+      }
+    ]
+  },
+  {
+    "prompt": "docs",
+    "generator": "claude",
+    "subject": "v13",
+    "against": "v11",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 looks more distinctly designed, with a ticket-style endpoint card, a consistent green accent, and clean tables. It also avoids the visible \"[confirm: …]\" placeholders and the half-empty card row that make Page 2 read as a generic template."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 looks more designed, with a warm palette, a ticket-style endpoint card, a top bar, status pills and a tidy sidebar. Page 1 has a generic template look and visible \"[confirm: …]\" placeholders near the top, and its sidebar background stops short on the full-page view."
+      }
+    ]
+  },
+  {
+    "prompt": "docs",
+    "generator": "claude",
+    "subject": "v13",
+    "against": "v12",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 has a more distinctive look, but its request and response code blocks render as unreadable blank bars, which breaks the core content; Page 1 is complete and readable, with only minor header-name wrapping."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has a more distinctive look, but its curl and JSON code blocks render as unreadable blank bars, which is a serious defect. Page 2 has legible, complete code examples with tabs, though its narrow code-font columns break words like 'Authorization'."
+      }
+    ]
+  },
+  {
+    "prompt": "docs",
+    "generator": "deepseek",
+    "subject": "v13",
+    "against": "baseline",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 reads like a real API reference: specific content (idempotency, auth, error body example), syntax-highlighted code with copy buttons, and a restrained consistent style. Page 1 is competent but heavier, with pill-heavy tables, a redundant header and an unclear hierarchy."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 reads like real API docs: a restrained, consistent type scale, a richer parameters table, syntax-highlighted code blocks with copy buttons, colored status badges, and an error-body example. Page 2 is clean but looks more generic, with heavy pill styling and a cramped header where the 'Description' heading sits tight against the endpoint badge."
+      }
+    ]
+  },
+  {
+    "prompt": "docs",
+    "generator": "deepseek",
+    "subject": "v13",
+    "against": "v11",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 is more polished and looks designed: a compact hierarchy, dark code blocks with copy buttons, colored status badges, and a tight parameters table. Page 2 is solid and more thorough, with a headers table and a cURL tab, but it reads as a generic docs template. It also has a redundant Overview section directly under the intro, and its tab and Body UI is half-finished."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 looks more designed, with dark syntax-highlighted code blocks that have copy buttons, a callout, colored status badges and a tidy parameters table. Page 1 is competent but plain, with light gray code blocks and a generic docs look."
+      }
+    ]
+  },
+  {
+    "prompt": "docs",
+    "generator": "deepseek",
+    "subject": "v13",
+    "against": "v12",
+    "result": "tie (passes disagree)",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 is more polished and complete: it has a clean single parameters table, dark syntax-highlighted code blocks, color-coded error status chips with an error-body example, and it shows the full error codes section within the capture. Page 1 is credible and detailed, with separate header and body tables, but it is more templated and its error codes aren't visible in the capture."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 2 looks more designed and complete, with a titled sidebar, breadcrumb, related endpoints, separate header and body tables, a curl example and response-field tables, while Page 1 is clean but plainer and has a body column that is narrow and left-heavy."
+      }
+    ]
+  }
+]

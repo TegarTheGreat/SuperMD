@@ -1,0 +1,791 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POST /v1/invoices — API Reference</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-alt: #f6f8fa;
+    --fg: #1f2328;
+    --muted: #59636e;
+    --border: #d1d9e0;
+    --accent: #0b5fff;
+    --accent-bg: #e8f0ff;
+    --code-bg: #0f172a;
+    --code-fg: #e2e8f0;
+    --post: #1a7f37;
+    --warn-bg: #fff8e1;
+    --warn-border: #f0c36d;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117;
+      --bg-alt: #151b23;
+      --fg: #e6edf3;
+      --muted: #9198a1;
+      --border: #30363d;
+      --accent: #5b9dff;
+      --accent-bg: #16253f;
+      --code-bg: #010409;
+      --code-fg: #e6edf3;
+      --post: #3fb950;
+      --warn-bg: #2a2210;
+      --warn-border: #7a5c1a;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--fg);
+    background: var(--bg);
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .layout { display: flex; min-height: 100vh; }
+
+  /* Sidebar */
+  nav.sidebar {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    width: 270px;
+    height: 100vh;
+    flex-shrink: 0;
+    overflow-y: auto;
+    padding: 24px 16px;
+    background: var(--bg-alt);
+    border-right: 1px solid var(--border);
+  }
+  .brand { font-weight: 700; font-size: 1.05rem; margin: 0 8px 4px; }
+  .version { margin: 0 8px 20px; color: var(--muted); font-size: .85rem; }
+  .nav-group { margin: 18px 8px 6px; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  nav.sidebar ul { list-style: none; margin: 0; padding: 0; }
+  nav.sidebar a {
+    display: block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    color: var(--fg);
+    font-size: .93rem;
+    border-left: 3px solid transparent;
+  }
+  nav.sidebar a:hover { background: var(--border); text-decoration: none; }
+  nav.sidebar a.active {
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-left-color: var(--accent);
+    font-weight: 600;
+  }
+  nav.sidebar ul ul { margin-left: 12px; }
+  nav.sidebar ul ul a { font-size: .86rem; color: var(--muted); }
+
+  /* Main */
+  main { flex: 1; min-width: 0; padding: 40px 48px 96px; max-width: 920px; }
+  section { margin-bottom: 56px; }
+  h1 { font-size: 2rem; margin: 0 0 12px; line-height: 1.25; }
+  h2 { font-size: 1.4rem; margin: 0 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.05rem; margin: 28px 0 10px; }
+  p { margin: 0 0 14px; }
+  .lead { font-size: 1.1rem; color: var(--muted); }
+
+  .endpoint {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+    padding: 12px 16px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: var(--mono);
+    font-size: .98rem;
+  }
+  .method {
+    background: var(--post);
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: .85rem;
+    letter-spacing: .04em;
+  }
+  .endpoint .url { word-break: break-all; }
+  .endpoint .url span { color: var(--muted); }
+
+  code {
+    font-family: var(--mono);
+    font-size: .88em;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .callout {
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 8px;
+    border: 1px solid var(--warn-border);
+    background: var(--warn-bg);
+    font-size: .94rem;
+  }
+  .callout strong:first-child { display: block; margin-bottom: 2px; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; margin: 12px 0 20px; }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: 10px 14px; vertical-align: top; border-bottom: 1px solid var(--border); }
+  th { background: var(--bg-alt); font-weight: 600; font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { white-space: nowrap; }
+  td.name code { background: none; border: none; padding: 0; font-weight: 600; font-size: .92rem; }
+  .type { font-family: var(--mono); font-size: .84rem; color: var(--muted); }
+  .badge {
+    display: inline-block;
+    font-size: .7rem;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 999px;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+  }
+  .badge.req { background: #fde8e8; color: #b42318; }
+  .badge.opt { background: var(--border); color: var(--muted); }
+  @media (prefers-color-scheme: dark) {
+    .badge.req { background: #3b1518; color: #ff8f8f; }
+  }
+  td .sub { display: block; margin-top: 4px; color: var(--muted); font-size: .86rem; }
+
+  /* Code blocks */
+  .code-block {
+    position: relative;
+    margin: 12px 0 20px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+  }
+  .code-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px 6px 14px;
+    background: rgba(255,255,255,.05);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    color: #9aa7b8;
+    font-size: .78rem;
+    font-family: var(--mono);
+  }
+  .tabs { display: flex; gap: 2px; }
+  .tab {
+    background: none;
+    border: none;
+    color: #9aa7b8;
+    font: inherit;
+    padding: 4px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .tab:hover { color: #fff; }
+  .tab[aria-selected="true"] { background: rgba(255,255,255,.12); color: #fff; }
+  .copy {
+    background: none;
+    border: 1px solid rgba(255,255,255,.2);
+    color: #c5cfdb;
+    font: inherit;
+    padding: 3px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .copy:hover { background: rgba(255,255,255,.1); }
+  pre {
+    margin: 0;
+    padding: 14px 16px;
+    overflow-x: auto;
+    color: var(--code-fg);
+    font-family: var(--mono);
+    font-size: .85rem;
+    line-height: 1.55;
+  }
+  pre[hidden] { display: none; }
+  .k { color: #7dd3fc; }
+  .s { color: #86efac; }
+  .n { color: #fda4af; }
+  .c { color: #7c8aa0; }
+  .status { font-weight: 700; }
+  .status.ok { color: #86efac; }
+
+  .status-pill {
+    display: inline-block;
+    font-family: var(--mono);
+    font-weight: 700;
+    font-size: .84rem;
+    padding: 1px 8px;
+    border-radius: 4px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+  }
+  .s4 { color: #b54708; }
+  .s5 { color: #b42318; }
+  @media (prefers-color-scheme: dark) {
+    .s4 { color: #fdb022; }
+    .s5 { color: #ff8f8f; }
+  }
+
+  /* Mobile */
+  .menu-toggle { display: none; }
+  @media (max-width: 860px) {
+    .layout { display: block; }
+    nav.sidebar {
+      position: static;
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 12px;
+    }
+    .menu-toggle {
+      display: block;
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px 12px;
+      font: inherit;
+      color: var(--fg);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+    }
+    #nav-links { display: none; margin-top: 8px; }
+    #nav-links.open { display: block; }
+    main { padding: 28px 18px 72px; }
+    h1 { font-size: 1.6rem; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <nav class="sidebar" aria-label="Documentation">
+    <p class="brand">Ledgerly API</p>
+    <p class="version">Reference · v1</p>
+    <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-links">☰ Menu</button>
+    <div id="nav-links">
+      <div class="nav-group">Invoices</div>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#authentication">Authentication</a></li>
+        <li><a href="#parameters">Parameters</a>
+          <ul>
+            <li><a href="#headers">Headers</a></li>
+            <li><a href="#body-params">Body parameters</a></li>
+            <li><a href="#line-items">Line item object</a></li>
+          </ul>
+        </li>
+        <li><a href="#request">Request example</a></li>
+        <li><a href="#response">Response</a>
+          <ul>
+            <li><a href="#response-success">Success</a></li>
+            <li><a href="#response-fields">Response fields</a></li>
+          </ul>
+        </li>
+        <li><a href="#errors">Error codes</a></li>
+        <li><a href="#idempotency">Idempotency &amp; limits</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main>
+    <section id="overview">
+      <h1>Create an invoice</h1>
+      <p class="lead">Creates a new invoice for an existing customer. Invoices are created in <code>draft</code> status unless <code>finalize</code> is set to <code>true</code>.</p>
+
+      <div class="endpoint">
+        <span class="method">POST</span>
+        <span class="url"><span>https://api.example.com</span>/v1/invoices</span>
+      </div>
+
+      <p>Totals are calculated by the server from the supplied line items, tax rates, and discount. When an invoice is finalized it is assigned a sequential number, locked for editing, and (if <code>send_email</code> is enabled) delivered to the customer.</p>
+
+      <div class="callout">
+        <strong>Amounts are in minor units</strong>
+        All monetary values are integers in the smallest currency unit (for example, cents for <code>usd</code>). <code>1999</code> means $19.99.
+      </div>
+    </section>
+
+    <section id="authentication">
+      <h2>Authentication</h2>
+      <p>Authenticate with a secret API key sent as a Bearer token. Keep keys server-side; never embed them in client code or public repositories.</p>
+      <div class="code-block">
+        <div class="code-head"><span>Header</span><button class="copy" type="button">Copy</button></div>
+        <pre>Authorization: Bearer sk_live_your_api_key</pre>
+      </div>
+    </section>
+
+    <section id="parameters">
+      <h2>Parameters</h2>
+
+      <h3 id="headers">Headers</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="name"><code>Authorization</code> <span class="badge req">Required</span></td>
+              <td class="type">string</td>
+              <td>Bearer token: <code>Bearer sk_live_…</code></td>
+            </tr>
+            <tr>
+              <td class="name"><code>Content-Type</code> <span class="badge req">Required</span></td>
+              <td class="type">string</td>
+              <td>Must be <code>application/json</code>.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>Idempotency-Key</code> <span class="badge opt">Optional</span></td>
+              <td class="type">string</td>
+              <td>Unique value (max 255 chars) that makes retries safe. See <a href="#idempotency">Idempotency</a>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="body-params">Body parameters</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="name"><code>customer_id</code> <span class="badge req">Required</span></td>
+              <td class="type">string</td>
+              <td>ID of the customer to bill, e.g. <code>cus_8Hq2LmXz</code>.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>currency</code> <span class="badge req">Required</span></td>
+              <td class="type">string</td>
+              <td>Three-letter ISO 4217 code in lowercase, e.g. <code>usd</code>, <code>eur</code>.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>line_items</code> <span class="badge req">Required</span></td>
+              <td class="type">array&lt;object&gt;</td>
+              <td>One to 100 line items. See <a href="#line-items">Line item object</a>.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>due_date</code> <span class="badge opt">Optional</span></td>
+              <td class="type">string (date)</td>
+              <td>Payment due date in <code>YYYY-MM-DD</code> format. Must not be in the past. Defaults to 30 days from creation.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>discount_percent</code> <span class="badge opt">Optional</span></td>
+              <td class="type">number</td>
+              <td>Invoice-level discount from <code>0</code> to <code>100</code>. Applied to the subtotal before tax.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>memo</code> <span class="badge opt">Optional</span></td>
+              <td class="type">string</td>
+              <td>Note shown to the customer on the invoice. Max 1,000 characters.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>finalize</code> <span class="badge opt">Optional</span></td>
+              <td class="type">boolean</td>
+              <td>If <code>true</code>, finalize immediately instead of leaving as a draft. Default <code>false</code>.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>send_email</code> <span class="badge opt">Optional</span></td>
+              <td class="type">boolean</td>
+              <td>Email the invoice to the customer on finalization. Ignored unless <code>finalize</code> is <code>true</code>. Default <code>false</code>.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>metadata</code> <span class="badge opt">Optional</span></td>
+              <td class="type">object</td>
+              <td>Up to 20 string key–value pairs for your own use. Keys max 40 chars, values max 500 chars.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 id="line-items">Line item object</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="name"><code>description</code> <span class="badge req">Required</span></td>
+              <td class="type">string</td>
+              <td>Text shown on the invoice. Max 250 characters.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>unit_amount</code> <span class="badge req">Required</span></td>
+              <td class="type">integer</td>
+              <td>Price per unit in minor currency units. Must be ≥ 0.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>quantity</code> <span class="badge opt">Optional</span></td>
+              <td class="type">integer</td>
+              <td>Number of units, 1–100,000. Default <code>1</code>.</td>
+            </tr>
+            <tr>
+              <td class="name"><code>tax_rate</code> <span class="badge opt">Optional</span></td>
+              <td class="type">number</td>
+              <td>Tax percentage for this line, <code>0</code>–<code>100</code>. Default <code>0</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="request">
+      <h2>Request example</h2>
+      <div class="code-block" data-tabs>
+        <div class="code-head">
+          <div class="tabs" role="tablist">
+            <button class="tab" role="tab" aria-selected="true" data-tab="curl">cURL</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="js">JavaScript</button>
+            <button class="tab" role="tab" aria-selected="false" data-tab="py">Python</button>
+          </div>
+          <button class="copy" type="button">Copy</button>
+        </div>
+<pre data-pane="curl">curl -X POST https://api.example.com/v1/invoices \
+  -H "Authorization: Bearer $LEDGERLY_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: 6f1c2a9e-5b7d-4e0a-9c1f-3d8a2b7e4f10" \
+  -d '{
+    "customer_id": "cus_8Hq2LmXz",
+    "currency": "usd",
+    "due_date": "2026-11-02",
+    "discount_percent": 10,
+    "memo": "Thank you for your business!",
+    "finalize": true,
+    "send_email": true,
+    "line_items": [
+      {
+        "description": "Pro plan — October 2026",
+        "unit_amount": 4900,
+        "quantity": 1,
+        "tax_rate": 8.5
+      },
+      {
+        "description": "Additional seats",
+        "unit_amount": 1200,
+        "quantity": 5,
+        "tax_rate": 8.5
+      }
+    ],
+    "metadata": { "order_ref": "SO-10482" }
+  }'</pre>
+<pre data-pane="js" hidden>const res = await fetch("https://api.example.com/v1/invoices", {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.LEDGERLY_API_KEY}`,
+    "Content-Type": "application/json",
+    "Idempotency-Key": crypto.randomUUID(),
+  },
+  body: JSON.stringify({
+    customer_id: "cus_8Hq2LmXz",
+    currency: "usd",
+    due_date: "2026-11-02",
+    discount_percent: 10,
+    memo: "Thank you for your business!",
+    finalize: true,
+    send_email: true,
+    line_items: [
+      { description: "Pro plan — October 2026", unit_amount: 4900, quantity: 1, tax_rate: 8.5 },
+      { description: "Additional seats", unit_amount: 1200, quantity: 5, tax_rate: 8.5 },
+    ],
+    metadata: { order_ref: "SO-10482" },
+  }),
+});
+
+if (!res.ok) {
+  const { error } = await res.json();
+  throw new Error(`${error.code}: ${error.message}`);
+}
+const invoice = await res.json();
+console.log(invoice.id, invoice.total);</pre>
+<pre data-pane="py" hidden>import os
+import uuid
+import requests
+
+resp = requests.post(
+    "https://api.example.com/v1/invoices",
+    headers={
+        "Authorization": f"Bearer {os.environ['LEDGERLY_API_KEY']}",
+        "Idempotency-Key": str(uuid.uuid4()),
+    },
+    json={
+        "customer_id": "cus_8Hq2LmXz",
+        "currency": "usd",
+        "due_date": "2026-11-02",
+        "discount_percent": 10,
+        "memo": "Thank you for your business!",
+        "finalize": True,
+        "send_email": True,
+        "line_items": [
+            {"description": "Pro plan — October 2026", "unit_amount": 4900, "quantity": 1, "tax_rate": 8.5},
+            {"description": "Additional seats", "unit_amount": 1200, "quantity": 5, "tax_rate": 8.5},
+        ],
+        "metadata": {"order_ref": "SO-10482"},
+    },
+    timeout=30,
+)
+resp.raise_for_status()
+invoice = resp.json()
+print(invoice["id"], invoice["total"])</pre>
+      </div>
+    </section>
+
+    <section id="response">
+      <h2>Response</h2>
+
+      <h3 id="response-success">Success</h3>
+      <p>Returns <span class="status-pill">201 Created</span> with the invoice object.</p>
+      <div class="code-block">
+        <div class="code-head"><span>201 Created · application/json</span><button class="copy" type="button">Copy</button></div>
+<pre>{
+  "id": "inv_3KpR9vTq",
+  "object": "invoice",
+  "number": "INV-2026-001284",
+  "status": "open",
+  "customer_id": "cus_8Hq2LmXz",
+  "currency": "usd",
+  "line_items": [
+    {
+      "id": "li_01HZ",
+      "description": "Pro plan — October 2026",
+      "unit_amount": 4900,
+      "quantity": 1,
+      "tax_rate": 8.5,
+      "amount": 4900
+    },
+    {
+      "id": "li_02HZ",
+      "description": "Additional seats",
+      "unit_amount": 1200,
+      "quantity": 5,
+      "tax_rate": 8.5,
+      "amount": 6000
+    }
+  ],
+  "subtotal": 10900,
+  "discount_percent": 10,
+  "discount_amount": 1090,
+  "tax": 834,
+  "total": 10644,
+  "amount_due": 10644,
+  "due_date": "2026-11-02",
+  "memo": "Thank you for your business!",
+  "metadata": { "order_ref": "SO-10482" },
+  "hosted_url": "https://pay.example.com/i/inv_3KpR9vTq",
+  "created_at": "2026-10-03T09:41:27Z",
+  "finalized_at": "2026-10-03T09:41:27Z"
+}</pre>
+      </div>
+
+      <h3 id="response-fields">Response fields</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="name"><code>id</code></td><td class="type">string</td><td>Unique invoice identifier, prefixed <code>inv_</code>.</td></tr>
+            <tr><td class="name"><code>number</code></td><td class="type">string | null</td><td>Sequential human-readable number. <code>null</code> while the invoice is a draft.</td></tr>
+            <tr><td class="name"><code>status</code></td><td class="type">string</td><td>One of <code>draft</code>, <code>open</code>, <code>paid</code>, <code>void</code>.</td></tr>
+            <tr><td class="name"><code>subtotal</code></td><td class="type">integer</td><td>Sum of line amounts before discount and tax.</td></tr>
+            <tr><td class="name"><code>discount_amount</code></td><td class="type">integer</td><td>Amount removed by <code>discount_percent</code>.</td></tr>
+            <tr><td class="name"><code>tax</code></td><td class="type">integer</td><td>Total tax calculated after discount.</td></tr>
+            <tr><td class="name"><code>total</code></td><td class="type">integer</td><td>Subtotal − discount + tax.</td></tr>
+            <tr><td class="name"><code>amount_due</code></td><td class="type">integer</td><td>Outstanding balance. Equals <code>total</code> on creation.</td></tr>
+            <tr><td class="name"><code>hosted_url</code></td><td class="type">string | null</td><td>Customer-facing payment page. <code>null</code> for drafts.</td></tr>
+            <tr><td class="name"><code>finalized_at</code></td><td class="type">string | null</td><td>ISO 8601 timestamp, or <code>null</code> for drafts.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Error response shape</h3>
+      <div class="code-block">
+        <div class="code-head"><span>422 Unprocessable Entity · application/json</span><button class="copy" type="button">Copy</button></div>
+<pre>{
+  "error": {
+    "code": "validation_error",
+    "message": "line_items[1].unit_amount must be greater than or equal to 0.",
+    "param": "line_items[1].unit_amount",
+    "request_id": "req_7Nd2QxA1"
+  }
+}</pre>
+      </div>
+    </section>
+
+    <section id="errors">
+      <h2>Error codes</h2>
+      <p>Errors use standard HTTP status codes. Include the <code>request_id</code> when contacting support.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Status</th><th>Code</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="status-pill s4">400</span></td>
+              <td class="name"><code>invalid_request</code></td>
+              <td>Malformed JSON, or a missing or unsupported <code>Content-Type</code> header.</td>
+            </tr>
+            <tr>
+              <td><span class="status-pill s4">401</span></td>
+              <td class="name"><code>unauthorized</code></td>
+              <td>API key is missing, malformed, or revoked.</td>
+            </tr>
+            <tr>
+              <td><span class="status-pill s4">403</span></td>
+              <td class="name"><code>forbidden</code></td>
+              <td>The key lacks the <code>invoices:write</code> permission.</td>
+            </tr>
+            <tr>
+              <td><span class="status-pill s4">404</span></td>
+              <td class="name"><code>customer_not_found</code></td>
+              <td>No customer exists with the given <code>customer_id</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="status-pill s4">409</span></td>
+              <td class="name"><code>idempotency_conflict</code></td>
+              <td>The <code>Idempotency-Key</code> was already used with different request parameters, or the original request is still in progress.</td>
+            </tr>
+            <tr>
+              <td><span class="status-pill s4">422</span></td>
+              <td class="name"><code>validation_error</code></td>
+              <td>A parameter failed validation. See <code>error.param</code> for the offending field.</td>
+            </tr>
+            <tr>
+              <td><span class="status-pill s4">422</span></td>
+              <td class="name"><code>currency_mismatch</code></td>
+              <td>The customer has a default currency that differs from <code>currency</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="status-pill s4">429</span></td>
+              <td class="name"><code>rate_limited</code></td>
+              <td>Too many requests. Wait for the number of seconds in the <code>Retry-After</code> header.</td>
+            </tr>
+            <tr>
+              <td><span class="status-pill s5">500</span></td>
+              <td class="name"><code>internal_error</code></td>
+              <td>Something went wrong on our side. Retry with the same <code>Idempotency-Key</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="status-pill s5">503</span></td>
+              <td class="name"><code>service_unavailable</code></td>
+              <td>Temporary outage or maintenance. Retry with exponential backoff.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="idempotency">
+      <h2>Idempotency &amp; limits</h2>
+      <p>Send a unique <code>Idempotency-Key</code> with every create request. If a network error occurs, retry with the same key and the server will return the original response instead of creating a duplicate invoice. Keys expire after 24 hours.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Limit</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Rate limit</td><td>100 requests per minute per API key</td></tr>
+            <tr><td>Line items per invoice</td><td>100</td></tr>
+            <tr><td>Request body size</td><td>1 MB</td></tr>
+            <tr><td>Idempotency key retention</td><td>24 hours</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  // Copy buttons
+  document.querySelectorAll('.copy').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var block = btn.closest('.code-block');
+      var pane = block.querySelector('pre:not([hidden])');
+      var text = pane.textContent;
+      var done = function () {
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = 'Copy'; }, 1500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, fallback);
+      } else {
+        fallback();
+      }
+      function fallback() {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); done(); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  // Language tabs
+  document.querySelectorAll('[data-tabs]').forEach(function (block) {
+    var tabs = block.querySelectorAll('.tab');
+    var panes = block.querySelectorAll('pre[data-pane]');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t === tab)); });
+        panes.forEach(function (p) { p.hidden = p.dataset.pane !== tab.dataset.tab; });
+      });
+    });
+  });
+
+  // Scroll spy
+  var links = Array.prototype.slice.call(document.querySelectorAll('#nav-links a'));
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var targets = Object.keys(map).map(function (id) { return document.getElementById(id); }).filter(Boolean);
+
+  function setActive(id) {
+    links.forEach(function (a) { a.classList.remove('active'); });
+    if (map[id]) map[id].classList.add('active');
+  }
+
+  function onScroll() {
+    var current = targets[0] && targets[0].id;
+    var offset = 120;
+    for (var i = 0; i < targets.length; i++) {
+      if (targets[i].getBoundingClientRect().top - offset <= 0) current = targets[i].id;
+    }
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) {
+      current = targets[targets.length - 1].id;
+    }
+    setActive(current);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Mobile menu
+  var toggle = document.getElementById('menu-toggle');
+  var navLinks = document.getElementById('nav-links');
+  toggle.addEventListener('click', function () {
+    var open = navLinks.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+  links.forEach(function (a) {
+    a.addEventListener('click', function () {
+      navLinks.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+})();
+</script>
+</body>
+</html>
+```

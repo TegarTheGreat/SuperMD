@@ -1,0 +1,629 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POST /v1/invoices · REST API docs</title>
+  <style>
+    /* reset & base */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #f8fafc;
+      color: #0b1b2f;
+      line-height: 1.5;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ---------- SIDEBAR ---------- */
+    .sidebar {
+      width: 280px;
+      background: #ffffff;
+      border-right: 1px solid #e2e8f0;
+      padding: 2rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      flex-shrink: 0;
+    }
+
+    .sidebar h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #1e3a5f;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #d0dae8;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .nav-list li a {
+      display: block;
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      color: #1e3a5f;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: background 0.15s, color 0.15s;
+      border-left: 3px solid transparent;
+    }
+
+    .nav-list li a:hover {
+      background: #eef2f6;
+      color: #0b2b4a;
+    }
+
+    .nav-list li a.active {
+      background: #e1eaf1;
+      border-left-color: #1e5f9e;
+      color: #0b2b4a;
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 0.75rem;
+      color: #6b7b8f;
+      padding-top: 2rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    /* ---------- MAIN CONTENT ---------- */
+    .main {
+      flex: 1;
+      padding: 2rem 2.5rem 4rem 2.5rem;
+      max-width: 1100px;
+      overflow-x: auto;
+    }
+
+    .endpoint-badge {
+      display: inline-block;
+      background: #1e5f9e;
+      color: white;
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.03em;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+      color: #0b1b2f;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .method {
+      background: #0b1b2f;
+      color: #f0f4fa;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.2rem 0.9rem;
+      border-radius: 30px;
+      letter-spacing: 0.02em;
+    }
+
+    .path {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #1e3a5f;
+      background: #eef2f6;
+      padding: 0.2rem 0.8rem;
+      border-radius: 8px;
+    }
+
+    .description {
+      font-size: 1.05rem;
+      color: #2d3f57;
+      margin: 1.25rem 0 2rem 0;
+      max-width: 75ch;
+      border-left: 4px solid #b6c9dd;
+      padding-left: 1.25rem;
+    }
+
+    section {
+      margin-bottom: 2.75rem;
+      scroll-margin-top: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: #0b1b2f;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid #d0dae8;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #1e3a5f;
+      margin: 1.5rem 0 0.75rem 0;
+    }
+
+    /* tables */
+    .table-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid #dce5ed;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      min-width: 600px;
+    }
+
+    th {
+      text-align: left;
+      background: #f1f6fc;
+      font-weight: 600;
+      color: #0b2b4a;
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid #d0dae8;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid #e6edf5;
+      vertical-align: top;
+      color: #1f344b;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .param-name {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-weight: 600;
+      color: #0b2b4a;
+      background: #eef2f6;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      display: inline-block;
+    }
+
+    .required {
+      color: #b22234;
+      font-weight: 600;
+      font-size: 0.8rem;
+      margin-left: 0.4rem;
+      background: #ffe6e6;
+      padding: 0.1rem 0.5rem;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .optional {
+      color: #4b6a8b;
+      font-size: 0.8rem;
+      margin-left: 0.4rem;
+      background: #e6edf5;
+      padding: 0.1rem 0.5rem;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .type {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.85rem;
+      color: #2d5f8b;
+      background: #e9f0f8;
+      padding: 0.15rem 0.5rem;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    /* code blocks */
+    pre {
+      background: #0b1b2f;
+      color: #e3eaf2;
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 1rem 0 1.5rem 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid #1e3a5f;
+    }
+
+    .code-label {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #b6c9dd;
+      margin-bottom: 0.25rem;
+    }
+
+    /* error codes table */
+    .error-code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-weight: 700;
+      color: #b22234;
+      background: #ffe6e6;
+      padding: 0.2rem 0.7rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: inline-block;
+    }
+
+    .error-desc {
+      color: #2d3f57;
+    }
+
+    /* small responsive */
+    @media (max-width: 800px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 1.25rem;
+      }
+      .sidebar h2 {
+        margin-bottom: 0.75rem;
+      }
+      .nav-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .nav-list li a {
+        padding: 0.4rem 0.9rem;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+      }
+      .nav-list li a.active {
+        border-left: none;
+        border-bottom-color: #1e5f9e;
+        background: #e1eaf1;
+      }
+      .main {
+        padding: 1.5rem;
+      }
+      h1 {
+        font-size: 1.6rem;
+      }
+      .path {
+        font-size: 1rem;
+      }
+    }
+
+    /* smooth scroll */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* inline code */
+    code:not(pre code) {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      background: #eef2f6;
+      padding: 0.15rem 0.4rem;
+      border-radius: 6px;
+      font-size: 0.9em;
+      color: #0b2b4a;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="sidebar">
+    <h2>POST /v1/invoices</h2>
+    <ul class="nav-list">
+      <li><a href="#description" class="active">Description</a></li>
+      <li><a href="#parameters">Parameters</a></li>
+      <li><a href="#request-example">Request example</a></li>
+      <li><a href="#response-example">Response example</a></li>
+      <li><a href="#error-codes">Error codes</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      REST API · v1
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+    <!-- header -->
+    <div class="endpoint-badge">Endpoint</div>
+    <h1>
+      <span class="method">POST</span>
+      <span class="path">/v1/invoices</span>
+    </h1>
+
+    <!-- DESCRIPTION -->
+    <section id="description">
+      <h2>Description</h2>
+      <div class="description">
+        Creates a new invoice. The request must include a customer identifier, line items, and optional metadata.
+        On success, the API returns the fully populated invoice object with a unique <code>invoice_id</code>,
+        calculated totals, and a status of <code>draft</code> or <code>open</code> depending on the <code>auto_finalize</code> flag.
+        All monetary values are in the smallest currency unit (e.g., cents).
+      </div>
+    </section>
+
+    <!-- PARAMETERS -->
+    <section id="parameters">
+      <h2>Parameters</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Required</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="param-name">customer_id</span></td>
+              <td><span class="type">string (uuid)</span></td>
+              <td><span class="required">required</span></td>
+              <td>Unique identifier of the customer. Must exist in the system.</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">line_items</span></td>
+              <td><span class="type">array of objects</span></td>
+              <td><span class="required">required</span></td>
+              <td>List of items to invoice. Each item must contain <code>description</code>, <code>quantity</code>, and <code>unit_amount</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">line_items[].description</span></td>
+              <td><span class="type">string</span></td>
+              <td><span class="required">required</span></td>
+              <td>Short description of the product or service.</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">line_items[].quantity</span></td>
+              <td><span class="type">integer</span></td>
+              <td><span class="required">required</span></td>
+              <td>Number of units. Must be ≥ 1.</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">line_items[].unit_amount</span></td>
+              <td><span class="type">integer</span></td>
+              <td><span class="required">required</span></td>
+              <td>Price per unit in the smallest currency unit (e.g., cents). Must be ≥ 0.</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">currency</span></td>
+              <td><span class="type">string (ISO 4217)</span></td>
+              <td><span class="optional">optional</span></td>
+              <td>Three-letter currency code. Defaults to <code>usd</code>.</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">due_date</span></td>
+              <td><span class="type">string (date)</span></td>
+              <td><span class="optional">optional</span></td>
+              <td>Due date in <code>YYYY-MM-DD</code> format. Defaults to 30 days from creation.</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">auto_finalize</span></td>
+              <td><span class="type">boolean</span></td>
+              <td><span class="optional">optional</span></td>
+              <td>If <code>true</code>, the invoice is immediately finalized (status <code>open</code>). Defaults to <code>false</code> (status <code>draft</code>).</td>
+            </tr>
+            <tr>
+              <td><span class="param-name">metadata</span></td>
+              <td><span class="type">object</span></td>
+              <td><span class="optional">optional</span></td>
+              <td>Key-value pairs for additional information (max 20 keys).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- REQUEST EXAMPLE -->
+    <section id="request-example">
+      <h2>Request example</h2>
+      <span class="code-label">POST /v1/invoices</span>
+      <pre>{
+  "customer_id": "cus_9f8a7b6c5d4e3f2a1b0c",
+  "line_items": [
+    {
+      "description": "Premium plan (monthly)",
+      "quantity": 1,
+      "unit_amount": 4999
+    },
+    {
+      "description": "Additional storage (100 GB)",
+      "quantity": 2,
+      "unit_amount": 999
+    }
+  ],
+  "currency": "usd",
+  "due_date": "2025-06-15",
+  "auto_finalize": true,
+  "metadata": {
+    "order_ref": "ORD-2025-0042",
+    "project": "apollo"
+  }
+}</pre>
+    </section>
+
+    <!-- RESPONSE EXAMPLE -->
+    <section id="response-example">
+      <h2>Response example</h2>
+      <span class="code-label">201 Created</span>
+      <pre>{
+  "invoice_id": "inv_1a2b3c4d5e6f7g8h9i0j",
+  "customer_id": "cus_9f8a7b6c5d4e3f2a1b0c",
+  "status": "open",
+  "currency": "usd",
+  "line_items": [
+    {
+      "description": "Premium plan (monthly)",
+      "quantity": 1,
+      "unit_amount": 4999,
+      "amount": 4999
+    },
+    {
+      "description": "Additional storage (100 GB)",
+      "quantity": 2,
+      "unit_amount": 999,
+      "amount": 1998
+    }
+  ],
+  "subtotal": 6997,
+  "tax": 0,
+  "total": 6997,
+  "due_date": "2025-06-15",
+  "created_at": "2025-05-16T10:30:00Z",
+  "metadata": {
+    "order_ref": "ORD-2025-0042",
+    "project": "apollo"
+  }
+}</pre>
+    </section>
+
+    <!-- ERROR CODES -->
+    <section id="error-codes">
+      <h2>Error codes</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>HTTP status</th>
+              <th>Error code</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="error-code">400</span></td>
+              <td><code>invalid_request</code></td>
+              <td class="error-desc">Missing or malformed parameters (e.g., invalid UUID, negative quantity).</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">401</span></td>
+              <td><code>unauthorized</code></td>
+              <td class="error-desc">Invalid or missing API key.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">404</span></td>
+              <td><code>customer_not_found</code></td>
+              <td class="error-desc">The provided <code>customer_id</code> does not exist.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">422</span></td>
+              <td><code>unprocessable_entity</code></td>
+              <td class="error-desc">Semantic error, e.g., unsupported currency or line item total overflow.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">429</span></td>
+              <td><code>rate_limit_exceeded</code></td>
+              <td class="error-desc">Too many requests. Retry after the <code>Retry-After</code> header.</td>
+            </tr>
+            <tr>
+              <td><span class="error-code">500</span></td>
+              <td><code>internal_error</code></td>
+              <td class="error-desc">Unexpected server error. Please contact support.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- tiny script for active nav highlighting (optional, but keeps sidebar in sync) -->
+  <script>
+    (function() {
+      // highlight active section on scroll
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-list li a');
+
+      function updateActiveLink() {
+        let current = '';
+        const scrollPos = window.scrollY + 120; // offset for sticky header
+
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionBottom = sectionTop + section.offsetHeight;
+          if (scrollPos >= sectionTop && scrollPos < sectionBottom) {
+            current = section.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          const href = link.getAttribute('href').substring(1); // remove '#'
+          if (href === current) {
+            link.classList.add('active');
+          }
+        });
+      }
+
+      // initial call
+      updateActiveLink();
+
+      // throttle scroll
+      let ticking = false;
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            updateActiveLink();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+
+      // also update on click (smooth scroll)
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          // let default anchor behavior happen, but update active class immediately
+          navLinks.forEach(l => l.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
+```

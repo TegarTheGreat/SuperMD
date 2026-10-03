@@ -1,0 +1,627 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jakarta Rust Night: monthly Rust meetup</title>
+<meta name="description" content="Jakarta Rust Night is a monthly meetup for Rust developers: talks, lightning slots and an RSVP form.">
+<!--
+  Replace before launch (all sample content):
+  date and times, venue name/address/transit notes, speaker names/roles/talk titles/abstracts,
+  the ENDPOINT constant in the script (the form posts nowhere until it is set).
+-->
+<style>
+:root {
+  --gray-50: #faf8f5;
+  --gray-100: #f2efea;
+  --gray-200: #e4e0da;
+  --gray-400: #78716c;
+  --gray-600: #57534e;
+  --gray-900: #1c1917;
+  --white: #ffffff;
+  --accent: #b7410e;
+  --accent-dark: #8f330b;
+  --accent-tint: #fbefe6;
+  --error: #b42318;
+
+  --fs-12: 0.75rem;
+  --fs-14: 0.875rem;
+  --fs-16: 1rem;
+  --fs-20: 1.25rem;
+  --fs-32: 2rem;
+  --fs-56: 3.5rem;
+
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+
+  --radius: 8px;
+  --shadow: 0 1px 2px rgba(28, 25, 23, 0.08), 0 8px 24px rgba(28, 25, 23, 0.08);
+
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: var(--s-16); }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: var(--fs-16);
+  line-height: 1.6;
+  color: var(--gray-900);
+  background: var(--gray-50);
+}
+
+h1, h2, h3, p, ul, dl, dd { margin: 0; }
+ul { padding: 0; list-style: none; }
+a { color: var(--accent); text-underline-offset: 3px; }
+a:hover { color: var(--accent-dark); }
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--s-6); }
+.prose { max-width: 64ch; }
+
+.skip {
+  position: absolute;
+  left: var(--s-4);
+  top: -100px;
+  background: var(--gray-900);
+  color: var(--white);
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--radius);
+  z-index: 10;
+}
+.skip:focus { top: var(--s-2); color: var(--white); }
+
+/* Header */
+header.site {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+}
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-2) var(--s-6);
+  padding-top: var(--s-3);
+  padding-bottom: var(--s-3);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  font-weight: 700;
+  color: var(--gray-900);
+  text-decoration: none;
+}
+.brand:hover { color: var(--gray-900); }
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: var(--fs-14);
+  font-weight: 700;
+}
+nav ul { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-4); }
+nav a {
+  display: inline-block;
+  padding: var(--s-1) 0;
+  color: var(--gray-600);
+  font-size: var(--fs-14);
+  font-weight: 600;
+  text-decoration: none;
+}
+nav a:hover { color: var(--accent); text-decoration: underline; }
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--s-2) var(--s-6);
+  border: 2px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--white);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.btn:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: var(--white); }
+.btn:active { transform: translateY(1px); }
+.btn[disabled] {
+  background: var(--gray-200);
+  border-color: var(--gray-200);
+  color: var(--gray-600);
+  cursor: not-allowed;
+  transform: none;
+}
+.btn.secondary { background: transparent; color: var(--accent); }
+.btn.secondary:hover { background: var(--accent-tint); color: var(--accent-dark); }
+
+/* Hero */
+.hero { padding: var(--s-16) 0; }
+.hero-grid {
+  display: grid;
+  gap: var(--s-12);
+  align-items: center;
+}
+.eyebrow {
+  font-family: var(--mono);
+  font-size: var(--fs-14);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+h1 {
+  margin-top: var(--s-3);
+  font-size: clamp(2.25rem, 8vw, var(--fs-56));
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+.lede { margin-top: var(--s-6); font-size: var(--fs-20); color: var(--gray-600); max-width: 52ch; }
+.cta { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-8); }
+.small { font-size: var(--fs-12); color: var(--gray-600); }
+.hero .small { margin-top: var(--s-4); }
+
+.ticket {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.ticket-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s-4);
+  padding: var(--s-6);
+  background: var(--accent);
+  color: var(--white);
+}
+.ticket-day { font-size: var(--fs-56); font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+.ticket-month { font-size: var(--fs-20); font-weight: 700; line-height: 1.3; }
+.ticket-month span { display: block; font-size: var(--fs-14); font-weight: 500; }
+.ticket dl { padding: var(--s-2) var(--s-6) var(--s-4); }
+.ticket .row {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  gap: var(--s-3);
+  padding: var(--s-3) 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.ticket .row:last-child { border-bottom: 0; }
+.ticket dt { font-size: var(--fs-12); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-600); padding-top: 2px; }
+.ticket dd { font-weight: 600; }
+.ticket dd small { display: block; font-weight: 400; font-size: var(--fs-14); color: var(--gray-600); }
+
+/* Sections */
+section.block { padding: var(--s-16) 0; border-top: 1px solid var(--gray-200); }
+section.block.alt { background: var(--white); }
+.block h2 { font-size: var(--fs-32); line-height: 1.15; letter-spacing: -0.01em; }
+.block .intro { margin-top: var(--s-3); color: var(--gray-600); }
+.block .content { margin-top: var(--s-8); }
+
+/* Schedule */
+.schedule { border: 1px solid var(--gray-200); border-radius: var(--radius); background: var(--white); }
+.slot {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s-1);
+  padding: var(--s-4) var(--s-6);
+  border-bottom: 1px solid var(--gray-200);
+}
+.slot:last-child { border-bottom: 0; }
+.slot time { font-family: var(--mono); font-size: var(--fs-14); font-weight: 700; color: var(--accent); }
+.slot h3 { font-size: var(--fs-16); }
+.slot p { font-size: var(--fs-14); color: var(--gray-600); max-width: 64ch; }
+.slot.talk { background: var(--accent-tint); }
+.slot.talk h3 { font-size: var(--fs-20); line-height: 1.3; }
+.slot.talk p { color: var(--gray-900); }
+
+/* Speakers */
+.speakers { display: grid; gap: var(--s-6); }
+.speaker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  padding: var(--s-6);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: var(--gray-50);
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--gray-900);
+  color: var(--white);
+  font-weight: 700;
+  font-size: var(--fs-20);
+}
+.speaker h3 { font-size: var(--fs-20); line-height: 1.2; }
+.speaker .role { font-size: var(--fs-14); color: var(--gray-600); }
+.speaker .talk-title { font-weight: 700; padding-top: var(--s-3); border-top: 1px solid var(--gray-200); }
+.speaker p.abstract { font-size: var(--fs-14); color: var(--gray-600); }
+
+/* Venue */
+.venue-grid { display: grid; gap: var(--s-8); }
+.venue-grid dl { display: grid; gap: var(--s-4); }
+.venue-grid dt { font-size: var(--fs-12); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-600); }
+.venue-grid dd { margin-top: 2px; }
+.directions { padding: var(--s-6); border: 1px solid var(--gray-200); border-radius: var(--radius); background: var(--white); }
+.directions h3 { font-size: var(--fs-16); margin-bottom: var(--s-3); }
+.directions li { display: grid; grid-template-columns: 24px 1fr; gap: var(--s-2); padding: var(--s-2) 0; font-size: var(--fs-14); }
+.directions li + li { border-top: 1px solid var(--gray-100); }
+.directions .n { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+
+/* RSVP */
+.rsvp-grid { display: grid; gap: var(--s-8); }
+form.rsvp, .confirm {
+  padding: var(--s-6);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  background: var(--gray-50);
+}
+.field { display: grid; gap: var(--s-1); margin-bottom: var(--s-4); }
+label, legend { font-weight: 700; font-size: var(--fs-14); }
+.hint { font-size: var(--fs-12); color: var(--gray-600); }
+input[type="text"], input[type="email"], select {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--gray-400);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--gray-900);
+  font: inherit;
+}
+input:hover, select:hover { border-color: var(--gray-900); }
+input:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+input:disabled, select:disabled { background: var(--gray-100); color: var(--gray-600); cursor: not-allowed; }
+input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--error); border-width: 2px; }
+.error { min-height: 0; color: var(--error); font-size: var(--fs-14); font-weight: 600; }
+.error:empty { display: none; }
+.check { display: grid; grid-template-columns: 24px 1fr; gap: var(--s-3); align-items: start; margin-bottom: var(--s-6); }
+.check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); }
+.check label { font-weight: 400; }
+.form-error { margin-bottom: var(--s-4); color: var(--error); font-weight: 600; font-size: var(--fs-14); }
+.form-error:empty { display: none; }
+.confirm { background: var(--accent-tint); border-color: var(--accent); }
+.confirm h3 { font-size: var(--fs-20); }
+.confirm p { margin-top: var(--s-2); }
+.confirm:focus { outline: 3px solid var(--accent); outline-offset: 2px; }
+.side-note { padding: var(--s-6); border-left: 4px solid var(--accent); background: var(--white); }
+.side-note h3 { font-size: var(--fs-16); margin-bottom: var(--s-2); }
+.side-note p { font-size: var(--fs-14); color: var(--gray-600); }
+.side-note p + p { margin-top: var(--s-2); }
+
+/* Footer */
+footer.site { padding: var(--s-12) 0; background: var(--gray-900); color: var(--gray-200); }
+footer.site .wrap { display: grid; gap: var(--s-4); }
+footer.site a { color: var(--white); }
+footer.site ul { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-6); }
+footer.site .small { color: var(--gray-200); }
+
+@media (min-width: 720px) {
+  .slot { grid-template-columns: 140px 1fr; gap: var(--s-6); align-items: start; }
+  .slot time { padding-top: 2px; }
+  .venue-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 860px) {
+  .hero-grid { grid-template-columns: 1.2fr 1fr; }
+  .speakers { grid-template-columns: repeat(3, 1fr); }
+  .rsvp-grid { grid-template-columns: 1.4fr 1fr; align-items: start; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .btn { transition: none; }
+  .btn:active { transform: none; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site">
+  <div class="wrap bar">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">rs</span>Jakarta Rust Night</a>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#speakers">Speakers</a></li>
+        <li><a href="#venue">Venue</a></li>
+        <li><a href="#rsvp">RSVP</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top" aria-labelledby="h1">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Monthly meetup, Jakarta</p>
+        <h1 id="h1">Jakarta Rust Night</h1>
+        <p class="lede">An evening for people who write Rust in Jakarta: three talks, a block of lightning slots, and time afterwards to compare notes.</p>
+        <div class="cta">
+          <a class="btn" href="#rsvp">RSVP for 22 October</a>
+          <a class="btn secondary" href="#schedule">See the schedule</a>
+        </div>
+        <p class="small">Sample details, replace before launch.</p>
+      </div>
+
+      <aside class="ticket" aria-label="Next meetup details">
+        <div class="ticket-head">
+          <span class="ticket-day">22</span>
+          <span class="ticket-month">October 2026<span>Thursday</span></span>
+        </div>
+        <dl>
+          <div class="row"><dt>Doors</dt><dd>18:30 WIB</dd></div>
+          <div class="row"><dt>Talks</dt><dd>19:00 to 21:30<small>Hangout until 22:00</small></dd></div>
+          <div class="row"><dt>Where</dt><dd>Venue name<small>Jl. Contoh No. 1, Jakarta Selatan</small></dd></div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <section class="block alt" id="schedule" aria-labelledby="h-schedule">
+    <div class="wrap">
+      <h2 id="h-schedule">Schedule</h2>
+      <p class="intro">All times in WIB (UTC+7).</p>
+      <div class="content schedule">
+        <div class="slot"><time datetime="18:30">18:30</time><div><h3>Doors and check-in</h3><p>Name badges at the front desk.</p></div></div>
+        <div class="slot"><time datetime="19:00">19:00</time><div><h3>Welcome and announcements</h3><p>Organizers, next month's call for speakers.</p></div></div>
+        <div class="slot talk"><time datetime="19:10">19:10 to 19:40</time><div><h3>Async services without fighting the borrow checker</h3><p>Dewi Anggraini</p></div></div>
+        <div class="slot talk"><time datetime="19:45">19:45 to 20:15</time><div><h3>Making a command-line tool start faster</h3><p>Raka Mahendra</p></div></div>
+        <div class="slot"><time datetime="20:15">20:15 to 20:35</time><div><h3>Break</h3><p>Food and drinks.</p></div></div>
+        <div class="slot talk"><time datetime="20:35">20:35 to 21:05</time><div><h3>Writing a Postgres extension in Rust</h3><p>Sinta Wibowo</p></div></div>
+        <div class="slot"><time datetime="21:05">21:05 to 21:30</time><div><h3>Lightning talks</h3><p>Five minutes each. Sign up at the door or note it in the RSVP form.</p></div></div>
+        <div class="slot"><time datetime="21:30">21:30 to 22:00</time><div><h3>Hangout</h3><p>Open conversation until the venue closes.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="speakers" aria-labelledby="h-speakers">
+    <div class="wrap">
+      <h2 id="h-speakers">Speakers</h2>
+      <p class="intro">Three 30-minute talks, each followed by questions in the break or the hangout.</p>
+      <div class="content speakers">
+        <article class="speaker">
+          <div class="avatar" aria-hidden="true">DA</div>
+          <div><h3>Dewi Anggraini</h3><p class="role">Backend engineer</p></div>
+          <p class="talk-title">Async services without fighting the borrow checker</p>
+          <p class="abstract">Patterns for sharing state between tasks in a Tokio service, and when to reach for channels instead of locks.</p>
+        </article>
+        <article class="speaker">
+          <div class="avatar" aria-hidden="true">RM</div>
+          <div><h3>Raka Mahendra</h3><p class="role">Tooling engineer</p></div>
+          <p class="talk-title">Making a command-line tool start faster</p>
+          <p class="abstract">Profiling startup, trimming dependencies, and measuring the result with repeatable benchmarks.</p>
+        </article>
+        <article class="speaker">
+          <div class="avatar" aria-hidden="true">SW</div>
+          <div><h3>Sinta Wibowo</h3><p class="role">Database engineer</p></div>
+          <p class="talk-title">Writing a Postgres extension in Rust</p>
+          <p class="abstract">Building, testing and packaging an extension with pgrx, including what to do about unsafe boundaries.</p>
+        </article>
+      </div>
+      <p class="small" style="margin-top: var(--s-4)">Speakers and talks are sample content.</p>
+    </div>
+  </section>
+
+  <section class="block alt" id="venue" aria-labelledby="h-venue">
+    <div class="wrap">
+      <h2 id="h-venue">Venue</h2>
+      <div class="content venue-grid">
+        <dl>
+          <div><dt>Place</dt><dd>Venue name</dd></div>
+          <div><dt>Address</dt><dd>Jl. Contoh No. 1, Jakarta Selatan 12000</dd></div>
+          <div><dt>Floor</dt><dd>Level 3, meeting room</dd></div>
+          <div><dt>Accessibility</dt><dd>Step-free entrance and lift to level 3. Email the organizers if you need other arrangements.</dd></div>
+        </dl>
+        <div class="directions">
+          <h3>Getting there</h3>
+          <ul>
+            <li><span class="n">1</span><span>Public transport: nearest station and walking time go here.</span></li>
+            <li><span class="n">2</span><span>Ride-hailing: set the pickup to the main entrance on the street side.</span></li>
+            <li><span class="n">3</span><span>Parking: basement parking, details to confirm with the venue.</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="rsvp" aria-labelledby="h-rsvp">
+    <div class="wrap">
+      <h2 id="h-rsvp">RSVP</h2>
+      <p class="intro prose">One response per person. It helps us size the food order and the room.</p>
+      <div class="content rsvp-grid">
+        <div>
+          <form class="rsvp" id="rsvp-form" action="#" method="post">
+            <div class="form-error" id="form-error" role="alert"></div>
+
+            <div class="field">
+              <label for="name">Full name</label>
+              <input type="text" id="name" name="name" autocomplete="name" required aria-describedby="name-err">
+              <div class="error" id="name-err"></div>
+            </div>
+
+            <div class="field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" autocomplete="email" required aria-describedby="email-hint email-err">
+              <div class="hint" id="email-hint">Used only for event updates.</div>
+              <div class="error" id="email-err"></div>
+            </div>
+
+            <div class="field">
+              <label for="level">Rust experience</label>
+              <select id="level" name="level" required aria-describedby="level-err">
+                <option value="">Choose one</option>
+                <option>Just starting</option>
+                <option>Side projects</option>
+                <option>Using it at work</option>
+                <option>Maintaining crates</option>
+              </select>
+              <div class="error" id="level-err"></div>
+            </div>
+
+            <div class="field">
+              <label for="diet">Food preference</label>
+              <select id="diet" name="diet">
+                <option>No preference</option>
+                <option>Vegetarian</option>
+                <option>Halal</option>
+                <option>Vegan</option>
+              </select>
+            </div>
+
+            <div class="check">
+              <input type="checkbox" id="lightning" name="lightning">
+              <label for="lightning">I'd like a five-minute lightning slot.</label>
+            </div>
+
+            <button class="btn" type="submit" id="submit">Reserve my seat</button>
+          </form>
+
+          <div class="confirm" id="confirm" tabindex="-1" role="status" hidden>
+            <h3>You're on the list, <span id="confirm-name"></span>.</h3>
+            <p>We'll email <strong id="confirm-email"></strong> with any change to the date or venue.</p>
+            <p><a href="#schedule">Review the schedule</a></p>
+          </div>
+        </div>
+
+        <aside class="side-note" aria-label="Before you come">
+          <h3>Before you come</h3>
+          <p>Bring a laptop only if you want to; there is no workshop this month.</p>
+          <p>Can't make it? Reply to your confirmation email so someone else can take the seat.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <ul>
+      <li><a href="#schedule">Schedule</a></li>
+      <li><a href="#speakers">Speakers</a></li>
+      <li><a href="#venue">Venue</a></li>
+      <li><a href="#rsvp">RSVP</a></li>
+    </ul>
+    <p>Jakarta Rust Night is a community meetup, held monthly in Jakarta.</p>
+    <p class="small">Event, speaker and venue details on this page are sample content.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Set to the URL that receives the RSVP (POST, JSON). Empty means nothing is sent.
+  var ENDPOINT = "";
+
+  var form = document.getElementById("rsvp-form");
+  var confirmBox = document.getElementById("confirm");
+  var formError = document.getElementById("form-error");
+  var button = document.getElementById("submit");
+  var fields = [
+    { el: document.getElementById("name"), err: document.getElementById("name-err"), msg: "Enter your name." },
+    { el: document.getElementById("email"), err: document.getElementById("email-err"), msg: "Enter a valid email address." },
+    { el: document.getElementById("level"), err: document.getElementById("level-err"), msg: "Choose your experience level." }
+  ];
+
+  form.setAttribute("novalidate", "");
+
+  function check(f) {
+    var v = f.el.value.trim();
+    var ok = f.el.type === "email" ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) : v !== "";
+    f.el.setAttribute("aria-invalid", ok ? "false" : "true");
+    f.err.textContent = ok ? "" : f.msg;
+    return ok;
+  }
+
+  fields.forEach(function (f) {
+    f.el.addEventListener("blur", function () { if (f.el.value !== "") check(f); });
+    f.el.addEventListener("input", function () {
+      if (f.el.getAttribute("aria-invalid") === "true") check(f);
+    });
+  });
+
+  function setBusy(busy) {
+    button.disabled = busy;
+    button.textContent = busy ? "Sending..." : "Reserve my seat";
+    form.setAttribute("aria-busy", busy ? "true" : "false");
+    Array.prototype.forEach.call(form.elements, function (el) {
+      if (el !== button) el.disabled = busy;
+    });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    formError.textContent = "";
+
+    var firstBad = null;
+    fields.forEach(function (f) { if (!check(f) && !firstBad) firstBad = f.el; });
+    if (firstBad) { firstBad.focus(); return; }
+
+    var payload = {
+      name: fields[0].el.value.trim(),
+      email: fields[1].el.value.trim(),
+      level: fields[2].el.value,
+      diet: document.getElementById("diet").value,
+      lightning: document.getElementById("lightning").checked
+    };
+
+    function done() {
+      document.getElementById("confirm-name").textContent = payload.name.split(" ")[0];
+      document.getElementById("confirm-email").textContent = payload.email;
+      form.hidden = true;
+      confirmBox.hidden = false;
+      confirmBox.focus();
+    }
+
+    if (!ENDPOINT) { done(); return; }
+
+    setBusy(true);
+    fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      done();
+    }).catch(function () {
+      setBusy(false);
+      formError.textContent = "Your RSVP did not go through. Check your connection and try again.";
+    });
+  });
+})();
+</script>
+</body>
+</html>
+```

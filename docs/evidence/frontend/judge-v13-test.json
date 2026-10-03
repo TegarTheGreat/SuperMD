@@ -1,0 +1,78 @@
+[
+  {
+    "prompt": "meetup",
+    "generator": "claude",
+    "subject": "v13",
+    "against": "baseline",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 carries its terminal motif through every section with a clear hierarchy, specific content (talk titles, address, door timing), and a complete form with a footer. Page 2 is a more generic dark template, with a fake illustrative map, an awkward radio group, and a form that is cut off."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 looks more designed, with a terminal-card hero, a schedule log, specific talk titles and a coherent venue and RSVP section. Page 1 is a more generic dark template, and its fake map and long form are weaker."
+      }
+    ]
+  },
+  {
+    "prompt": "meetup",
+    "generator": "deepseek",
+    "subject": "v13",
+    "against": "baseline",
+    "result": "baseline",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 looks more polished and designed, with a clear card layout, avatar initials and a strong RSVP form. Page 1 is a plain monospace document with a cramped Schedule heading under the hero, a bare form, and an invented \"4,000 requests per second\" claim."
+      },
+      {
+        "order": "subject-second",
+        "winner": "baseline",
+        "why": "Page 1 has a more polished, cohesive dark card layout with a strong hierarchy and a complete RSVP form, while Page 2 is a plain, tightly stacked monospace document with a cramped header-to-schedule transition, a stated 4,000 req/s performance claim, and an obviously unfinished 'sample form' note."
+      }
+    ]
+  },
+  {
+    "prompt": "orders",
+    "generator": "claude",
+    "subject": "v13",
+    "against": "baseline",
+    "result": "v13",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 has a more distinctive and designed look, with a dark nav, monospace brand, clickable blue order IDs, meaningful KPI captions, an honest 'sample data' note, a footer and a compact paginator. Page 1 is a clean but generic template, and its email in the header and its revenue-style stat cards read as more filler."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v13",
+        "why": "Page 1 has more distinctive, specific details: a branded dark nav, KPI cards that say what they mean (\"Needs action\", \"Excludes cancelled and refunded\"), color-coded status pills, and an honest sample-data note. Page 2 is a more generic template that shows the user's email in the header and has weaker status pills."
+      }
+    ]
+  },
+  {
+    "prompt": "orders",
+    "generator": "deepseek",
+    "subject": "v13",
+    "against": "baseline",
+    "result": "tie (passes disagree)",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v13",
+        "why": "Page 2 reads as a credible admin tool, with a compact table, right-aligned totals, monospaced order IDs and a clean header bar. Page 1 looks like a rounded-card template with an emoji search icon and per-row Details buttons, and its page-number control is the only thing it does better."
+      },
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 has the more finished look: bolder hierarchy, a count badge, numbered pagination, an explicit Details button that makes the drawer easy to find, and a styled status select. Page 1 is clean and its right-aligned monospace figures are credible, but it looks plainer, uses a native select, and gives no visible cue for opening the drawer."
+      }
+    ]
+  }
+]

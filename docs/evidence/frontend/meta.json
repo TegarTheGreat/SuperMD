@@ -1,0 +1,151 @@
+{
+  "runs": [
+    {
+      "recordedAt": "2026-10-03T01:57:31.953Z",
+      "supermd": "1.12.0",
+      "conditions": [
+        {
+          "name": "baseline",
+          "rev": null
+        },
+        {
+          "name": "v11",
+          "rev": "7e7b18b6cfe591592e15b6bfdd3122a361a0b888"
+        }
+      ],
+      "generators": [
+        "deepseek"
+      ],
+      "prompts": [
+        "saas",
+        "dashboard",
+        "cafe",
+        "settings",
+        "table"
+      ],
+      "deepseekModel": "deepseek-chat (temperature 0)",
+      "claudeCode": null
+    },
+    {
+      "recordedAt": "2026-10-03T02:04:24.228Z",
+      "supermd": "1.12.0",
+      "conditions": [
+        {
+          "name": "baseline",
+          "rev": null
+        },
+        {
+          "name": "v11",
+          "rev": "7e7b18b6cfe591592e15b6bfdd3122a361a0b888"
+        }
+      ],
+      "generators": [
+        "claude"
+      ],
+      "prompts": [
+        "saas",
+        "dashboard",
+        "cafe",
+        "settings",
+        "table"
+      ],
+      "deepseekModel": "deepseek-chat (temperature 0)",
+      "claudeCode": "2.1.288 (Claude Code)"
+    },
+    {
+      "recordedAt": "2026-10-03T02:25:06.041Z",
+      "supermd": "1.12.0",
+      "conditions": [
+        {
+          "name": "v2",
+          "rev": "WORKTREE"
+        }
+      ],
+      "generators": [
+        "deepseek",
+        "claude"
+      ],
+      "prompts": [
+        "saas",
+        "dashboard",
+        "cafe",
+        "settings",
+        "table"
+      ],
+      "deepseekModel": "deepseek-chat (temperature 0)",
+      "claudeCode": "2.1.288 (Claude Code)"
+    },
+    {
+      "recordedAt": "2026-10-03T02:47:58.044Z",
+      "supermd": "1.12.0",
+      "conditions": [
+        {
+          "name": "baseline",
+          "rev": null
+        },
+        {
+          "name": "v11",
+          "rev": "7e7b18b6cfe591592e15b6bfdd3122a361a0b888"
+        },
+        {
+          "name": "v12",
+          "rev": "WORKTREE"
+        }
+      ],
+      "generators": [
+        "deepseek",
+        "claude"
+      ],
+      "prompts": [
+        "saas",
+        "dashboard",
+        "cafe",
+        "settings",
+        "meetup",
+        "orders",
+        "table"
+      ],
+      "deepseekModel": "deepseek-chat (temperature 0)",
+      "claudeCode": "2.1.288 (Claude Code)"
+    },
+    {
+      "recordedAt": "2026-10-03T03:13:29.112Z",
+      "supermd": "1.12.0",
+      "conditions": [
+        {
+          "name": "baseline",
+          "rev": null
+        },
+        {
+          "name": "v11",
+          "rev": "7e7b18b6cfe591592e15b6bfdd3122a361a0b888"
+        },
+        {
+          "name": "v12",
+          "rev": "cf29581939f2e757765f6da097fbec18c5e93273"
+        },
+        {
+          "name": "v13",
+          "rev": "WORKTREE"
+        }
+      ],
+      "generators": [
+        "deepseek",
+        "claude"
+      ],
+      "prompts": [
+        "saas",
+        "dashboard",
+        "cafe",
+        "settings",
+        "meetup",
+        "orders",
+        "portfolio",
+        "docs",
+        "table"
+      ],
+      "deepseekModel": "deepseek-chat (temperature 0)",
+      "claudeCode": "2.1.288 (Claude Code)"
+    }
+  ]
+}

@@ -165,15 +165,21 @@ Apa kata run penuh terbaru (2026-10-03), tanpa dibulatkan demi keuntungan kami:
 
 ### Uji frontend
 
-Frontend adalah tempat slop paling mudah terlihat, jadi ia punya eksperimen terekam sendiri: prompt landing page dan komponen React yang sama, dengan dan tanpa SuperMD, pada DeepSeek dan Claude Code ([tulisan lengkap beserta output mentah](docs/evidence/frontend/README.md)).
+Frontend adalah tempat slop paling mudah terlihat, jadi ia punya eksperimen terekam sendiri: delapan prompt halaman dan satu komponen React, dengan dan tanpa SuperMD, pada DeepSeek dan Claude Code, dinilai lewat hitungan dari browser headless dan perbandingan visual buta ([tulisan lengkap beserta output mentah](docs/evidence/frontend/README.md)). Prompt dibagi menjadi set yang dipakai saat menulis modul dan set yang ditahan darinya.
 
 <div align="center">
-<img src="docs/assets/frontend-landing.png" alt="Prompt landing page Taskly yang sama dirender empat cara: DeepSeek dan Claude Code, masing-masing dengan dan tanpa SuperMD" width="860">
+<img src="docs/assets/frontend-portfolio.png" alt="Halaman portofolio fotografer dari Claude Code: tanpa SuperMD, dengan modul frontend sebelumnya, dan dengan modul 1.2" width="860">
+<br>
+<img src="docs/assets/frontend-docs.png" alt="Halaman referensi API dari Claude Code dalam tiga kondisi yang sama; halaman paling kanan kalah karena blok kodenya berteks terang di atas latar terang" width="860">
 </div>
 
-- **Berhasil pada teks dan ketelitian teknis.** Tanpa SuperMD, DeepSeek memakai empat emoji sebagai ikon fitur dan menjudulkan halaman "Project management, minus the chaos"; dengan SuperMD, tanpa emoji dan dengan judul yang konkret. Tabel React hasil generasi mencakup kesepuluh state dan hook aksesibilitas yang kami periksa (loading, error, empty, `aria-sort`, gaya fokus, dan lainnya) di setiap run dengan SuperMD, berbanding 8 atau 9 dari 10 tanpa SuperMD.
-- **Uji ini menemukan tiga celah, dan sudah diperbaiki di rilis ini.** Linter menandai `© 2026` di footer sebagai slop keras. Judul buatan Claude menjadi "takes ten minutes to set up", klaim yang tak pernah diberikan siapa pun. Aturan tanpa-dekorasi dari core bocor ke antarmuka dan melucuti ikon sebuah halaman. Modul frontend kini mewajibkan placeholder berlabel untuk klaim produk yang tak diberikan dan menyatakan aturan itu berlaku untuk prosa, bukan UI; Claude lalu menulis 8 placeholder `[confirm: …]` untuk harga dan batas, alih-alih mengarangnya.
-- **Ada batasnya.** DeepSeek mengabaikan aturan placeholder dan tetap mengarang harga. SuperMD tak punya opini soal selera visual, jadi grid tiga kartu fitur yang generik tetap muncul dengan maupun tanpa SuperMD. Satu sampel per sel: ilustrasi, bukan benchmark.
+- **Revisi pertama modul frontend tidak bagus, dan pengujian menunjukkannya.** Dibanding tanpa aturan, ia menang 2 perbandingan buta, seri 3, dan kalah 3. Halamannya terbaca seperti template yang belum selesai, dengan 88 placeholder `[confirm: …]` di 16 halaman. Itu cocok dengan kesan bahwa keluaran frontend dengan SuperMD terlihat lemah.
+- **Modul 1.2 memperbaiki penyebabnya.** Ia memisahkan konten contoh (boleh, ditandai satu kali dengan huruf kecil) dari klaim tentang dunia nyata (jumlah pelanggan, testimoni, rating: dihilangkan, tidak pernah ditiru), dan menambah standar "Membangun UI dari nol": design token lebih dulu, hero yang dibangun dari UI produknya sendiri, grid seimbang, daftar periksa kondisi selesai. Pada prompt yang ditahan, ia mengalahkan tanpa-aturan di 5 perbandingan buta, seri 1, dan kalah 2, serta mengalahkan revisi sebelumnya 4 dari 4 pada ronde baru. Pada delapan halaman yang sama, pelanggaran aksesibilitas axe-core turun dari 13 menjadi 3 dan halaman dengan aturan reduced-motion naik dari 3 menjadi 7.
+- **Masih ada yang kalah.** Salah satu dari dua kekalahan adalah cacat nyata, terlihat di atas pada gambar kanan: gaya inline-code bocor ke blok `pre`. DeepSeek perancang yang lebih lemah daripada Claude. SuperMD tidak memilihkan desain untuk Anda, dan grid kartu yang generik muncul dengan maupun tanpa SuperMD. Satu sampel per sel, dan jurinya adalah model.
+
+### Yang masih lolos
+
+Leksikon keras bersih di setiap run penuh, tetapi ia hanya menjaga frasa bernama. Audit atas output yang sama menemukan bentuk yang tak dijaganya: punchline kontras ("X bukan strategi, ia ketiadaan strategi") naik dari 2 menjadi 5, dan label tebal sebaris tidak bergerak. Pemilihan kata aturan yang lebih tajam tidak memberi perbedaan terukur pada 48 sampel per kondisi, jadi tidak dirilis; `supermd check` kini melaporkan bentuk itu sebagai hit lunak ([audit dan probe](docs/evidence/residual-slop/README.md)).
 
 Selain eval, repositori ini adalah kasus ujinya sendiri: `npm test` menjalankan 11 pemeriksaan, termasuk 30 tes installer, 21 tes protokol MCP, dan linter anti-slop atas kedua pohon bahasa serta setiap dokumen pintu depan.
 

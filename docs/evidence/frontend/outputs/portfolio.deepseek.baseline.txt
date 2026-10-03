@@ -1,0 +1,496 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yogyakarta · freelance photographer</title>
+  <style>
+    /* ---------- RESET & BASE ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #faf7f2;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      color: #1e1e1e;
+      line-height: 1.5;
+      scroll-behavior: smooth;
+    }
+
+    /* subtle paper texture via repeating gradient (no external assets) */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: repeating-linear-gradient(45deg, rgba(0,0,0,0.01) 0px, rgba(0,0,0,0.01) 2px, transparent 2px, transparent 6px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---------- TYPOGRAPHY & LINKS ---------- */
+    h1, h2, h3 {
+      font-weight: 500;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 8vw, 5rem);
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #d9cdb8;
+      padding-bottom: 0.5rem;
+      display: inline-block;
+    }
+
+    a {
+      color: #1e1e1e;
+      text-decoration: none;
+      border-bottom: 1px solid #b8a99a;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    a:hover {
+      border-bottom-color: #1e1e1e;
+      color: #000;
+    }
+
+    /* ---------- HEADER / INTRO ---------- */
+    .intro {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      margin-bottom: 5rem;
+      padding-top: 1rem;
+    }
+
+    .intro-tagline {
+      font-size: 1.25rem;
+      color: #4a3f35;
+      max-width: 650px;
+      margin-bottom: 0.5rem;
+    }
+
+    .intro-location {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #6b5e4f;
+      margin-bottom: 0.25rem;
+    }
+
+    .intro-location::before {
+      content: "📍";
+      font-size: 1.2rem;
+      filter: grayscale(0.3);
+    }
+
+    .intro-description {
+      font-size: 1.15rem;
+      max-width: 700px;
+      color: #2e2a24;
+      border-left: 4px solid #d9cdb8;
+      padding-left: 1.5rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ---------- SELECTED WORK (grid) ---------- */
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 5rem;
+    }
+
+    .work-card {
+      background: #ffffffd9;
+      backdrop-filter: blur(2px);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      border: 1px solid #e7dfd4;
+    }
+
+    .work-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 28px -12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* image placeholder — pure CSS, no external assets */
+    .work-image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #d9cdb8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: #7a6a58;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* subtle pattern inside each placeholder */
+    .work-image::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 30% 40%, rgba(255,255,240,0.4) 0%, transparent 50%),
+                        repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.02) 4px, transparent 4px, transparent 12px);
+      pointer-events: none;
+    }
+
+    .work-card:nth-child(1) .work-image { background: #cbbfae; }
+    .work-card:nth-child(2) .work-image { background: #b8aa98; }
+    .work-card:nth-child(3) .work-image { background: #d6c9b8; }
+    .work-card:nth-child(4) .work-image { background: #c2b4a2; }
+    .work-card:nth-child(5) .work-image { background: #cfc1b0; }
+    .work-card:nth-child(6) .work-image { background: #b9ab99; }
+
+    .work-caption {
+      padding: 1.25rem 1.25rem 1.5rem;
+    }
+
+    .work-caption h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+
+    .work-caption p {
+      font-size: 0.95rem;
+      color: #5f5346;
+      margin-bottom: 0.5rem;
+    }
+
+    .work-caption .work-meta {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #8b7d6b;
+    }
+
+    /* ---------- SERVICES ---------- */
+    .services {
+      margin-bottom: 5rem;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .service-item {
+      background: #ffffffb3;
+      padding: 1.8rem 1.5rem;
+      border-radius: 4px;
+      border: 1px solid #e7dfd4;
+      transition: background 0.2s;
+    }
+
+    .service-item:hover {
+      background: #ffffff;
+    }
+
+    .service-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+      filter: grayscale(0.2);
+    }
+
+    .service-item h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+      font-weight: 500;
+    }
+
+    .service-item p {
+      color: #4a3f35;
+      font-size: 0.98rem;
+    }
+
+    /* ---------- CONTACT ---------- */
+    .contact {
+      margin-bottom: 3rem;
+    }
+
+    .contact-card {
+      background: #ffffffd9;
+      backdrop-filter: blur(2px);
+      border: 1px solid #e7dfd4;
+      border-radius: 4px;
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .contact-info p {
+      font-size: 1.15rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .contact-info .contact-icon {
+      font-size: 1.3rem;
+      opacity: 0.8;
+      min-width: 1.8rem;
+    }
+
+    .contact-cta {
+      background: #1e1e1e;
+      color: #faf7f2;
+      padding: 1rem 2.5rem;
+      border-radius: 40px;
+      font-size: 1.1rem;
+      letter-spacing: 0.02em;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      font-weight: 500;
+      border-bottom: none;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .contact-cta:hover {
+      background: #3a322a;
+      color: #fff;
+      border-bottom: none;
+      transform: scale(1.02);
+    }
+
+    /* ---------- FOOTER ---------- */
+    .footer {
+      text-align: center;
+      padding: 2rem 0 1rem;
+      font-size: 0.85rem;
+      color: #8b7d6b;
+      border-top: 1px solid #e7dfd4;
+      margin-top: 2rem;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 600px) {
+      .container {
+        padding: 1.5rem 1rem;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+      }
+
+      .intro-description {
+        padding-left: 1rem;
+      }
+
+      .contact-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.8rem;
+      }
+
+      .contact-cta {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    /* smooth scroll offset for anchor links */
+    :target {
+      scroll-margin-top: 1.5rem;
+    }
+
+    /* small decorative divider */
+    .divider {
+      width: 60px;
+      height: 3px;
+      background: #d9cdb8;
+      margin: 1rem 0 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- INTRO -->
+    <header class="intro">
+      <div class="intro-location">Yogyakarta, Indonesia</div>
+      <h1>Light &amp; story<br>in the heart of Java</h1>
+      <div class="divider"></div>
+      <p class="intro-tagline">Freelance photographer · documentary, portrait, and cultural narratives.</p>
+      <p class="intro-description">
+        I’m Didit — based in Yogyakarta, capturing the quiet poetry of everyday life, 
+        from the ancient walls of Kotagede to the vibrant streets of Malioboro. 
+        My work blends candid observation with a deep respect for place and people.
+      </p>
+    </header>
+
+    <!-- SELECTED WORK -->
+    <section id="work">
+      <h2>Selected work</h2>
+      <div class="work-grid">
+        <!-- 6 placeholder cards, each with a unique CSS-only "image" -->
+        <article class="work-card">
+          <div class="work-image">01</div>
+          <div class="work-caption">
+            <h3>Batik morning</h3>
+            <p>Natural light through a workshop window, Kotagede.</p>
+            <div class="work-meta">Documentary · 2024</div>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-image">02</div>
+          <div class="work-caption">
+            <h3>Becak &amp; rain</h3>
+            <p>Monsoon reflections on Jalan Malioboro.</p>
+            <div class="work-meta">Street · 2023</div>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-image">03</div>
+          <div class="work-caption">
+            <h3>Prambanan dawn</h3>
+            <p>Silhouettes of temple spires before sunrise.</p>
+            <div class="work-meta">Landscape · 2024</div>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-image">04</div>
+          <div class="work-caption">
+            <h3>Portrait of a dalang</h3>
+            <p>Wayang puppeteer in his home studio, Bantul.</p>
+            <div class="work-meta">Portrait · 2023</div>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-image">05</div>
+          <div class="work-caption">
+            <h3>Market colours</h3>
+            <p>Fresh produce and morning chatter at Pasar Kranggan.</p>
+            <div class="work-meta">Documentary · 2024</div>
+          </div>
+        </article>
+
+        <article class="work-card">
+          <div class="work-image">06</div>
+          <div class="work-caption">
+            <h3>Merapi’s edge</h3>
+            <p>Volcanic slopes and the farmers who live there.</p>
+            <div class="work-meta">Landscape · 2023</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="services">
+      <h2>Services</h2>
+      <div class="services-grid">
+        <div class="service-item">
+          <span class="service-icon">📷</span>
+          <h3>Portrait sessions</h3>
+          <p>Personal, family, or professional portraits — on location or in studio. Natural light preferred.</p>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🎞️</span>
+          <h3>Documentary &amp; events</h3>
+          <p>Cultural ceremonies, workshops, and community stories. Half-day or full-day coverage.</p>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🏯</span>
+          <h3>Travel &amp; heritage</h3>
+          <p>Custom photo walks around Yogyakarta — temples, streets, and hidden corners.</p>
+        </div>
+        <div class="service-item">
+          <span class="service-icon">🖼️</span>
+          <h3>Fine art prints</h3>
+          <p>Limited edition prints of selected works. Archival pigment on cotton rag.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact">
+      <h2>Contact</h2>
+      <div class="contact-card">
+        <div class="contact-info">
+          <p><span class="contact-icon">✉️</span> hello@diditphoto.id</p>
+          <p><span class="contact-icon">📱</span> +62 812 3456 7890</p>
+          <p><span class="contact-icon">📍</span> Yogyakarta, Indonesia</p>
+        </div>
+        <a href="mailto:hello@diditphoto.id" class="contact-cta">Book a session</a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>© 2025 Didit — freelance photographer, Yogyakarta. All images &amp; words are placeholders.</p>
+    </footer>
+  </div>
+
+  <!-- minimal inline JS: smooth anchor scrolling (already in CSS, but adds fallback) -->
+  <script>
+    (function() {
+      // smooth scroll for any anchor links (if added later)
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            e.preventDefault();
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+
+      // subtle console greeting (optional, no external assets)
+      console.log('📸 Yogyakarta photographer portfolio — ready.');
+    })();
+  </script>
+</body>
+</html>
+```

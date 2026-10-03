@@ -1,0 +1,306 @@
+[
+  {
+    "prompt": "saas",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 reads as a designed product page: its hero shows a specific board with believable sample data, the feature copy is concrete, and the pricing is plainly labelled as sample. Page 2 is a generic SaaS template, and it invents claims like \"Join thousands of small teams\" and \"40+ integrations\" and has a lopsided CTA block."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 has a specific hero with a believable product mockup, concrete feature copy, a labeled sample-pricing note and a complete footer, while Page 1 looks like a generic SaaS template and invents \"thousands of small teams\" and \"40+ integrations\" (the full-page capture also cuts off before any footer)."
+      }
+    ]
+  },
+  {
+    "prompt": "saas",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 looks more designed, with a realistic kanban hero mock, numbered feature columns, a filled-in pricing section that is flagged as sample, and a closing CTA band, whereas Page 1's pricing is almost entirely [confirm: ...] placeholders and its feature cards are generic, even though Page 2 invents some figures (a $8 price, a 12-of-20 progress count) that it labels as sample data."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has a richer hero mockup, specific feature copy and complete pricing with a small \"sample pricing\" note, whereas Page 2's pricing is almost entirely \"[confirm: …]\" placeholders that make the page look unfinished."
+      }
+    ]
+  },
+  {
+    "prompt": "saas",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 reads as designed rather than templated: it has a specific kanban hero mock-up, concrete feature copy, and plausible pricing with no invented claims. Page 2 is generic, with emoji icons and stock SaaS copy, though its dark footer is a plus."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 reads as designed rather than templated: it has a kanban mockup, specific and credible feature and pricing copy, and a consistent look with no emoji icons. Page 1 is a generic SaaS template with emoji feature icons and vaguer copy, although both pages have a low-contrast nav button."
+      }
+    ]
+  },
+  {
+    "prompt": "saas",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 is the more finished page: it has a product mockup in the hero, even card grids, a clear pricing hierarchy and a full footer. Its flaws are a low-contrast 'Start free' nav button and a few invented details such as 'Built by a team of six'. Page 1 is plain and templated, with an orphaned fourth feature card, a hero that leaves the right half empty, and a thin footer."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has a polished hero with a product mockup, a balanced three-card feature row, a clear pricing hierarchy and a full footer, while Page 2 has an empty hero right side, an orphaned fourth feature card, cramped section spacing and a thin footer."
+      }
+    ]
+  },
+  {
+    "prompt": "dashboard",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 leads with a clear headline, and its charts mark the peak and the target and the 24 hourly samples. Its incident table is consistent with the cards and charts above it. Page 2 is dense and competent, but its alert banner is generic. Its \"Major outage\" banner also conflicts with the \"Within SLO\" tiles, and its sparkline cards are busy."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 opens with a clear headline summary, labels the chart peaks and threshold breaches, and keeps spacing and type consistent; page 1 is a denser, more templated dashboard that stacks an alarming red banner on top of metric cards, with an incidents table whose severity badges are heavy."
+      }
+    ]
+  },
+  {
+    "prompt": "dashboard",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 gives the on-call engineer a clear answer first with its \"2 of 8 services need attention\" headline. It also has annotated charts with peaks and targets, a filterable incidents table, and consistent light-theme polish, while Page 1 is a competent but more generic dark dashboard whose truncated x-axis labels and mismatched incident details (chart peak vs. 'current hour' stats) feel less finished."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has a clear hierarchy that opens with the verdict \"2 of 8 services need attention\", and its charts are annotated with peaks and target lines. Its incidents table is filterable and its content is specific. Page 2 is competent but more generic, has clipped x-axis labels (\"02:0\"), and puts a red top border on every KPI card whatever its state."
+      }
+    ]
+  },
+  {
+    "prompt": "dashboard",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 covers everything the brief asks for: per-service health, a real 24-hour error-rate and latency chart, and an incidents table with specific wording. Its one flaw is that the header reads 'All systems operational' while a service is Down. Page 2 is more generic and has no per-service health or actual 24-hour trend chart, only small bar sparklines."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 covers every part of the brief: per-service health, a 24-hour error rate and latency chart with axes and a legend, and an incidents table. Its data is specific and internally consistent. Page 1 only has tiny bar sparklines, no per-service health, and an incidents table that contradicts its 'all systems operational' status."
+      }
+    ]
+  },
+  {
+    "prompt": "dashboard",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 has a stronger hierarchy, with KPI tiles, a large dual-axis chart with a legend and a cleaner incidents table. Its flaws are real but fixable: the header says all systems are operational while media-processor is Down, and the service cards wrap awkwardly. Page 1 is coherent but flatter, with small charts, an orphaned sixth service card, and 2024 incident dates that don't match the 2026 window."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has a stronger hierarchy, with a KPI row, a large dual-axis 24-hour chart and a footer with the on-call owner. Its flaws are easy to fix: the header says 'All systems operational' while media-processor is Down, and the service statuses aren't colored. Page 2 is tidy and its status dots help, but its charts are small and generic, and its incident dates (2024-06) don't match the 2026-10-03 window shown in its header."
+      }
+    ]
+  },
+  {
+    "prompt": "cafe",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 is complete from hero through contact, with a full menu, an hours table, a location block and a contact section. Page 1 is more charming, but its location section is a large blank area and the contact section is cut off or empty, so it reads as unfinished."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 is complete and consistent, with a full menu, hours, location, contact and an honest placeholder footer, while Page 2 looks more designed at the top but leaves a large blank location section, has a dark empty block at the bottom, and makes unsupported claims such as 'single-origin' and 'roasted weekly'."
+      }
+    ]
+  },
+  {
+    "prompt": "cafe",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 is a complete, believable page with a menu board, full menu, hours, address and contact, using plausible sample details and a single 'replace before launch' note. Page 2 is dominated by '[confirm: …]' and 'Rp [price]' placeholders, so it reads as unfinished."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 looks finished, with a realistic priced menu, filled-in hours, address and contact details, and a clear hierarchy. Page 1 is mostly '[confirm: ...]' and 'Rp [price]' placeholders that dominate the page and leave it looking unfinished. Page 2 does invent an 'Open now' badge and sample details, but the footer says to replace them before launch."
+      }
+    ]
+  },
+  {
+    "prompt": "cafe",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 has a clearer hierarchy, with a nav bar, a strong headline, a two-column menu, a full week of opening hours and a contact form. Its content is also more specific and credible. Page 1 is a templated card layout with emoji icons and a hero that is only a title and a pill."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has a stronger hero with a clear headline, CTAs and nav, a fuller menu with specific items and prices, a complete 7-day hours table, a detailed address with a landmark, and a contact form, so it reads as more designed and credible. Page 2 is cleaner but more templated, with emoji icons, a thin hero with no CTA, a 'buka setiap hari' pill, and 'respon dalam 1x24 jam'."
+      }
+    ]
+  },
+  {
+    "prompt": "cafe",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has a stronger hero with a bold headline and a cup illustration, a clear hierarchy and consistent sans type. It also covers hours, location and a contact form in a compact layout, while Page 2 is a quieter serif page with a plain text hero and several half-empty cards."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 looks more designed: it has a logo mark, a hero with a cup illustration, clear type hierarchy, a combined hours and location section, and a contact form. Page 1 is clean and credible but plain, with a text-only hero, a stray 'Tutup' status line, and a lot of sparse card whitespace."
+      }
+    ]
+  },
+  {
+    "prompt": "settings",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 looks more like a real product, with a header, sidebar nav, identity block, grouped notifications, a password checklist and a quieter danger zone, and its \"Sample account data\" note is honest; the single-column Page 1 is clean but generic, and Page 2's unused right-hand space and disabled save buttons are minor flaws."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has more structure and polish than Page 2: a sidebar nav, an identity header, verified badges, a password requirements checklist, grouped notifications and a footer. Its \"Sample account data, replace before launch\" note is a mild flaw. Page 2 is clean and consistent but reads as a generic stack of cards."
+      }
+    ]
+  },
+  {
+    "prompt": "settings",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 looks more like a real product, with a header, a sidebar nav, an avatar and identity header, a password checklist and push/email notification groups. Page 2 is clean but plain, and it uses default blue underlined links for navigation. The visible 'sample data' note on Page 1 is a small cost."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 looks more like a real product, with a header, sidebar nav, avatar, verified badges, grouped notification toggles, a password checklist and a footer. Page 1 is clean but plain, with browser-default underlined links as its nav; Page 2 does have a right-side gap in its form fields and a visible 'sample data' note."
+      }
+    ]
+  },
+  {
+    "prompt": "settings",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 separates each section into its own card with helper text, specific wording and a type-to-confirm danger zone, so it reads as designed product UI. Page 1 is a single generic card with an emoji warning, a current-password field prefilled with dots, and thin copy, so it feels templated. Page 2's empty inputs are a minor drawback."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has clearer card-based hierarchy, specific wording, a typed-confirmation danger zone and a richer notification section, which outweighs its empty inputs; Page 2 is tidy but more generic, with an emoji icon and one-line notification toggles."
+      }
+    ]
+  },
+  {
+    "prompt": "settings",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has the tighter product feel: a sticky header showing the account email, a bio textarea with a character counter, a password strength meter, a digest select, a locked security-alerts toggle, and a typed-confirmation delete flow in a coherent danger zone. Its flaws are empty fields that contradict the header email and a leftover 'replace before launch' footer note. Page 2 is clean but more generic, with a one-line bio and a separate button on every card."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 is more polished and complete: it has a header with the account email, helper text and a character counter, a password strength meter, an email digest select, a single save/discard bar, and a type-to-confirm delete flow. Page 1 is more generic, with a blue button in every card, and its delete control is only a collapsed disclosure."
+      }
+    ]
+  }
+]

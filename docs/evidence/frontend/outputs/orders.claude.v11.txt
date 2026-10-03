@@ -1,0 +1,517 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orders</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --border: #d9dde3;
+    --text: #1b1f24;
+    --muted: #4b5563;
+    --accent: #1d4ed8;
+    --accent-hover: #1e40af;
+    --accent-active: #1e3a8a;
+    --hover: #eef1f5;
+    --pressed: #e2e6ec;
+    --danger: #991b1b;
+    --radius: 6px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button, select, input { font: inherit; color: inherit; }
+
+  .page { max-width: 1100px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { margin: 0 0 16px; font-size: 20px; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-bottom: 12px; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 12px; color: var(--muted); }
+  .field input[type="search"] { width: 280px; max-width: 100%; }
+  input[type="search"], select {
+    height: 36px;
+    padding: 0 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  input[type="search"]:hover, select:hover { border-color: #9aa3af; }
+  #count { margin-left: auto; color: var(--muted); font-size: 13px; }
+
+  .btn {
+    height: 32px;
+    min-width: 32px;
+    padding: 0 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+  }
+  .btn:hover:not(:disabled) { background: var(--hover); }
+  .btn:active:not(:disabled) { background: var(--pressed); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn[aria-current="page"]:hover { background: var(--accent-hover); }
+  .btn[aria-current="page"]:active { background: var(--accent-active); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: 0; }
+  th { background: #f0f2f5; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .03em; padding: 0; }
+  th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .sort {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    text-align: left;
+  }
+  th.num .sort { justify-content: flex-end; }
+  .sort:hover { background: var(--pressed); }
+  .sort:focus-visible { outline-offset: -2px; }
+  .arrow {
+    width: 7px; height: 7px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-2px) rotate(45deg);
+    opacity: .3;
+  }
+  th[aria-sort="ascending"] .arrow { transform: translateY(2px) rotate(-135deg); opacity: 1; }
+  th[aria-sort="descending"] .arrow { opacity: 1; }
+
+  tbody tr[data-id] { cursor: pointer; }
+  tbody tr[data-id]:hover { background: var(--hover); }
+  tbody tr[data-id]:active { background: var(--pressed); }
+  .link { background: none; border: 0; padding: 0; color: var(--accent); font-weight: 600; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+  .link:hover { color: var(--accent-hover); }
+  .link:active { color: var(--accent-active); }
+  .sub { color: var(--muted); font-size: 12px; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+  .pending   { background: #fef3c7; color: #713f12; }
+  .paid      { background: #dbeafe; color: #1e3a8a; }
+  .shipped   { background: #e0e7ff; color: #312e81; }
+  .delivered { background: #dcfce7; color: #14532d; }
+  .cancelled { background: #f3f4f6; color: #374151; }
+  .refunded  { background: #fee2e2; color: #7f1d1d; }
+
+  .state { padding: 48px 16px; text-align: center; white-space: normal; }
+  .state p { margin: 0 0 12px; }
+  .state.error p { color: var(--danger); font-weight: 600; }
+  .skel { height: 14px; border-radius: 4px; background: linear-gradient(90deg, #e6e9ee 25%, #f3f5f8 50%, #e6e9ee 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite linear; }
+  @keyframes shimmer { to { background-position: -200% 0; } }
+
+  .footer { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 12px 14px; border-top: 1px solid var(--border); }
+  .footer .size { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+  .footer select { height: 32px; }
+  .pager { display: flex; gap: 4px; align-items: center; }
+  .pager .gap { padding: 0 4px; color: var(--muted); }
+
+  .scrim { position: fixed; inset: 0; background: rgba(15, 23, 42, .45); opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: min(480px, 100vw);
+    display: flex; flex-direction: column;
+    background: var(--surface);
+    box-shadow: -8px 0 24px rgba(15, 23, 42, .18);
+    transform: translateX(100%);
+    visibility: hidden;
+    transition: transform .2s, visibility 0s .2s;
+  }
+  .drawer.open { transform: none; visibility: visible; transition: transform .2s, visibility 0s; }
+  .drawer header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px; border-bottom: 1px solid var(--border); }
+  .drawer h2 { margin: 0 8px 0 0; font-size: 18px; display: inline; }
+  .d-body { padding: 20px; overflow-y: auto; }
+  .d-body h3 { margin: 24px 0 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .d-body h3:first-child { margin-top: 0; }
+  .d-body p { margin: 0; }
+  .items { width: 100%; font-size: 13px; }
+  .items th, .items td { padding: 6px 0; white-space: normal; background: none; text-transform: none; letter-spacing: 0; font-size: 13px; }
+  .items th { font-weight: 600; color: var(--muted); }
+  .totals { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; margin: 12px 0 0; font-variant-numeric: tabular-nums; }
+  .totals dt, .totals dd { margin: 0; }
+  .totals .grand { font-weight: 700; border-top: 1px solid var(--border); padding-top: 6px; }
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .timeline li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .timeline li:last-child { border-bottom: 0; }
+  .timeline time { color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 720px) { .col-items { display: none; } #count { margin-left: 0; width: 100%; } }
+  @media (max-width: 560px) { .col-date { display: none; } .field input[type="search"] { width: 100%; } .field.grow { flex: 1 1 100%; } }
+  @media (prefers-reduced-motion: reduce) {
+    .drawer, .scrim { transition: none; }
+    .skel { animation: none; }
+  }
+</style>
+</head>
+<body>
+<main class="page" id="app">
+  <h1>Orders</h1>
+
+  <div class="toolbar">
+    <div class="field grow">
+      <label for="q">Search</label>
+      <input id="q" type="search" placeholder="Order ID, customer, or email" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="status">Status</label>
+      <select id="status">
+        <option value="">All statuses</option>
+      </select>
+    </div>
+    <p id="count" role="status" aria-live="polite"></p>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table id="table" aria-busy="true">
+        <caption class="sr" style="position:absolute;left:-9999px">Orders. Sample data.</caption>
+        <thead>
+          <tr>
+            <th scope="col" data-key="id"><button class="sort" type="button">Order <span class="arrow" aria-hidden="true"></span></button></th>
+            <th scope="col" data-key="customer"><button class="sort" type="button">Customer <span class="arrow" aria-hidden="true"></span></button></th>
+            <th scope="col" data-key="date" class="col-date"><button class="sort" type="button">Date <span class="arrow" aria-hidden="true"></span></button></th>
+            <th scope="col" data-key="count" class="num col-items"><button class="sort" type="button">Items <span class="arrow" aria-hidden="true"></span></button></th>
+            <th scope="col" data-key="total" class="num"><button class="sort" type="button">Total <span class="arrow" aria-hidden="true"></span></button></th>
+            <th scope="col" data-key="status"><button class="sort" type="button">Status <span class="arrow" aria-hidden="true"></span></button></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div class="footer" id="footer">
+      <label class="size">Rows per page
+        <select id="size">
+          <option>10</option>
+          <option>25</option>
+          <option>50</option>
+        </select>
+      </label>
+      <nav class="pager" id="pager" aria-label="Pagination"></nav>
+    </div>
+  </div>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="d-title" tabindex="-1">
+  <header>
+    <div><h2 id="d-title"></h2><span id="d-status" class="badge"></span></div>
+    <button class="btn" id="d-close" type="button">Close</button>
+  </header>
+  <div class="d-body" id="d-body"></div>
+</aside>
+
+<script>
+(function () {
+  'use strict';
+
+  var STATUSES = ['Pending', 'Paid', 'Shipped', 'Delivered', 'Cancelled', 'Refunded'];
+  var FLOW = {
+    Pending: ['Placed'],
+    Paid: ['Placed', 'Paid'],
+    Shipped: ['Placed', 'Paid', 'Shipped'],
+    Delivered: ['Placed', 'Paid', 'Shipped', 'Delivered'],
+    Cancelled: ['Placed', 'Cancelled'],
+    Refunded: ['Placed', 'Paid', 'Refunded']
+  };
+
+  /* ---------- sample data (seeded, so reloads are stable) ---------- */
+  function mulberry32(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  var rand = mulberry32(20261003);
+  var pick = function (arr) { return arr[Math.floor(rand() * arr.length)]; };
+
+  var FIRST = ['Alder', 'Briar', 'Cedar', 'Dara', 'Elio', 'Faye', 'Gwen', 'Hale', 'Ines', 'Jory', 'Kai', 'Lena'];
+  var LAST = ['Ashby', 'Brook', 'Calloway', 'Dunmore', 'Ellery', 'Finch', 'Garrow', 'Holloway', 'Iverson', 'Kestrel', 'Lindqvist', 'Marlow'];
+  var PRODUCTS = [
+    ['Canvas tote bag', 2400], ['Ceramic mug', 1800], ['Dot-grid notebook', 1200], ['Desk lamp', 5900],
+    ['USB-C cable, 1 m', 1400], ['Wool beanie', 2800], ['Steel water bottle', 3200], ['Wireless mouse', 3600]
+  ];
+  var CITIES = ['Portland, OR 97201', 'Austin, TX 78701', 'Denver, CO 80202', 'Madison, WI 53703', 'Raleigh, NC 27601', 'Tucson, AZ 85701'];
+  var STREETS = ['Alder St', 'Mill Rd', 'Harbor Ave', 'Elm Ct', 'Ridge Ln'];
+  var NOW = Date.UTC(2026, 9, 2, 12);
+
+  var orders = [];
+  for (var i = 0; i < 64; i++) {
+    var first = pick(FIRST), last = pick(LAST);
+    var lines = [], n = 1 + Math.floor(rand() * 4), count = 0, subtotal = 0;
+    for (var j = 0; j < n; j++) {
+      var pi = Math.floor(rand() * PRODUCTS.length), qty = 1 + Math.floor(rand() * 3);
+      lines.push({ name: PRODUCTS[pi][0], sku: 'SKU-' + (200 + pi), qty: qty, price: PRODUCTS[pi][1] });
+      count += qty; subtotal += qty * PRODUCTS[pi][1];
+    }
+    var shipping = subtotal >= 10000 ? 0 : 900;
+    var tax = Math.round(subtotal * 0.08);
+    orders.push({
+      id: 'ORD-' + (10240 + i),
+      customer: first + ' ' + last,
+      email: (first + '.' + last).toLowerCase() + '@example.com',
+      date: NOW - Math.floor(rand() * 33 * 864e5),
+      items: lines, count: count,
+      subtotal: subtotal, shipping: shipping, tax: tax, total: subtotal + shipping + tax,
+      status: pick(STATUSES),
+      address: Math.floor(10 + rand() * 890) + ' ' + pick(STREETS) + ', ' + pick(CITIES)
+    });
+  }
+  var byId = new Map(orders.map(function (o) { return [o.id, o]; }));
+
+  /* ---------- helpers ---------- */
+  var $ = function (s) { return document.querySelector(s); };
+  var esc = function (s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  };
+  var moneyFmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+  var money = function (cents) { return moneyFmt.format(cents / 100); };
+  var dateFmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeZone: 'UTC' });
+  var dateTimeFmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' });
+
+  /* ---------- state ---------- */
+  var state = { q: '', status: '', key: 'date', dir: 'desc', page: 1, size: 10, view: 'loading' };
+  var rowsEl = $('#rows'), pagerEl = $('#pager'), countEl = $('#count'), tableEl = $('#table');
+
+  STATUSES.forEach(function (s) {
+    var o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    $('#status').appendChild(o);
+  });
+
+  // Stand-in for a network call; load the page with #error to see the error state.
+  function load() {
+    state.view = 'loading';
+    render();
+    setTimeout(function () {
+      state.view = location.hash === '#error' ? 'error' : 'ready';
+      render();
+    }, 400);
+  }
+
+  function visible() {
+    var q = state.q.trim().toLowerCase();
+    var list = orders.filter(function (o) {
+      if (state.status && o.status !== state.status) return false;
+      return !q || o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q) || o.email.includes(q);
+    });
+    var k = state.key, sign = state.dir === 'asc' ? 1 : -1;
+    list.sort(function (a, b) {
+      var x = a[k], y = b[k];
+      var r = typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'en', { numeric: true });
+      return r * sign;
+    });
+    return list;
+  }
+
+  /* ---------- rendering ---------- */
+  function span(html) { return '<tr><td class="state" colspan="6">' + html + '</td></tr>'; }
+
+  function render() {
+    tableEl.setAttribute('aria-busy', String(state.view === 'loading'));
+    document.querySelectorAll('th[data-key]').forEach(function (th) {
+      th.setAttribute('aria-sort', th.dataset.key === state.key ? (state.dir === 'asc' ? 'ascending' : 'descending') : 'none');
+    });
+
+    if (state.view === 'loading') {
+      var sk = '';
+      for (var i = 0; i < 8; i++) sk += '<tr><td colspan="6"><div class="skel"></div></td></tr>';
+      rowsEl.innerHTML = sk;
+      countEl.textContent = 'Loading orders…';
+      pagerEl.innerHTML = '';
+      return;
+    }
+    if (state.view === 'error') {
+      rowsEl.innerHTML = span('<div class="error"><p role="alert">Orders could not be loaded.</p><button class="btn" type="button" data-retry>Retry</button></div>');
+      countEl.textContent = '';
+      pagerEl.innerHTML = '';
+      return;
+    }
+
+    var list = visible();
+    var pages = Math.max(1, Math.ceil(list.length / state.size));
+    state.page = Math.min(state.page, pages);
+    var start = (state.page - 1) * state.size;
+    var slice = list.slice(start, start + state.size);
+
+    if (!slice.length) {
+      rowsEl.innerHTML = span('<p>No orders match these filters.</p><button class="btn" type="button" data-clear>Clear filters</button>');
+      countEl.textContent = 'No orders';
+      pagerEl.innerHTML = '';
+      return;
+    }
+
+    rowsEl.innerHTML = slice.map(function (o) {
+      return '<tr data-id="' + o.id + '">' +
+        '<td><button class="link" type="button" data-open>' + o.id + '</button></td>' +
+        '<td><div>' + esc(o.customer) + '</div><div class="sub">' + esc(o.email) + '</div></td>' +
+        '<td class="col-date">' + dateFmt.format(o.date) + '</td>' +
+        '<td class="num col-items">' + o.count + '</td>' +
+        '<td class="num">' + money(o.total) + '</td>' +
+        '<td><span class="badge ' + o.status.toLowerCase() + '">' + o.status + '</span></td>' +
+        '</tr>';
+    }).join('');
+
+    countEl.textContent = 'Showing ' + (start + 1) + '–' + (start + slice.length) + ' of ' + list.length + ' orders';
+    renderPager(pages);
+  }
+
+  function pageList(c, l) {
+    var a = Array.from(new Set([1, l, c - 1, c, c + 1])).filter(function (p) { return p >= 1 && p <= l; }).sort(function (x, y) { return x - y; });
+    var out = [];
+    a.forEach(function (p, i) {
+      if (i && p - a[i - 1] > 1) out.push('…');
+      out.push(p);
+    });
+    return out;
+  }
+
+  function renderPager(pages) {
+    var h = '<button class="btn" type="button" data-act="prev"' + (state.page === 1 ? ' disabled' : '') + '>Previous</button>';
+    pageList(state.page, pages).forEach(function (p) {
+      h += p === '…'
+        ? '<span class="gap" aria-hidden="true">…</span>'
+        : '<button class="btn" type="button" data-page="' + p + '" aria-label="Page ' + p + '"' + (p === state.page ? ' aria-current="page"' : '') + '>' + p + '</button>';
+    });
+    h += '<button class="btn" type="button" data-act="next"' + (state.page === pages ? ' disabled' : '') + '>Next</button>';
+    pagerEl.innerHTML = h;
+  }
+
+  /* ---------- events ---------- */
+  var timer;
+  $('#q').addEventListener('input', function (e) {
+    clearTimeout(timer);
+    var v = e.target.value;
+    timer = setTimeout(function () { state.q = v; state.page = 1; render(); }, 150);
+  });
+  $('#status').addEventListener('change', function (e) { state.status = e.target.value; state.page = 1; render(); });
+  $('#size').addEventListener('change', function (e) { state.size = +e.target.value; state.page = 1; render(); });
+
+  document.querySelector('thead').addEventListener('click', function (e) {
+    var th = e.target.closest('th[data-key]');
+    if (!th) return;
+    var k = th.dataset.key;
+    if (state.key === k) state.dir = state.dir === 'asc' ? 'desc' : 'asc';
+    else { state.key = k; state.dir = (k === 'date' || k === 'total' || k === 'count') ? 'desc' : 'asc'; }
+    state.page = 1;
+    render();
+    document.querySelector('th[data-key="' + k + '"] .sort').focus();
+  });
+
+  pagerEl.addEventListener('click', function (e) {
+    var b = e.target.closest('button');
+    if (!b || b.disabled) return;
+    if (b.dataset.page) state.page = +b.dataset.page;
+    else if (b.dataset.act === 'prev') state.page--;
+    else if (b.dataset.act === 'next') state.page++;
+    var act = b.dataset.act;
+    render();
+    var again = act && pagerEl.querySelector('[data-act="' + act + '"]:not(:disabled)');
+    (again || pagerEl.querySelector('[aria-current]')).focus();
+  });
+
+  rowsEl.addEventListener('click', function (e) {
+    if (e.target.closest('[data-retry]')) { load(); return; }
+    if (e.target.closest('[data-clear]')) {
+      state.q = ''; state.status = ''; state.page = 1;
+      $('#q').value = ''; $('#status').value = '';
+      render();
+      $('#q').focus();
+      return;
+    }
+    var tr = e.target.closest('tr[data-id]');
+    if (tr) openDrawer(tr.dataset.id);
+  });
+
+  /* ---------- drawer ---------- */
+  var drawer = $('#drawer'), scrim = $('#scrim'), app = $('#app');
+  var lastFocus = null, openId = null;
+
+  function openDrawer(id) {
+    var o = byId.get(id);
+    if (!o) return;
+    lastFocus = document.activeElement;
+    openId = id;
+
+    $('#d-title').textContent = o.id;
+    var badge = $('#d-status');
+    badge.className = 'badge ' + o.status.toLowerCase();
+    badge.textContent = o.status;
+
+    var steps = FLOW[o.status].map(function (name, k) {
+      return '<li><span>' + name + '</span><time datetime="' + new Date(o.date + k * 17 * 36e5).toISOString() + '">' +
+        dateTimeFmt.format(o.date + k * 17 * 36e5) + ' UTC</time></li>';
+    }).join('');
+
+    $('#d-body').innerHTML =
+      '<h3>Customer</h3><p>' + esc(o.customer) + '</p><p class="sub">' + esc(o.email) + '</p>' +
+      '<h3>Ship to</h3><p>' + esc(o.address) + '</p>' +
+      '<h3>Items</h3><table class="items"><thead><tr><th scope="col">Item</th><th scope="col" class="num">Qty</th><th scope="col" class="num">Price</th></tr></thead><tbody>' +
+      o.items.map(function (l) {
+        return '<tr><td>' + esc(l.name) + '<div class="sub">' + l.sku + '</div></td><td class="num">' + l.qty + '</td><td class="num">' + money(l.qty * l.price) + '</td></tr>';
+      }).join('') + '</tbody></table>' +
+      '<dl class="totals"><dt>Subtotal</dt><dd>' + money(o.subtotal) + '</dd>' +
+      '<dt>Shipping</dt><dd>' + (o.shipping ? money(o.shipping) : 'Free') + '</dd>' +
+      '<dt>Tax</dt><dd>' + money(o.tax) + '</dd>' +
+      '<dt class="grand">Total</dt><dd class="grand">' + money(o.total) + '</dd></dl>' +
+      '<h3>Timeline</h3><ol class="timeline">' + steps + '</ol>';
+
+    $('#d-body').scrollTop = 0;
+    drawer.classList.add('open');
+    scrim.classList.add('open');
+    app.inert = true;
+    $('#d-close').focus();
+  }
+
+  function closeDrawer() {
+    if (!openId) return;
+    var id = openId;
+    openId = null;
+    drawer.classList.remove('open');
+    scrim.classList.remove('open');
+    app.inert = false;
+    var target = document.querySelector('tr[data-id="' + id + '"] [data-open]') || lastFocus;
+    if (target) target.focus();
+  }
+
+  $('#d-close').addEventListener('click', closeDrawer);
+  scrim.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function (e) {
+    if (!openId) return;
+    if (e.key === 'Escape') { closeDrawer(); return; }
+    if (e.key !== 'Tab') return;
+    var f = drawer.querySelectorAll('button, [href], select, input, [tabindex]:not([tabindex="-1"])');
+    var first = f[0], lastEl = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); lastEl.focus(); }
+    else if (!e.shiftKey && document.activeElement === lastEl) { e.preventDefault(); first.focus(); }
+  });
+
+  load();
+})();
+</script>
+</body>
+</html>
+```

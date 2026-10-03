@@ -1,0 +1,154 @@
+[
+  {
+    "prompt": "saas",
+    "generator": "claude",
+    "subject": "v11",
+    "against": "baseline",
+    "result": "baseline",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 looks more polished and complete, with a strong hero, a kanban mockup, and full pricing. Its invented specifics ('thousands of teams', $8/$15 prices, '40+ tools') are a credibility cost. Page 1 is honest but has pricing made up almost entirely of '[confirm: …]' placeholders and a plain hero, so it reads as unfinished."
+      },
+      {
+        "order": "subject-second",
+        "winner": "baseline",
+        "why": "Page 1 has a much stronger hero, a consistent type and spacing system, a product mockup and a complete pricing section, and its one invented claim (\"thousands of small teams\") is a one-line fix. Page 2 is credible but plain, and placeholders fill every pricing card."
+      }
+    ]
+  },
+  {
+    "prompt": "saas",
+    "generator": "deepseek",
+    "subject": "v11",
+    "against": "baseline",
+    "result": "baseline",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 looks finished and designed, with a product mockup in the hero, evenly spaced feature cards, a clear pricing hierarchy and a full footer. Page 1 is plain and unbalanced: its hero is empty on the right, the fourth feature card is orphaned on its own row, and its section spacing is cramped. Page 2's emoji icons and generic copy are minor flaws by comparison."
+      },
+      {
+        "order": "subject-second",
+        "winner": "baseline",
+        "why": "Page 1 has a clear hierarchy, a product mockup in the hero, evenly balanced feature and pricing cards, and a complete dark footer. Page 2 has more specific copy, but it has an empty hero right side, an orphaned fourth feature card, cramped sections with sections touching the cards, and a thin footer, so it looks less finished."
+      }
+    ]
+  },
+  {
+    "prompt": "dashboard",
+    "generator": "claude",
+    "subject": "v11",
+    "against": "baseline",
+    "result": "baseline",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 gives an on-call engineer a clearer hierarchy: an outage banner, per-service cards with sparklines, filled and smoothed charts, and a richer incidents table with owners and relative times. Page 1 is clean but plainer. It also has red top borders on every KPI card including healthy ones, and its chart x-axis labels are clipped (\"02:0\")."
+      },
+      {
+        "order": "subject-second",
+        "winner": "baseline",
+        "why": "Page 1 has a clear hierarchy (outage banner, then KPIs, then per-service cards with sparklines, charts and a detailed incidents table) and no visible defects, while Page 2 is cleaner but has clipped x-axis end labels, red top bars on every KPI card including the healthy ones, and less information density."
+      }
+    ]
+  },
+  {
+    "prompt": "dashboard",
+    "generator": "deepseek",
+    "subject": "v11",
+    "against": "baseline",
+    "result": "v11",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v11",
+        "why": "Page 1 gives an on-call engineer what the brief asked for: per-service health cards, labeled 24-hour error-rate and latency charts with peaks, and a detailed incidents table. Page 2 has a header that says \"all systems operational\" while its table shows an incident still being investigated, and it has no per-service health or chart axes. Page 1's flaws are an orphaned sixth service card and incident dates that don't match its header date."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v11",
+        "why": "Page 2 gives an on-call engineer the content the brief asked for: per-service health, labelled 24-hour error-rate and latency charts with axes and peaks, and a detailed incident table with IDs and durations. Page 1 is a polished but generic card layout whose bar charts have no axes, and its 'all systems operational' badge contradicts a critical incident; Page 2's mismatched dates and orphaned sixth service card are minor next to that."
+      }
+    ]
+  },
+  {
+    "prompt": "cafe",
+    "generator": "claude",
+    "subject": "v11",
+    "against": "baseline",
+    "result": "tie (passes disagree)",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "baseline",
+        "why": "Page 1 has a much stronger hero, hierarchy and menu/hours design, and its invented details (prices, hours, Wi-Fi) are plausible and not the banned kinds of claim. Page 2 is clean and complete but its hours, address and contact are almost all '[confirm: …]' placeholders. Page 1's blank gap and missing location/contact sections in the screenshot are a risk, and I judged them as a probable scroll-reveal rendering issue."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v11",
+        "why": "Page 1 is complete from hero to footer, and its bracketed placeholders are honest about facts the brief didn't supply. Page 2 looks richer, but it invents sourcing claims, prices, hours and amenities, and it shows a large blank gap where the Location and Contact sections should be."
+      }
+    ]
+  },
+  {
+    "prompt": "cafe",
+    "generator": "deepseek",
+    "subject": "v11",
+    "against": "baseline",
+    "result": "tie (passes disagree)",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v11",
+        "why": "Page 2 has a nav bar, a specific serif editorial hero, a well-organized three-column menu and concrete hours, location and contact details, so it reads as designed and credible. Page 1 is a generic card template with emoji icons, a vague hero and a placeholder-like map box. Page 2 does have a few weak spots: a hard-coded 'Tutup' status line and some empty space in the side cards."
+      },
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 has a stronger hero, a clear card hierarchy and a more designed feel. Page 1 is cleaner and more credible but plain, with an odd \"Tutup — buka hari ini\" status line, a text-only hero and empty-looking cards. Page 2's emoji icons, \"small batch\" tagline and \"respon dalam 1x24 jam\" claim count against it, but not enough to change the pick."
+      }
+    ]
+  },
+  {
+    "prompt": "settings",
+    "generator": "claude",
+    "subject": "v11",
+    "against": "baseline",
+    "result": "tie (passes disagree)",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v11",
+        "why": "Page 2 has better wording and extra structure: a section nav, a tinted current-email block, a locked 'always on' security toggle, a radio delivery choice, and an outlined delete button that reads as a considered danger zone. Page 1 is clean but more generic, and its red-filled danger card and empty strength bar look more templated."
+      },
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 looks more polished and designed: it has a subtitle, right-aligned actions, a password strength meter, a tinted danger zone with the delete button beside its warning, and softer borders. Page 1 is more utilitarian, with default blue underlined anchor links, left-aligned buttons and a plainer danger zone."
+      }
+    ]
+  },
+  {
+    "prompt": "settings",
+    "generator": "deepseek",
+    "subject": "v11",
+    "against": "baseline",
+    "result": "v11",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v11",
+        "why": "Page 2 splits the settings into separate cards, each with a short description, its own save button, and notification options that explain themselves. That reads as a more specific, credible settings page than Page 1's single generic card with placeholder text and an emoji warning, even though Page 2's inputs are empty."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v11",
+        "why": "Page 1 gives each section its own card with a specific description and save button, uses clear checkbox descriptions and a restrained danger zone, and has consistent spacing. Page 2 is a single generic card with placeholder-as-value fields, an odd password dot placeholder, an emoji warning icon, and uneven gaps."
+      }
+    ]
+  }
+]

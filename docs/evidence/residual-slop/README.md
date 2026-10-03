@@ -21,14 +21,14 @@ What it shows:
 
 ## Did a sharper rule fix the punchlines?
 
-No, so it was not shipped. The probe (`eval/probe-contrast.mjs`) samples eight critique and decision prompts six times each at temperature 0.7, with the core as it was and with rule 5 rewritten to name the shape directly ([the rewrite](residual-slop/core-b-rejected-rule.md)), and counts the pattern with the same detector `supermd check` uses.
+No, so it was not shipped. The probe (`eval/probe-contrast.mjs`) samples eight critique and decision prompts six times each at temperature 0.7, with the core as it was and with rule 5 rewritten to name the shape directly ([the rewrite](core-b-rejected-rule.md)), and counts the pattern with the same detector `supermd check` uses.
 
 | condition | outputs | punchlines | per 1,000 words |
 |---|---|---|---|
 | core as shipped | 48 | 7 | 0.54 |
 | rule 5 rewritten | 48 | 8 | 0.63 |
 
-The difference is noise. The pattern appeared in two of the eight prompts in both conditions, the two that demand the harshest criticism. Rewording the rule does not change it; raw data is in [`probe-contrast.json`](residual-slop/probe-contrast.json).
+The difference is noise. The pattern appeared in two of the eight prompts in both conditions, the two that demand the harshest criticism. Rewording the rule does not change it; raw data is in [`probe-contrast.json`](probe-contrast.json).
 
 ## What shipped instead
 

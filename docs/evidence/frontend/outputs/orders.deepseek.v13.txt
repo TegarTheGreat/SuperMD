@@ -1,0 +1,437 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orders</title>
+<style>
+  :root {
+    --gray-50: #f7f8fa;
+    --gray-100: #eef0f4;
+    --gray-200: #dfe3ea;
+    --gray-400: #9aa3b2;
+    --gray-600: #5b6472;
+    --gray-900: #1c2129;
+    --accent: #2f5fd0;
+    --accent-weak: #e8eefb;
+    --ok-bg: #e3f4e8; --ok-fg: #1f6b3a;
+    --warn-bg: #fdf0dc; --warn-fg: #8a5a12;
+    --err-bg: #fbe6e6; --err-fg: #9b2c2c;
+    --info-bg: #e6eefb; --info-fg: #2f5fd0;
+    --radius: 8px;
+    --shadow: 0 1px 2px rgba(20,25,35,.06), 0 8px 24px rgba(20,25,35,.08);
+    --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--gray-900);
+    background: var(--gray-50);
+  }
+  header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s4) var(--s5);
+    background: #fff; border-bottom: 1px solid var(--gray-200);
+  }
+  header.top h1 { font-size: 18px; margin: 0; font-weight: 600; }
+  header.top .meta { color: var(--gray-600); font-size: 13px; }
+  main { padding: var(--s5); max-width: 1200px; margin: 0 auto; }
+
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: var(--s3);
+    align-items: center; margin-bottom: var(--s4);
+  }
+  .search {
+    flex: 1 1 260px; min-width: 200px;
+    display: flex; align-items: center; gap: var(--s2);
+    background: #fff; border: 1px solid var(--gray-200);
+    border-radius: var(--radius); padding: 0 var(--s3);
+  }
+  .search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-weak); }
+  .search svg { flex: none; color: var(--gray-400); }
+  .search input {
+    border: 0; outline: 0; background: transparent;
+    padding: 9px 0; font: inherit; width: 100%; color: inherit;
+  }
+  select.filter {
+    font: inherit; color: inherit; background: #fff;
+    border: 1px solid var(--gray-200); border-radius: var(--radius);
+    padding: 9px var(--s3); cursor: pointer;
+  }
+  select.filter:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .table-wrap {
+    background: #fff; border: 1px solid var(--gray-200);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left; font-weight: 600; font-size: 12px;
+    text-transform: uppercase; letter-spacing: .04em; color: var(--gray-600);
+    background: var(--gray-50); border-bottom: 1px solid var(--gray-200);
+    padding: var(--s3) var(--s4); white-space: nowrap;
+  }
+  th.sortable { cursor: pointer; user-select: none; }
+  th.sortable:hover { color: var(--gray-900); }
+  th .arrow { display: inline-block; width: 10px; color: var(--gray-400); }
+  th[aria-sort="ascending"] .arrow,
+  th[aria-sort="descending"] .arrow { color: var(--accent); }
+  tbody td { padding: var(--s3) var(--s4); border-bottom: 1px solid var(--gray-100); }
+  tbody tr:last-child td { border-bottom: 0; }
+  tbody tr { cursor: pointer; }
+  tbody tr:hover { background: var(--gray-50); }
+  tbody tr:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
+
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; line-height: 1.6;
+  }
+  .badge.paid { background: var(--ok-bg); color: var(--ok-fg); }
+  .badge.pending { background: var(--warn-bg); color: var(--warn-fg); }
+  .badge.refunded { background: var(--info-bg); color: var(--info-fg); }
+  .badge.failed { background: var(--err-bg); color: var(--err-fg); }
+
+  .empty { padding: var(--s6); text-align: center; color: var(--gray-600); }
+
+  .pager {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--s3); padding: var(--s3) var(--s4);
+    border-top: 1px solid var(--gray-200); background: #fff;
+    flex-wrap: wrap;
+  }
+  .pager .info { color: var(--gray-600); font-size: 13px; }
+  .pager .controls { display: flex; gap: var(--s2); align-items: center; }
+  button {
+    font: inherit; cursor: pointer; border-radius: var(--radius);
+    border: 1px solid var(--gray-200); background: #fff; color: inherit;
+    padding: 6px 12px;
+  }
+  button:hover:not(:disabled) { background: var(--gray-50); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover { background: #2850b8; }
+
+  /* Drawer */
+  .scrim {
+    position: fixed; inset: 0; background: rgba(20,25,35,.4);
+    opacity: 0; pointer-events: none; transition: opacity .18s ease;
+    z-index: 40;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100%; width: 420px; max-width: 92vw;
+    background: #fff; box-shadow: var(--shadow); z-index: 50;
+    transform: translateX(100%); transition: transform .22s ease;
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: var(--s3); padding: var(--s4) var(--s5);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .drawer header h2 { margin: 0; font-size: 16px; }
+  .drawer header .sub { color: var(--gray-600); font-size: 13px; margin-top: 2px; }
+  .drawer .body { padding: var(--s5); overflow-y: auto; flex: 1; }
+  .drawer .close {
+    border: 0; background: transparent; font-size: 20px; line-height: 1;
+    padding: 4px 8px; color: var(--gray-600);
+  }
+  .drawer .close:hover { background: var(--gray-100); }
+  dl.kv { margin: 0 0 var(--s5); display: grid; grid-template-columns: 120px 1fr; gap: var(--s2) var(--s3); }
+  dl.kv dt { color: var(--gray-600); font-size: 13px; }
+  dl.kv dd { margin: 0; }
+  .items { border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; }
+  .items table { width: 100%; }
+  .items th, .items td { padding: var(--s2) var(--s3); font-size: 13px; }
+  .items thead th { background: var(--gray-50); }
+  .items tfoot td { border-top: 1px solid var(--gray-200); font-weight: 600; }
+  .drawer footer {
+    padding: var(--s4) var(--s5); border-top: 1px solid var(--gray-200);
+    display: flex; gap: var(--s2); justify-content: flex-end;
+  }
+  .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--gray-600); margin: 0 0 var(--s3); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scrim, .drawer { transition: none; }
+  }
+  @media (max-width: 640px) {
+    main { padding: var(--s3); }
+    thead th, tbody td { padding: var(--s2) var(--s3); }
+    .col-customer, .col-date { display: none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Orders</h1>
+  <span class="meta" id="countMeta"></span>
+</header>
+
+<main>
+  <div class="toolbar">
+    <label class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="search" type="search" placeholder="Search order ID or customer" aria-label="Search orders">
+    </label>
+    <select id="statusFilter" class="filter" aria-label="Filter by status">
+      <option value="">All statuses</option>
+      <option value="paid">Paid</option>
+      <option value="pending">Pending</option>
+      <option value="refunded">Refunded</option>
+      <option value="failed">Failed</option>
+    </select>
+  </div>
+
+  <div class="table-wrap">
+    <table id="ordersTable">
+      <thead>
+        <tr>
+          <th class="sortable" data-key="id" aria-sort="none">Order <span class="arrow">↕</span></th>
+          <th class="sortable col-customer" data-key="customer" aria-sort="none">Customer <span class="arrow">↕</span></th>
+          <th class="sortable" data-key="status" aria-sort="none">Status <span class="arrow">↕</span></th>
+          <th class="sortable num" data-key="total" aria-sort="none">Total <span class="arrow">↕</span></th>
+          <th class="sortable col-date" data-key="date" aria-sort="none">Date <span class="arrow">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="pager">
+      <span class="info" id="pageInfo"></span>
+      <div class="controls">
+        <button id="prev" type="button">Previous</button>
+        <button id="next" type="button">Next</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+  <header>
+    <div>
+      <h2 id="drawerTitle">Order</h2>
+      <div class="sub" id="drawerSub"></div>
+    </div>
+    <button class="close" id="drawerClose" type="button" aria-label="Close details">&times;</button>
+  </header>
+  <div class="body" id="drawerBody"></div>
+  <footer>
+    <button type="button" id="drawerDismiss">Close</button>
+    <button type="button" class="primary" id="drawerAction">Mark fulfilled</button>
+  </footer>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  // Sample data — replace before launch.
+  var ORDERS = [
+    { id: "ORD-1042", customer: "Maya Chen",      email: "maya.chen@example.com",   status: "paid",     total: 128.00, date: "2024-06-02", items: [{ name: "Mechanical Keyboard", qty: 1, price: 98.00 }, { name: "USB-C Cable", qty: 2, price: 15.00 }] },
+    { id: "ORD-1041", customer: "Tom Alvarez",    email: "tom.alvarez@example.com", status: "pending",  total: 42.50,  date: "2024-06-02", items: [{ name: "Desk Lamp", qty: 1, price: 42.50 }] },
+    { id: "ORD-1040", customer: "Priya Nair",     email: "priya.nair@example.com",  status: "paid",     total: 310.75, date: "2024-06-01", items: [{ name: "27\" Monitor", qty: 1, price: 289.00 }, { name: "HDMI Cable", qty: 1, price: 21.75 }] },
+    { id: "ORD-1039", customer: "Liam O'Brien",   email: "liam.obrien@example.com", status: "refunded", total: 65.00,  date: "2024-05-31", items: [{ name: "Wireless Mouse", qty: 1, price: 65.00 }] },
+    { id: "ORD-1038", customer: "Sofia Rossi",    email: "sofia.rossi@example.com", status: "failed",   total: 199.99, date: "2024-05-31", items: [{ name: "Noise-Cancelling Headphones", qty: 1, price: 199.99 }] },
+    { id: "ORD-1037", customer: "Kenji Tanaka",   email: "kenji.tanaka@example.com",status: "paid",     total: 88.20,  date: "2024-05-30", items: [{ name: "Webcam 1080p", qty: 1, price: 88.20 }] },
+    { id: "ORD-1036", customer: "Amara Okafor",   email: "amara.okafor@example.com",status: "pending",  total: 24.00,  date: "2024-05-30", items: [{ name: "Mouse Pad", qty: 3, price: 8.00 }] },
+    { id: "ORD-1035", customer: "Noah Williams",  email: "noah.williams@example.com",status: "paid",    total: 512.40, date: "2024-05-29", items: [{ name: "Standing Desk", qty: 1, price: 512.40 }] },
+    { id: "ORD-1034", customer: "Elena Petrova",  email: "elena.petrova@example.com",status: "refunded",total: 34.99,  date: "2024-05-28", items: [{ name: "Phone Stand", qty: 1, price: 34.99 }] },
+    { id: "ORD-1033", customer: "Diego Fernández",email: "diego.f@example.com",     status: "paid",     total: 76.50,  date: "2024-05-28", items: [{ name: "Laptop Sleeve", qty: 1, price: 76.50 }] },
+    { id: "ORD-1032", customer: "Hannah Kim",     email: "hannah.kim@example.com",  status: "pending",  total: 145.00, date: "2024-05-27", items: [{ name: "Ergonomic Chair", qty: 1, price: 145.00 }] },
+    { id: "ORD-1031", customer: "Omar Haddad",    email: "omar.haddad@example.com", status: "paid",     total: 59.99,  date: "2024-05-27", items: [{ name: "Bluetooth Speaker", qty: 1, price: 59.99 }] },
+    { id: "ORD-1030", customer: "Grace Lee",      email: "grace.lee@example.com",   status: "failed",   total: 220.00, date: "2024-05-26", items: [{ name: "Graphics Tablet", qty: 1, price: 220.00 }] },
+    { id: "ORD-1029", customer: "Ivan Novak",     email: "ivan.novak@example.com",  status: "paid",     total: 18.75,  date: "2024-05-26", items: [{ name: "Cable Organizer", qty: 5, price: 3.75 }] },
+    { id: "ORD-1028", customer: "Fatima Zahra",   email: "fatima.zahra@example.com",status: "refunded", total: 99.00,  date: "2024-05-25", items: [{ name: "External SSD 1TB", qty: 1, price: 99.00 }] },
+    { id: "ORD-1027", customer: "Lucas Silva",    email: "lucas.silva@example.com", status: "paid",     total: 267.30, date: "2024-05-25", items: [{ name: "Docking Station", qty: 1, price: 267.30 }] },
+    { id: "ORD-1026", customer: "Aisha Rahman",   email: "aisha.rahman@example.com",status: "pending",  total: 41.00,  date: "2024-05-24", items: [{ name: "Keyboard Wrist Rest", qty: 1, price: 41.00 }] },
+    { id: "ORD-1025", customer: "Ben Carter",     email: "ben.carter@example.com",  status: "paid",     total: 155.60, date: "2024-05-24", items: [{ name: "Monitor Arm", qty: 1, price: 155.60 }] }
+  ];
+
+  var PAGE_SIZE = 8;
+  var state = { query: "", status: "", sortKey: "date", sortDir: "desc", page: 1 };
+
+  var tbody = document.getElementById("tbody");
+  var pageInfo = document.getElementById("pageInfo");
+  var countMeta = document.getElementById("countMeta");
+  var prevBtn = document.getElementById("prev");
+  var nextBtn = document.getElementById("next");
+  var searchInput = document.getElementById("search");
+  var statusFilter = document.getElementById("statusFilter");
+  var headers = Array.prototype.slice.call(document.querySelectorAll("th.sortable"));
+
+  var drawer = document.getElementById("drawer");
+  var scrim = document.getElementById("scrim");
+  var drawerTitle = document.getElementById("drawerTitle");
+  var drawerSub = document.getElementById("drawerSub");
+  var drawerBody = document.getElementById("drawerBody");
+  var lastFocused = null;
+
+  function money(n) {
+    return "$" + n.toFixed(2);
+  }
+
+  function statusLabel(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  function filtered() {
+    var q = state.query.trim().toLowerCase();
+    var rows = ORDERS.filter(function (o) {
+      if (state.status && o.status !== state.status) return false;
+      if (!q) return true;
+      return o.id.toLowerCase().indexOf(q) !== -1 ||
+             o.customer.toLowerCase().indexOf(q) !== -1;
+    });
+    var key = state.sortKey, dir = state.sortDir === "asc" ? 1 : -1;
+    rows.sort(function (a, b) {
+      var av = a[key], bv = b[key];
+      if (key === "total") return (av - bv) * dir;
+      if (key === "date") return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
+      av = String(av).toLowerCase(); bv = String(bv).toLowerCase();
+      return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
+    });
+    return rows;
+  }
+
+  function render() {
+    var rows = filtered();
+    var totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    if (state.page > totalPages) state.page = totalPages;
+    var start = (state.page - 1) * PAGE_SIZE;
+    var pageRows = rows.slice(start, start + PAGE_SIZE);
+
+    tbody.innerHTML = "";
+    if (!pageRows.length) {
+      var tr = document.createElement("tr");
+      var td = document.createElement("td");
+      td.colSpan = 5;
+      td.className = "empty";
+      td.textContent = "No orders match the current filters.";
+      tr.appendChild(td);
+      tbody.appendChild(tr);
+    } else {
+      pageRows.forEach(function (o) {
+        var tr = document.createElement("tr");
+        tr.tabIndex = 0;
+        tr.setAttribute("data-id", o.id);
+        tr.innerHTML =
+          '<td class="mono">' + o.id + '</td>' +
+          '<td class="col-customer">' + escapeHtml(o.customer) + '</td>' +
+          '<td><span class="badge ' + o.status + '">' + statusLabel(o.status) + '</span></td>' +
+          '<td class="num">' + money(o.total) + '</td>' +
+          '<td class="col-date">' + o.date + '</td>';
+        tr.addEventListener("click", function () { openDrawer(o.id); });
+        tr.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDrawer(o.id); }
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    countMeta.textContent = rows.length + " order" + (rows.length === 1 ? "" : "s");
+    pageInfo.textContent = "Page " + state.page + " of " + totalPages;
+    prevBtn.disabled = state.page <= 1;
+    nextBtn.disabled = state.page >= totalPages;
+
+    headers.forEach(function (th) {
+      var active = th.getAttribute("data-key") === state.sortKey;
+      th.setAttribute("aria-sort", active ? (state.sortDir === "asc" ? "ascending" : "descending") : "none");
+      var arrow = th.querySelector(".arrow");
+      arrow.textContent = active ? (state.sortDir === "asc" ? "↑" : "↓") : "↕";
+    });
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function openDrawer(id) {
+    var o = ORDERS.filter(function (x) { return x.id === id; })[0];
+    if (!o) return;
+    lastFocused = document.activeElement;
+    drawerTitle.textContent = o.id;
+    drawerSub.textContent = o.customer + " · " + o.date;
+
+    var itemsHtml = o.items.map(function (it) {
+      return '<tr><td>' + escapeHtml(it.name) + '</td><td class="num">' + it.qty +
+             '</td><td class="num">' + money(it.price) + '</td><td class="num">' +
+             money(it.qty * it.price) + '</td></tr>';
+    }).join("");
+
+    drawerBody.innerHTML =
+      '<dl class="kv">' +
+        '<dt>Status</dt><dd><span class="badge ' + o.status + '">' + statusLabel(o.status) + '</span></dd>' +
+        '<dt>Customer</dt><dd>' + escapeHtml(o.customer) + '</dd>' +
+        '<dt>Email</dt><dd>' + escapeHtml(o.email) + '</dd>' +
+        '<dt>Date</dt><dd>' + o.date + '</dd>' +
+        '<dt>Total</dt><dd>' + money(o.total) + '</dd>' +
+      '</dl>' +
+      '<p class="section-title">Items</p>' +
+      '<div class="items"><table><thead><tr>' +
+        '<th>Item</th><th class="num">Qty</th><th class="num">Price</th><th class="num">Subtotal</th>' +
+      '</tr></thead><tbody>' + itemsHtml + '</tbody>' +
+      '<tfoot><tr><td colspan="3">Total</td><td class="num">' + money(o.total) + '</td></tr></tfoot>' +
+      '</table></div>';
+
+    drawer.classList.add("open");
+    scrim.classList.add("open");
+    drawer.setAttribute("aria-hidden", "false");
+    document.getElementById("drawerClose").focus();
+  }
+
+  function closeDrawer() {
+    drawer.classList.remove("open");
+    scrim.classList.remove("open");
+    drawer.setAttribute("aria-hidden", "true");
+    if (lastFocused && lastFocused.focus) lastFocused.focus();
+  }
+
+  searchInput.addEventListener("input", function () {
+    state.query = searchInput.value;
+    state.page = 1;
+    render();
+  });
+
+  statusFilter.addEventListener("change", function () {
+    state.status = statusFilter.value;
+    state.page = 1;
+    render();
+  });
+
+  headers.forEach(function (th) {
+    th.addEventListener("click", function () {
+      var key = th.getAttribute("data-key");
+      if (state.sortKey === key) {
+        state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+      } else {
+        state.sortKey = key;
+        state.sortDir = key === "total" || key === "date" ? "desc" : "asc";
+      }
+      render();
+    });
+  });
+
+  prevBtn.addEventListener("click", function () { if (state.page > 1) { state.page--; render(); } });
+  nextBtn.addEventListener("click", function () { state.page++; render(); });
+
+  document.getElementById("drawerClose").addEventListener("click", closeDrawer);
+  document.getElementById("drawerDismiss").addEventListener("click", closeDrawer);
+  scrim.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
+```

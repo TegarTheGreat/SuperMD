@@ -1,0 +1,154 @@
+[
+  {
+    "prompt": "meetup",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "tie (passes disagree)",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 has a more distinctive, designed identity (dark theme, mono accents, timeline, illustrative map) and richer, more complete content, whereas Page 1 is clean but plain and relies on visible placeholders such as 'Venue name' and 'Jl. Contoh No. 1'; Page 2's flaws are minor, like an invented 'Free entry' and a ? speaker card."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 has a stronger hero with a date card, a clear schedule table with highlighted talks, named speakers, a complete venue and RSVP section and a footer, and it flags its placeholder details openly. Page 1 is a polished dark terminal-style page, but it looks more generic. Its speaker section has a filler 'Your name here' card, the map is a blank illustration, and its RSVP form is cut off in the capture."
+      }
+    ]
+  },
+  {
+    "prompt": "meetup",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 is a finished, hierarchical layout with a date card, a full sample schedule, speaker cards, venue details and a richer RSVP form, clearly labelled as sample content, while Page 1 is almost entirely '[confirm: …]' placeholders that dominate every section."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 is a finished, well-structured page with a strong hero card, a clear schedule and speaker cards, and only a few labelled sample details. Page 2 is almost entirely '[confirm: …]' placeholders, so it reads as an unfinished template."
+      }
+    ]
+  },
+  {
+    "prompt": "meetup",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "baseline",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 looks more designed, with a cohesive dark theme, card layout and a strong above-the-fold view showing schedule, speakers and venue. Page 1 is clean and credible, but it is plain and templated. It also fills the page with 'sample content, replace before publishing' notes and has a dated 2025 event. Page 2 does invent specifics such as employers, a sponsor and 'limited seats', which count against it."
+      },
+      {
+        "order": "subject-second",
+        "winner": "baseline",
+        "why": "Page 1 is a polished, cohesive dark design with a clear hierarchy and the full schedule, speakers, venue and RSVP in one compact flow. Page 2 is a clean but generic, templated light layout with a left-heavy hero and form, and its 'sample content, replace before publishing' notes and unfilled fields make it feel unfinished."
+      }
+    ]
+  },
+  {
+    "prompt": "meetup",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "v11",
+    "result": "tie (passes disagree)",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 has a nav bar, a clear heading hierarchy, a structured meta row, speaker cards and a venue section with directions, while Page 1 is a plain dark list that reads as more templated and minimal, though its copy is nicely specific. Page 2's 'sample content' disclaimers cost it a little polish, but they are small and easy to remove."
+      },
+      {
+        "order": "subject-first",
+        "winner": "v11",
+        "why": "Page 2 has a cohesive dark theme with orange accents and a clean typographic hierarchy, with no visible 'sample content' disclaimers. Page 1 is a competent but generic light template, and its repeated 'replace before publishing' notes make it look unfinished."
+      }
+    ]
+  },
+  {
+    "prompt": "orders",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "tie (passes disagree)",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 looks more designed and credible, with an action-oriented status summary, realistic statuses, blue order IDs, nav and footer, while Page 1 is a clean but generic template with revenue and average-order stat cards."
+      },
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 has clean, consistent spacing and a clear header, stats, table and pagination structure, while Page 1 is more distinctive but has visible spacing flaws: the title is jammed against the nav and the footer is jammed against the table."
+      }
+    ]
+  },
+  {
+    "prompt": "orders",
+    "generator": "claude",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v12",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v12",
+        "why": "Page 1 has a real product shell, a summary strip that puts the orders needing action first, and a more specific toolbar and footer. Its flaws are a title crammed under the nav, a footer touching the table and gray status pills. Page 2 is tidy and its colored badges are easier to scan, but it is a bare generic table."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v12",
+        "why": "Page 2 reads as a real admin product: it has a nav bar, a status summary strip, an in-field search icon, dotted status pills, and a footer. Page 1 is a plain, generic table with underlined blue links and no app chrome."
+      }
+    ]
+  },
+  {
+    "prompt": "orders",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "baseline",
+    "result": "baseline",
+    "passes": [
+      {
+        "order": "subject-second",
+        "winner": "baseline",
+        "why": "Page 1 is a complete, polished orders table with status pills, row actions and pagination, while Page 2 renders an empty table with a stray \"```html\" artifact and has no pagination or data."
+      },
+      {
+        "order": "subject-first",
+        "winner": "baseline",
+        "why": "Page 2 renders a complete, polished orders table with status pills, detail buttons and pagination. Page 1 shows an empty table body and a stray ```html artifact at the top left."
+      }
+    ]
+  },
+  {
+    "prompt": "orders",
+    "generator": "deepseek",
+    "subject": "v12",
+    "against": "v11",
+    "result": "v11",
+    "passes": [
+      {
+        "order": "subject-first",
+        "winner": "v11",
+        "why": "Page 2 shows a complete, working orders table with status badges, sortable headers, pagination and plausible sample data. Page 1 renders an empty table body under a stray \"```html\" artifact, so it looks broken."
+      },
+      {
+        "order": "subject-second",
+        "winner": "v11",
+        "why": "Page 1 renders a full, working orders table with status badges, sortable headers and pagination. Page 2 shows an empty table body and a stray ```html fence at the top."
+      }
+    ]
+  }
+]

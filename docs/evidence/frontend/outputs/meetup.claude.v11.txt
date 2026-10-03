@@ -1,0 +1,344 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jakarta Rust Night</title>
+<meta name="description" content="Monthly Rust community meetup in Jakarta: talks, discussion, and networking.">
+<style>
+:root {
+  --bg: #14110f;
+  --surface: #1f1a17;
+  --line: #3a312b;
+  --text: #f3ede6;
+  --muted: #b5aaa0;
+  --accent: #e8743b;
+  --error: #ff8a80;
+  --ok: #8fd6a0;
+  --radius: 10px;
+  --space: 1rem;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 1rem/1.6 var(--sans);
+}
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 2px;
+}
+.skip { position: absolute; left: -999px; top: 0; background: var(--accent); color: var(--bg); padding: .5rem 1rem; z-index: 10; }
+.skip:focus { left: 0; }
+.wrap { max-width: 64rem; margin: 0 auto; padding: 0 1.25rem; }
+
+/* Placeholders: every unconfirmed fact is visibly marked so none ships by accident. */
+.ph { border-bottom: 1px dashed var(--muted); color: var(--muted); font-family: var(--mono); font-size: .92em; }
+
+header.site { border-bottom: 1px solid var(--line); }
+header.site .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: .9rem; padding-bottom: .9rem; }
+.brand { display: flex; align-items: center; gap: .6rem; font-weight: 700; color: var(--text); text-decoration: none; }
+.brand svg { width: 28px; height: 28px; }
+nav ul { display: flex; gap: 1.25rem; list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
+nav a { color: var(--muted); text-decoration: none; padding: .25rem 0; }
+nav a:hover { color: var(--text); text-decoration: underline; }
+
+.hero { padding: 4rem 0 3rem; }
+.eyebrow { font-family: var(--mono); color: var(--accent); font-size: .9rem; margin: 0 0 .75rem; }
+h1 { font-size: clamp(2.2rem, 6vw, 3.75rem); line-height: 1.1; margin: 0 0 1rem; letter-spacing: -.02em; }
+.lede { max-width: 38rem; color: var(--muted); font-size: 1.125rem; margin: 0 0 1.75rem; }
+.facts { display: flex; flex-wrap: wrap; gap: .75rem 2rem; margin: 0 0 2rem; padding: 0; list-style: none; }
+.facts li { display: flex; flex-direction: column; }
+.facts .k { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+  background: var(--accent); color: var(--bg); font: inherit; font-weight: 700;
+  padding: .75rem 1.4rem; border: 2px solid var(--accent); border-radius: var(--radius);
+  text-decoration: none; cursor: pointer; min-height: 44px;
+  transition: background-color .15s, color .15s;
+}
+.btn:hover { background: transparent; color: var(--accent); }
+.btn:active { transform: translateY(1px); }
+.btn[disabled] { opacity: .55; cursor: not-allowed; }
+.btn[disabled]:hover { background: var(--accent); color: var(--bg); }
+.spinner { width: 1em; height: 1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin .7s linear infinite; display: none; }
+.btn[aria-busy="true"] .spinner { display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+section { padding: 3rem 0; border-top: 1px solid var(--line); }
+h2 { font-size: 1.75rem; margin: 0 0 1.5rem; letter-spacing: -.01em; }
+h3 { font-size: 1.1rem; margin: 0 0 .25rem; }
+
+.schedule { list-style: none; margin: 0; padding: 0; }
+.schedule li { display: grid; grid-template-columns: 9rem 1fr; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.schedule li:last-child { border-bottom: 0; }
+.schedule time { font-family: var(--mono); color: var(--accent); }
+.schedule p { margin: 0; color: var(--muted); }
+
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; list-style: none; margin: 0; padding: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.25rem; height: 100%; }
+.avatar { width: 56px; height: 56px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); display: grid; place-items: center; margin-bottom: .9rem; }
+.avatar svg { width: 28px; height: 28px; }
+.card p { margin: .35rem 0 0; color: var(--muted); }
+
+.venue { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+.venue dl { margin: 0; }
+.venue dt { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 1rem; }
+.venue dt:first-child { margin-top: 0; }
+.venue dd { margin: .15rem 0 0; }
+
+form { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.5rem; max-width: 34rem; }
+.field { margin-bottom: 1.25rem; }
+label, legend { display: block; font-weight: 600; margin-bottom: .35rem; }
+.opt { font-weight: 400; color: var(--muted); }
+input[type="text"], input[type="email"], textarea {
+  width: 100%; font: inherit; color: var(--text); background: var(--bg);
+  border: 1px solid #6b5f56; border-radius: 8px; padding: .65rem .8rem; min-height: 44px;
+}
+textarea { min-height: 6rem; resize: vertical; }
+input:hover, textarea:hover { border-color: var(--muted); }
+input[disabled], textarea[disabled] { opacity: .6; cursor: not-allowed; }
+[aria-invalid="true"] { border-color: var(--error) !important; }
+.err { color: var(--error); font-size: .9rem; margin: .35rem 0 0; min-height: 0; }
+.err:empty { display: none; }
+.check { display: flex; align-items: flex-start; gap: .6rem; }
+.check input { width: 1.25rem; height: 1.25rem; margin-top: .2rem; accent-color: var(--accent); }
+.check label { margin: 0; font-weight: 400; }
+.status { margin-top: 1rem; padding: .85rem 1rem; border-radius: 8px; border: 1px solid var(--line); }
+.status:empty { display: none; }
+.status.ok { border-color: var(--ok); color: var(--ok); }
+.status.fail { border-color: var(--error); color: var(--error); }
+.status.info { color: var(--muted); }
+
+footer { border-top: 1px solid var(--line); padding: 2rem 0; color: var(--muted); font-size: .9rem; }
+
+@media (max-width: 768px) {
+  .cards { grid-template-columns: 1fr; }
+  .venue { grid-template-columns: 1fr; }
+  .schedule li { grid-template-columns: 1fr; gap: .25rem; }
+  .hero { padding-top: 2.5rem; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" focusable="false">
+        <circle cx="16" cy="16" r="9" stroke="#e8743b" stroke-width="3"/>
+        <g stroke="#e8743b" stroke-width="3" stroke-linecap="round">
+          <path d="M16 2v4M16 26v4M2 16h4M26 16h4M6.1 6.1l2.8 2.8M23.1 23.1l2.8 2.8M25.9 6.1l-2.8 2.8M8.9 23.1l-2.8 2.8"/>
+        </g>
+      </svg>
+      Jakarta Rust Night
+    </a>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#speakers">Speakers</a></li>
+        <li><a href="#venue">Venue</a></li>
+        <li><a href="#rsvp">RSVP</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+    <div class="hero" id="top">
+      <p class="eyebrow">Monthly Rust meetup, Jakarta</p>
+      <h1>Jakarta Rust Night</h1>
+      <p class="lede">Talks and hallway conversation for people writing Rust in Jakarta, from first borrow-checker error to production services.</p>
+      <ul class="facts">
+        <li><span class="k">Next event</span><span class="ph">[confirm: date]</span></li>
+        <li><span class="k">Doors</span><span class="ph">[confirm: time, WIB]</span></li>
+        <li><span class="k">Where</span><span class="ph">[confirm: venue name]</span></li>
+        <li><span class="k">Cost</span><span class="ph">[confirm: free or ticket price]</span></li>
+      </ul>
+      <a class="btn" href="#rsvp">RSVP for the next night</a>
+    </div>
+
+    <section id="schedule" aria-labelledby="h-schedule">
+      <h2 id="h-schedule">Schedule</h2>
+      <p class="lede" style="margin-bottom:1rem">Times are WIB (UTC+7). Running order below is a template; each slot is replaced when the lineup is final.</p>
+      <ol class="schedule">
+        <li><time class="ph">[confirm: time]</time><div><h3>Doors and check-in</h3><p class="ph">[confirm: details]</p></div></li>
+        <li><time class="ph">[confirm: time]</time><div><h3>Welcome</h3><p class="ph">[confirm: host name]</p></div></li>
+        <li><time class="ph">[confirm: time]</time><div><h3 class="ph">[confirm: talk 1 title]</h3><p class="ph">[confirm: speaker, duration]</p></div></li>
+        <li><time class="ph">[confirm: time]</time><div><h3 class="ph">[confirm: talk 2 title]</h3><p class="ph">[confirm: speaker, duration]</p></div></li>
+        <li><time class="ph">[confirm: time]</time><div><h3>Break</h3><p class="ph">[confirm: details]</p></div></li>
+        <li><time class="ph">[confirm: time]</time><div><h3 class="ph">[confirm: talk 3 or lightning talks]</h3><p class="ph">[confirm: speakers]</p></div></li>
+        <li><time class="ph">[confirm: time]</time><div><h3>Open conversation</h3><p class="ph">[confirm: details]</p></div></li>
+      </ol>
+    </section>
+
+    <section id="speakers" aria-labelledby="h-speakers">
+      <h2 id="h-speakers">Speakers</h2>
+      <ul class="cards">
+        <li class="card">
+          <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="#b5aaa0" stroke-width="1.6" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+          <h3 class="ph">[confirm: speaker name]</h3>
+          <p class="ph">[confirm: role, company]</p>
+          <p class="ph">[confirm: talk title and abstract]</p>
+        </li>
+        <li class="card">
+          <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="#b5aaa0" stroke-width="1.6" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+          <h3 class="ph">[confirm: speaker name]</h3>
+          <p class="ph">[confirm: role, company]</p>
+          <p class="ph">[confirm: talk title and abstract]</p>
+        </li>
+        <li class="card">
+          <div class="avatar"><svg viewBox="0 0 24 24" fill="none" stroke="#b5aaa0" stroke-width="1.6" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+          <h3 class="ph">[confirm: speaker name]</h3>
+          <p class="ph">[confirm: role, company]</p>
+          <p class="ph">[confirm: talk title and abstract]</p>
+        </li>
+      </ul>
+    </section>
+
+    <section id="venue" aria-labelledby="h-venue">
+      <h2 id="h-venue">Venue</h2>
+      <div class="venue">
+        <dl>
+          <dt>Name</dt><dd class="ph">[confirm: venue name]</dd>
+          <dt>Address</dt><dd class="ph">[confirm: street address, district]</dd>
+          <dt>Getting there</dt><dd class="ph">[confirm: nearest MRT, TransJakarta, or KRL stop]</dd>
+        </dl>
+        <dl>
+          <dt>Floor and room</dt><dd class="ph">[confirm: floor, room]</dd>
+          <dt>Accessibility</dt><dd class="ph">[confirm: step-free access, lifts]</dd>
+          <dt>Map link</dt><dd class="ph">[confirm: map URL]</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section id="rsvp" aria-labelledby="h-rsvp">
+      <h2 id="h-rsvp">RSVP</h2>
+      <form id="rsvp-form" novalidate>
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required aria-describedby="name-err">
+          <p class="err" id="name-err"></p>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="email-err">
+          <p class="err" id="email-err"></p>
+        </div>
+        <div class="field">
+          <label for="needs">Dietary or accessibility needs <span class="opt">(optional)</span></label>
+          <textarea id="needs" name="needs"></textarea>
+        </div>
+        <div class="field check">
+          <input id="first" name="firstTime" type="checkbox">
+          <label for="first">This is my first Jakarta Rust Night</label>
+        </div>
+        <button class="btn" type="submit" id="submit">
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="submit-label">Reserve my spot</span>
+        </button>
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    Jakarta Rust Night is a community-run meetup. Contact: <span class="ph">[confirm: organizer email or chat link]</span>
+  </div>
+</footer>
+
+<script>
+// Set to the URL that accepts a JSON POST ({name, email, needs, firstTime}).
+// Left empty on purpose: without an endpoint the form reports that nothing was sent
+// instead of showing a false confirmation.
+const RSVP_ENDPOINT = "";
+
+const form = document.getElementById("rsvp-form");
+const statusEl = document.getElementById("status");
+const submitBtn = document.getElementById("submit");
+const submitLabel = document.getElementById("submit-label");
+const fields = [
+  { el: form.elements.name, err: document.getElementById("name-err"), missing: "Enter your name." },
+  { el: form.elements.email, err: document.getElementById("email-err"), missing: "Enter your email address.", invalid: "Enter a valid email address, like name@example.com." },
+];
+
+function setStatus(kind, text) {
+  statusEl.className = "status " + kind;
+  statusEl.textContent = text;
+}
+
+function validateField(f) {
+  const v = f.el.value.trim();
+  let msg = "";
+  if (!v) msg = f.missing;
+  else if (!f.el.checkValidity()) msg = f.invalid || f.missing;
+  f.err.textContent = msg;
+  f.el.setAttribute("aria-invalid", msg ? "true" : "false");
+  return !msg;
+}
+
+fields.forEach(f => {
+  f.el.addEventListener("blur", () => validateField(f));
+  f.el.addEventListener("input", () => { if (f.el.getAttribute("aria-invalid") === "true") validateField(f); });
+});
+
+function setBusy(busy) {
+  submitBtn.disabled = busy;
+  submitBtn.setAttribute("aria-busy", String(busy));
+  submitLabel.textContent = busy ? "Sending…" : "Reserve my spot";
+  [...form.elements].forEach(el => { if (el !== submitBtn) el.disabled = busy; });
+}
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  statusEl.className = "status";
+  statusEl.textContent = "";
+
+  const results = fields.map(validateField);
+  if (results.includes(false)) {
+    fields[results.indexOf(false)].el.focus();
+    return;
+  }
+
+  if (!RSVP_ENDPOINT) {
+    setStatus("info", "RSVP is not open yet: no submission endpoint is configured, so nothing was sent.");
+    return;
+  }
+
+  const payload = {
+    name: form.elements.name.value.trim(),
+    email: form.elements.email.value.trim(),
+    needs: form.elements.needs.value.trim(),
+    firstTime: form.elements.firstTime.checked,
+  };
+
+  setBusy(true);
+  try {
+    const res = await fetch(RSVP_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    form.reset();
+    fields.forEach(f => f.el.setAttribute("aria-invalid", "false"));
+    setStatus("ok", "RSVP received. See you there.");
+  } catch (err) {
+    setStatus("fail", "Could not send your RSVP. Check your connection and try again.");
+  } finally {
+    setBusy(false);
+  }
+});
+</script>
+</body>
+</html>
+```

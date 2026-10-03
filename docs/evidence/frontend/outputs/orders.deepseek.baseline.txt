@@ -1,0 +1,772 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Orders</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: #f6f8fc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    .admin-panel {
+      max-width: 1300px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 28px;
+      box-shadow: 0 20px 35px -8px rgba(0, 20, 30, 0.15), 0 8px 18px -6px rgba(0, 0, 0, 0.05);
+      padding: 2rem 2rem 1.5rem;
+      transition: all 0.2s;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #0b1b2b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.75rem;
+    }
+
+    h1 span {
+      background: #eef3fe;
+      color: #1e5eff;
+      font-size: 0.9rem;
+      font-weight: 500;
+      padding: 0.2rem 0.8rem;
+      border-radius: 40px;
+      letter-spacing: 0.01em;
+    }
+
+    /* toolbar */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-wrapper {
+      flex: 2 1 260px;
+      position: relative;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 60px;
+      font-size: 0.95rem;
+      background: #ffffff;
+      transition: 0.15s;
+      outline: none;
+      color: #0b1b2b;
+    }
+
+    .search-wrapper input:focus {
+      border-color: #1e5eff;
+      box-shadow: 0 0 0 3px rgba(30, 94, 255, 0.1);
+    }
+
+    .search-wrapper::before {
+      content: "🔍";
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .filter-wrapper {
+      flex: 1 1 160px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 60px;
+      padding: 0.1rem 0.1rem 0.1rem 1rem;
+    }
+
+    .filter-wrapper label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #4a5b6e;
+      white-space: nowrap;
+    }
+
+    .filter-wrapper select {
+      flex: 1;
+      padding: 0.65rem 1.8rem 0.65rem 0.5rem;
+      border: none;
+      background: transparent;
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: #0b1b2b;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234a5b6e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.5rem center;
+      background-size: 1rem;
+    }
+
+    /* table */
+    .table-container {
+      overflow-x: auto;
+      border-radius: 20px;
+      border: 1px solid #eef2f6;
+      background: #ffffff;
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 800px;
+      font-size: 0.95rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 1rem 1.2rem;
+      background: #fafcff;
+      font-weight: 600;
+      color: #1e2f44;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      border-bottom: 1.5px solid #e9eef4;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+      transition: background 0.1s;
+    }
+
+    th:hover {
+      background: #f0f5fe;
+    }
+
+    th .sort-indicator {
+      display: inline-block;
+      margin-left: 0.4rem;
+      font-size: 0.75rem;
+      opacity: 0.5;
+      transition: 0.1s;
+    }
+
+    th.active-sort .sort-indicator {
+      opacity: 1;
+      color: #1e5eff;
+    }
+
+    td {
+      padding: 1rem 1.2rem;
+      border-bottom: 1px solid #f0f4fa;
+      color: #1f2e3f;
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #fafdff;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.9rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      text-transform: capitalize;
+      background: #eef3fe;
+      color: #1e5eff;
+    }
+
+    .status-badge.completed {
+      background: #e3f7ec;
+      color: #0e7b4c;
+    }
+
+    .status-badge.pending {
+      background: #fff3e0;
+      color: #b45b0a;
+    }
+
+    .status-badge.cancelled {
+      background: #ffe9e9;
+      color: #b81c1c;
+    }
+
+    .status-badge.shipped {
+      background: #e6f0ff;
+      color: #1e5eff;
+    }
+
+    .btn-detail {
+      background: none;
+      border: 1.5px solid #dbe2ec;
+      padding: 0.4rem 1rem;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #1e2f44;
+      cursor: pointer;
+      transition: 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn-detail:hover {
+      background: #1e5eff;
+      border-color: #1e5eff;
+      color: white;
+    }
+
+    /* pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-top: 0.5rem;
+    }
+
+    .page-info {
+      font-size: 0.9rem;
+      color: #4a5b6e;
+    }
+
+    .page-controls {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .page-btn {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      min-width: 2.4rem;
+      height: 2.4rem;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #1e2f44;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.1s;
+      padding: 0 0.5rem;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: #f0f5fe;
+      border-color: #b8c9e0;
+    }
+
+    .page-btn.active {
+      background: #1e5eff;
+      border-color: #1e5eff;
+      color: white;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* drawer */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 30, 0.3);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 1000;
+    }
+
+    .drawer-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 420px;
+      max-width: 90vw;
+      background: #ffffff;
+      box-shadow: -10px 0 30px -10px rgba(0, 0, 0, 0.2);
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      padding: 1.8rem 1.8rem 2rem;
+      overflow-y: auto;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.8rem;
+    }
+
+    .drawer-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #0b1b2b;
+      letter-spacing: -0.01em;
+    }
+
+    .drawer-close {
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      line-height: 1;
+      cursor: pointer;
+      color: #6b7c8f;
+      padding: 0 0.4rem;
+      transition: 0.1s;
+    }
+
+    .drawer-close:hover {
+      color: #0b1b2b;
+    }
+
+    .drawer-field {
+      margin-bottom: 1.2rem;
+      border-bottom: 1px solid #eef2f6;
+      padding-bottom: 0.9rem;
+    }
+
+    .drawer-field .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+      color: #6b7c8f;
+      margin-bottom: 0.3rem;
+    }
+
+    .drawer-field .value {
+      font-size: 1.05rem;
+      font-weight: 500;
+      color: #0b1b2b;
+      word-break: break-word;
+    }
+
+    .drawer-field .value .status-badge {
+      font-size: 0.85rem;
+      padding: 0.3rem 1rem;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #6b7c8f;
+      font-size: 1rem;
+    }
+
+    /* responsive */
+    @media (max-width: 600px) {
+      .admin-panel {
+        padding: 1.5rem 1rem;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .filter-wrapper {
+        width: 100%;
+      }
+      .drawer {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-panel">
+    <h1>
+      Orders
+      <span id="orderCount">0</span>
+    </h1>
+
+    <!-- toolbar -->
+    <div class="toolbar">
+      <div class="search-wrapper">
+        <input type="text" id="searchInput" placeholder="Search by customer or ID..." autocomplete="off">
+      </div>
+      <div class="filter-wrapper">
+        <label for="statusFilter">Status</label>
+        <select id="statusFilter">
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="shipped">Shipped</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th data-key="id">Order ID <span class="sort-indicator">↕</span></th>
+            <th data-key="customer">Customer <span class="sort-indicator">↕</span></th>
+            <th data-key="date">Date <span class="sort-indicator">↕</span></th>
+            <th data-key="total">Total <span class="sort-indicator">↕</span></th>
+            <th data-key="status">Status <span class="sort-indicator">↕</span></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody">
+          <!-- dynamic rows -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- pagination -->
+    <div class="pagination">
+      <div class="page-info" id="pageInfo">Showing 0–0 of 0</div>
+      <div class="page-controls" id="pageControls"></div>
+    </div>
+  </div>
+
+  <!-- drawer overlay & drawer -->
+  <div class="drawer-overlay" id="drawerOverlay"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h2>Order details</h2>
+      <button class="drawer-close" id="drawerCloseBtn" aria-label="Close">×</button>
+    </div>
+    <div id="drawerContent">
+      <!-- dynamic content -->
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- SAMPLE DATA ----------
+      const orders = [
+        { id: 'ORD-1001', customer: 'Alice Johnson', date: '2025-02-10', total: 124.99, status: 'completed', email: 'alice@example.com', items: 'Wireless Headphones, Phone Case', address: '123 Main St, Springfield' },
+        { id: 'ORD-1002', customer: 'Marcus Chen', date: '2025-02-09', total: 89.50, status: 'shipped', email: 'marcus@example.com', items: 'Mechanical Keyboard', address: '456 Oak Ave, Portland' },
+        { id: 'ORD-1003', customer: 'Sofia Rodriguez', date: '2025-02-08', total: 215.30, status: 'pending', email: 'sofia@example.com', items: 'Smart Watch, Fitness Band', address: '789 Pine St, Austin' },
+        { id: 'ORD-1004', customer: 'James Lee', date: '2025-02-07', total: 45.00, status: 'cancelled', email: 'james@example.com', items: 'USB-C Cable (2m)', address: '321 Elm Blvd, Denver' },
+        { id: 'ORD-1005', customer: 'Emma Wilson', date: '2025-02-06', total: 312.75, status: 'completed', email: 'emma@example.com', items: 'Tablet, Stylus Pen', address: '654 Maple Dr, Seattle' },
+        { id: 'ORD-1006', customer: 'David Kim', date: '2025-02-05', total: 67.20, status: 'shipped', email: 'david@example.com', items: 'Bluetooth Speaker', address: '987 Cedar Ln, Chicago' },
+        { id: 'ORD-1007', customer: 'Olivia Brown', date: '2025-02-04', total: 189.99, status: 'pending', email: 'olivia@example.com', items: 'Noise Cancelling Earbuds', address: '147 Birch Rd, Boston' },
+        { id: 'ORD-1008', customer: 'Liam Martinez', date: '2025-02-03', total: 54.45, status: 'completed', email: 'liam@example.com', items: 'Phone Stand, Screen Protector', address: '258 Willow Way, Miami' },
+        { id: 'ORD-1009', customer: 'Ava Taylor', date: '2025-02-02', total: 432.10, status: 'shipped', email: 'ava@example.com', items: 'Laptop Sleeve, Wireless Mouse', address: '369 Aspen Ct, San Jose' },
+        { id: 'ORD-1010', customer: 'Noah Garcia', date: '2025-02-01', total: 78.30, status: 'cancelled', email: 'noah@example.com', items: 'HDMI Cable, Webcam', address: '741 Spruce St, Atlanta' },
+        { id: 'ORD-1011', customer: 'Mia Anderson', date: '2025-01-31', total: 199.99, status: 'completed', email: 'mia@example.com', items: 'Smart Home Hub', address: '852 Poplar Ave, Dallas' },
+        { id: 'ORD-1012', customer: 'Ethan Wright', date: '2025-01-30', total: 33.80, status: 'pending', email: 'ethan@example.com', items: 'Phone Grip', address: '963 Fir Ln, Phoenix' },
+        { id: 'ORD-1013', customer: 'Isabella Hall', date: '2025-01-29', total: 267.40, status: 'shipped', email: 'isabella@example.com', items: 'Portable Charger, Cable Kit', address: '159 Redwood Dr, Las Vegas' },
+        { id: 'ORD-1014', customer: 'Lucas Young', date: '2025-01-28', total: 112.15, status: 'completed', email: 'lucas@example.com', items: 'Desk Lamp, Notebook', address: '753 Sequoia Ct, Houston' },
+        { id: 'ORD-1015', customer: 'Amelia Scott', date: '2025-01-27', total: 88.90, status: 'cancelled', email: 'amelia@example.com', items: 'Wireless Charger', address: '951 Palm St, Orlando' },
+        { id: 'ORD-1016', customer: 'Benjamin Adams', date: '2025-01-26', total: 401.25, status: 'pending', email: 'ben@example.com', items: 'Monitor, Docking Station', address: '357 Cypress Ave, San Diego' },
+        { id: 'ORD-1017', customer: 'Charlotte Nelson', date: '2025-01-25', total: 56.70, status: 'shipped', email: 'charlotte@example.com', items: 'Phone Ring Light', address: '486 Juniper Rd, Philadelphia' },
+        { id: 'ORD-1018', customer: 'Henry Carter', date: '2025-01-24', total: 178.50, status: 'completed', email: 'henry@example.com', items: 'Bluetooth Tracker, Key Organizer', address: '624 Magnolia Blvd, Nashville' },
+        { id: 'ORD-1019', customer: 'Harper Mitchell', date: '2025-01-23', total: 94.20, status: 'pending', email: 'harper@example.com', items: 'Laptop Stand', address: '813 Azalea Dr, Charlotte' },
+        { id: 'ORD-1020', customer: 'Alexander Perez', date: '2025-01-22', total: 223.60, status: 'shipped', email: 'alex@example.com', items: 'External SSD, Cable Organizer', address: '975 Laurel Ln, Detroit' }
+      ];
+
+      // ---------- STATE ----------
+      let currentPage = 1;
+      const pageSize = 8;
+      let sortKey = 'id';
+      let sortDir = 'asc'; // 'asc' or 'desc'
+      let searchTerm = '';
+      let statusFilter = 'all';
+
+      // ---------- DOM refs ----------
+      const tbody = document.getElementById('ordersBody');
+      const searchInput = document.getElementById('searchInput');
+      const statusFilterSelect = document.getElementById('statusFilter');
+      const pageInfo = document.getElementById('pageInfo');
+      const pageControls = document.getElementById('pageControls');
+      const orderCountSpan = document.getElementById('orderCount');
+      const drawer = document.getElementById('drawer');
+      const drawerOverlay = document.getElementById('drawerOverlay');
+      const drawerContent = document.getElementById('drawerContent');
+      const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+
+      // ---------- HELPERS ----------
+      function formatCurrency(value) {
+        return '$' + value.toFixed(2);
+      }
+
+      function getStatusClass(status) {
+        return status.toLowerCase();
+      }
+
+      // filter + sort + paginate
+      function getFilteredSortedOrders() {
+        let filtered = orders.filter(order => {
+          const matchesSearch = searchTerm === '' ||
+            order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            order.id.toLowerCase().includes(searchTerm.toLowerCase());
+          const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
+          return matchesSearch && matchesStatus;
+        });
+
+        // sort
+        filtered.sort((a, b) => {
+          let valA = a[sortKey];
+          let valB = b[sortKey];
+          if (sortKey === 'total') {
+            valA = Number(valA);
+            valB = Number(valB);
+          } else if (sortKey === 'date') {
+            valA = new Date(valA);
+            valB = new Date(valB);
+          } else {
+            valA = String(valA).toLowerCase();
+            valB = String(valB).toLowerCase();
+          }
+          if (valA < valB) return sortDir === 'asc' ? -1 : 1;
+          if (valA > valB) return sortDir === 'asc' ? 1 : -1;
+          return 0;
+        });
+
+        return filtered;
+      }
+
+      // render table + pagination
+      function render() {
+        const filtered = getFilteredSortedOrders();
+        const total = filtered.length;
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (currentPage < 1) currentPage = 1;
+
+        const start = (currentPage - 1) * pageSize;
+        const end = Math.min(start + pageSize, total);
+        const pageOrders = filtered.slice(start, end);
+
+        // update order count badge
+        orderCountSpan.textContent = total;
+
+        // render rows
+        if (pageOrders.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="empty-message">No orders match your criteria</td></tr>`;
+        } else {
+          tbody.innerHTML = pageOrders.map(order => {
+            const statusClass = getStatusClass(order.status);
+            return `<tr>
+              <td><strong>${order.id}</strong></td>
+              <td>${order.customer}</td>
+              <td>${order.date}</td>
+              <td>${formatCurrency(order.total)}</td>
+              <td><span class="status-badge ${statusClass}">${order.status}</span></td>
+              <td><button class="btn-detail" data-id="${order.id}">Details</button></td>
+            </tr>`;
+          }).join('');
+        }
+
+        // update page info
+        if (total === 0) {
+          pageInfo.textContent = 'Showing 0–0 of 0';
+        } else {
+          pageInfo.textContent = `Showing ${start + 1}–${end} of ${total}`;
+        }
+
+        // render pagination buttons
+        renderPagination(totalPages);
+
+        // update sort indicators
+        document.querySelectorAll('th').forEach(th => {
+          const key = th.dataset.key;
+          if (!key) return;
+          th.classList.remove('active-sort');
+          const indicator = th.querySelector('.sort-indicator');
+          if (indicator) {
+            if (key === sortKey) {
+              th.classList.add('active-sort');
+              indicator.textContent = sortDir === 'asc' ? '↑' : '↓';
+            } else {
+              indicator.textContent = '↕';
+            }
+          }
+        });
+      }
+
+      function renderPagination(totalPages) {
+        let html = '';
+        // prev
+        html += `<button class="page-btn" data-page="${currentPage - 1}" ${currentPage === 1 ? 'disabled' : ''}>←</button>`;
+
+        // page numbers (show up to 5 pages around current)
+        const maxVisible = 5;
+        let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+        let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+        if (endPage - startPage + 1 < maxVisible) {
+          startPage = Math.max(1, endPage - maxVisible + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+          html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+
+        // next
+        html += `<button class="page-btn" data-page="${currentPage + 1}" ${currentPage === totalPages ? 'disabled' : ''}>→</button>`;
+
+        pageControls.innerHTML = html;
+
+        // attach listeners to page buttons
+        pageControls.querySelectorAll('.page-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const page = parseInt(btn.dataset.page, 10);
+            if (!isNaN(page) && page >= 1 && page <= totalPages && page !== currentPage) {
+              currentPage = page;
+              render();
+            }
+          });
+        });
+      }
+
+      // ---------- DRAWER ----------
+      function openDrawer(orderId) {
+        const order = orders.find(o => o.id === orderId);
+        if (!order) return;
+
+        const statusClass = getStatusClass(order.status);
+        drawerContent.innerHTML = `
+          <div class="drawer-field">
+            <div class="label">Order ID</div>
+            <div class="value"><strong>${order.id}</strong></div>
+          </div>
+          <div class="drawer-field">
+            <div class="label">Customer</div>
+            <div class="value">${order.customer}</div>
+          </div>
+          <div class="drawer-field">
+            <div class="label">Email</div>
+            <div class="value">${order.email}</div>
+          </div>
+          <div class="drawer-field">
+            <div class="label">Date</div>
+            <div class="value">${order.date}</div>
+          </div>
+          <div class="drawer-field">
+            <div class="label">Total</div>
+            <div class="value">${formatCurrency(order.total)}</div>
+          </div>
+          <div class="drawer-field">
+            <div class="label">Status</div>
+            <div class="value"><span class="status-badge ${statusClass}">${order.status}</span></div>
+          </div>
+          <div class="drawer-field">
+            <div class="label">Items</div>
+            <div class="value">${order.items}</div>
+          </div>
+          <div class="drawer-field">
+            <div class="label">Shipping address</div>
+            <div class="value">${order.address}</div>
+          </div>
+        `;
+
+        drawer.classList.add('open');
+        drawerOverlay.classList.add('open');
+      }
+
+      function closeDrawer() {
+        drawer.classList.remove('open');
+        drawerOverlay.classList.remove('open');
+      }
+
+      // ---------- EVENT LISTENERS ----------
+      // search
+      searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value.trim();
+        currentPage = 1;
+        render();
+      });
+
+      // status filter
+      statusFilterSelect.addEventListener('change', (e) => {
+        statusFilter = e.target.value;
+        currentPage = 1;
+        render();
+      });
+
+      // sortable columns
+      document.querySelectorAll('th[data-key]').forEach(th => {
+        th.addEventListener('click', () => {
+          const key = th.dataset.key;
+          if (sortKey === key) {
+            sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+          } else {
+            sortKey = key;
+            sortDir = 'asc';
+          }
+          currentPage = 1;
+          render();
+        });
+      });
+
+      // detail buttons (event delegation)
+      tbody.addEventListener('click', (e) => {
+        const btn = e.target.closest('.btn-detail');
+        if (btn) {
+          const orderId = btn.dataset.id;
+          openDrawer(orderId);
+        }
+      });
+
+      // close drawer
+      drawerCloseBtn.addEventListener('click', closeDrawer);
+      drawerOverlay.addEventListener('click', closeDrawer);
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('open')) {
+          closeDrawer();
+        }
+      });
+
+      // ---------- INITIAL RENDER ----------
+      render();
+    })();
+  </script>
+</body>
+</html>
+```

@@ -1,0 +1,302 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jakarta Rust Night</title>
+<style>
+  :root {
+    --bg: #14110f;
+    --surface: #1e1a17;
+    --border: #332c27;
+    --text: #ece7e2;
+    --muted: #a89f97;
+    --accent: #e8622c;
+    --accent-dim: #7a3418;
+    --focus: #ffb27a;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  a { color: var(--accent); }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 40px 0 28px;
+  }
+  header h1 {
+    margin: 0 0 8px;
+    font-size: clamp(1.7rem, 5vw, 2.4rem);
+    letter-spacing: -0.02em;
+  }
+  header p { margin: 0; color: var(--muted); max-width: 52ch; }
+  .meta {
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .meta strong { color: var(--text); font-weight: 600; }
+
+  section { padding: 36px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: 0; }
+  h2 {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    margin: 0 0 20px;
+    font-weight: 600;
+  }
+
+  /* Schedule */
+  .schedule { list-style: none; margin: 0; padding: 0; }
+  .schedule li {
+    display: grid;
+    grid-template-columns: 92px 1fr;
+    gap: 16px;
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+  }
+  .schedule li:first-child { border-top: 0; }
+  .schedule time {
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+    font-size: 0.9rem;
+    padding-top: 2px;
+  }
+  .schedule .what { font-weight: 600; }
+  .schedule .who { color: var(--muted); font-size: 0.9rem; }
+
+  /* Speakers */
+  .speakers { display: grid; gap: 20px; }
+  .speaker {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .speaker h3 { margin: 0 0 4px; font-size: 1.05rem; }
+  .speaker .name { color: var(--accent); font-size: 0.9rem; margin: 0 0 10px; }
+  .speaker p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
+  /* Venue */
+  .venue { display: grid; gap: 6px; }
+  .venue .label { color: var(--muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; }
+  .venue address { font-style: normal; }
+  .venue .note { color: var(--muted); font-size: 0.9rem; margin-top: 10px; }
+
+  /* Form */
+  form { display: grid; gap: 18px; max-width: 480px; }
+  .field { display: grid; gap: 6px; }
+  label { font-size: 0.9rem; font-weight: 600; }
+  .hint { color: var(--muted); font-size: 0.82rem; font-weight: 400; }
+  input, select, textarea {
+    font: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    width: 100%;
+  }
+  input::placeholder, textarea::placeholder { color: #6f665f; }
+  textarea { resize: vertical; min-height: 84px; }
+  button {
+    font: inherit;
+    font-weight: 600;
+    color: #14110f;
+    background: var(--accent);
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 20px;
+    cursor: pointer;
+    justify-self: start;
+  }
+  button:hover { background: #f0743f; }
+  button:disabled { background: var(--accent-dim); color: var(--muted); cursor: not-allowed; }
+  .status { font-size: 0.9rem; min-height: 1.3em; }
+  .status.ok { color: #7fd18a; }
+  .status.err { color: #ff8a7a; }
+
+  footer { padding: 28px 0 48px; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Jakarta Rust Night</h1>
+    <p>A monthly meetup for Rust developers in Jakarta. Talks, demos, and time to talk to people who write Rust for a living.</p>
+    <div class="meta">
+      <span><strong>Next:</strong> Thursday, 12 June 2025</span>
+      <span><strong>Doors:</strong> 18:30 WIB</span>
+      <span><strong>Cost:</strong> Free</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section aria-labelledby="schedule-h">
+    <h2 id="schedule-h">Schedule</h2>
+    <ul class="schedule">
+      <li>
+        <time datetime="18:30">18:30</time>
+        <div>
+          <div class="what">Doors open, food and drinks</div>
+          <div class="who">Come early; the good seats go first.</div>
+        </div>
+      </li>
+      <li>
+        <time datetime="19:00">19:00</time>
+        <div>
+          <div class="what">Async Rust without the footguns</div>
+          <div class="who">Rani Prasetyo &middot; 30 min + questions</div>
+        </div>
+      </li>
+      <li>
+        <time datetime="19:40">19:40</time>
+        <div>
+          <div class="what">Shipping a CLI in Rust: from cargo new to crates.io</div>
+          <div class="who">Dimas Nugroho &middot; 25 min</div>
+        </div>
+      </li>
+      <li>
+        <time datetime="20:10">20:10</time>
+        <div>
+          <div class="what">Break</div>
+          <div class="who">Coffee, snacks, hallway track.</div>
+        </div>
+      </li>
+      <li>
+        <time datetime="20:25">20:25</time>
+        <div>
+          <div class="what">Lightning talks</div>
+          <div class="who">Open slots, 5 min each. Sign up at the door.</div>
+        </div>
+      </li>
+      <li>
+        <time datetime="21:00">21:00</time>
+        <div>
+          <div class="what">Wrap up and move to the nearby warung</div>
+          <div class="who">Optional, pay your own way.</div>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="speakers-h">
+    <h2 id="speakers-h">Speakers</h2>
+    <div class="speakers">
+      <article class="speaker">
+        <h3>Async Rust without the footguns</h3>
+        <p class="name">Rani Prasetyo &middot; Backend engineer</p>
+        <p>Where <code>async</code> pays off, where it just adds complexity, and the runtime and cancellation mistakes that show up in production. Bring your own war stories.</p>
+      </article>
+      <article class="speaker">
+        <h3>Shipping a CLI in Rust: from cargo new to crates.io</h3>
+        <p class="name">Dimas Nugroho &middot; Tooling developer</p>
+        <p>A walk through building, testing, and publishing a small command-line tool, including the parts of the release process nobody documents.</p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="venue-h">
+    <h2 id="venue-h">Venue</h2>
+    <div class="venue">
+      <span class="label">Location</span>
+      <address>
+        <strong>Ruang Komunitas Lantai 3</strong><br>
+        Jl. Kemang Raya No. 12<br>
+        Jakarta Selatan 12730
+      </address>
+      <p class="note">Five minutes' walk from the Kemang bus stop. Lift access to the third floor; ask at the front desk if the lobby door is locked. Free parking is limited, so ride-hailing is easier.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="rsvp-h">
+    <h2 id="rsvp-h">RSVP</h2>
+    <form id="rsvp" novalidate>
+      <div class="field">
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" autocomplete="name" required>
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required>
+      </div>
+      <div class="field">
+        <label for="guests">Bringing anyone? <span class="hint">(optional)</span></label>
+        <select id="guests" name="guests">
+          <option value="0">Just me</option>
+          <option value="1">+1 guest</option>
+          <option value="2">+2 guests</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="notes">Anything we should know? <span class="hint">(optional)</span></label>
+        <textarea id="notes" name="notes" placeholder="Dietary needs, accessibility requests, lightning talk topic..."></textarea>
+      </div>
+      <button type="submit">Send RSVP</button>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
+    </form>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    Questions? Email <a href="mailto:hello@jakartarustnight.id">hello@jakartarustnight.id</a>.
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var form = document.getElementById('rsvp');
+    var status = document.getElementById('status');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      status.className = 'status';
+
+      var name = form.name.value.trim();
+      var email = form.email.value.trim();
+
+      if (!name) {
+        status.textContent = 'Please enter your name.';
+        status.classList.add('err');
+        form.name.focus();
+        return;
+      }
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        status.textContent = 'Please enter a valid email address.';
+        status.classList.add('err');
+        form.email.focus();
+        return;
+      }
+
+      // No backend on this page: the RSVP is acknowledged locally.
+      status.textContent = 'Thanks, ' + name + '. Your RSVP is noted.';
+      status.classList.add('ok');
+      form.reset();
+    });
+  })();
+</script>
+
+</body>
+</html>
+```

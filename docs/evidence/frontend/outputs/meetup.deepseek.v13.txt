@@ -1,0 +1,500 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jakarta Rust Night</title>
+<style>
+  :root {
+    --gray-900: #16181d;
+    --gray-700: #3a3f4a;
+    --gray-500: #6b7280;
+    --gray-300: #cbd0d8;
+    --gray-100: #eef0f4;
+    --gray-50: #f7f8fa;
+    --accent: #b7410e;
+    --accent-dark: #8f3209;
+    --radius: 6px;
+    --shadow: 0 1px 3px rgba(22, 24, 29, 0.12);
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --space-7: 48px;
+    --text-xs: 0.75rem;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-lg: 1.25rem;
+    --text-xl: 1.75rem;
+    --text-2xl: 2.5rem;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+    font-size: var(--text-base);
+    line-height: 1.6;
+    color: var(--gray-900);
+    background: var(--gray-50);
+  }
+
+  a { color: var(--accent); }
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 var(--space-5);
+  }
+
+  header.site {
+    background: var(--gray-900);
+    color: var(--gray-100);
+    padding: var(--space-7) 0 var(--space-6);
+    border-bottom: 3px solid var(--accent);
+  }
+  header.site .kicker {
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-300);
+    margin: 0 0 var(--space-3);
+  }
+  header.site h1 {
+    font-size: var(--text-2xl);
+    line-height: 1.15;
+    margin: 0 0 var(--space-3);
+    letter-spacing: -0.02em;
+  }
+  header.site p {
+    margin: 0;
+    color: var(--gray-300);
+    max-width: 60ch;
+  }
+  header.site .meta {
+    margin-top: var(--space-5);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    font-size: var(--text-sm);
+    color: var(--gray-100);
+  }
+  header.site .meta span::before {
+    content: "▸ ";
+    color: var(--accent);
+  }
+
+  main { padding: var(--space-7) 0; }
+
+  section { margin-bottom: var(--space-7); }
+  section:last-child { margin-bottom: 0; }
+
+  h2 {
+    font-size: var(--text-lg);
+    margin: 0 0 var(--space-4);
+    padding-bottom: var(--space-2);
+    border-bottom: 1px solid var(--gray-300);
+    letter-spacing: -0.01em;
+  }
+
+  /* Schedule */
+  .schedule { list-style: none; margin: 0; padding: 0; }
+  .schedule li {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: var(--space-4);
+    padding: var(--space-3) 0;
+    border-bottom: 1px dashed var(--gray-300);
+  }
+  .schedule li:last-child { border-bottom: none; }
+  .schedule time {
+    color: var(--accent);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .schedule .what { color: var(--gray-700); }
+  .schedule .what strong { color: var(--gray-900); }
+
+  /* Speakers */
+  .speakers { display: grid; gap: var(--space-4); }
+  .speaker {
+    background: #fff;
+    border: 1px solid var(--gray-300);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: var(--space-4) var(--space-5);
+  }
+  .speaker h3 {
+    margin: 0 0 var(--space-1);
+    font-size: var(--text-base);
+  }
+  .speaker .role {
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+    margin: 0 0 var(--space-3);
+  }
+  .speaker .talk {
+    margin: 0 0 var(--space-2);
+    color: var(--gray-700);
+  }
+  .speaker .talk b { color: var(--gray-900); }
+  .speaker .bio {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--gray-500);
+  }
+
+  /* Venue */
+  .venue {
+    background: #fff;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: var(--space-5);
+  }
+  .venue address {
+    font-style: normal;
+    margin: 0 0 var(--space-3);
+    color: var(--gray-700);
+  }
+  .venue dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: var(--space-2) var(--space-4);
+    font-size: var(--text-sm);
+  }
+  .venue dt { color: var(--gray-500); }
+  .venue dd { margin: 0; color: var(--gray-900); }
+
+  /* RSVP form */
+  form {
+    background: #fff;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: var(--space-5);
+  }
+  .field { margin-bottom: var(--space-4); }
+  .field:last-of-type { margin-bottom: var(--space-5); }
+  label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    margin-bottom: var(--space-1);
+  }
+  .hint {
+    display: block;
+    font-size: var(--text-xs);
+    font-weight: 400;
+    color: var(--gray-500);
+    margin-bottom: var(--space-2);
+  }
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    width: 100%;
+    font: inherit;
+    font-size: var(--text-sm);
+    color: var(--gray-900);
+    background: var(--gray-50);
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    padding: var(--space-2) var(--space-3);
+  }
+  input:hover, select:hover, textarea:hover { border-color: var(--gray-500); }
+  input:focus, select:focus, textarea:focus {
+    background: #fff;
+    border-color: var(--accent);
+  }
+  textarea { resize: vertical; min-height: 72px; }
+
+  .check {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 400;
+  }
+  .check input { margin-top: 4px; }
+
+  button {
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: #fff;
+    background: var(--accent);
+    border: 1px solid var(--accent-dark);
+    border-radius: var(--radius);
+    padding: var(--space-3) var(--space-5);
+    cursor: pointer;
+  }
+  button:hover { background: var(--accent-dark); }
+  button:active { transform: translateY(1px); }
+  button:disabled {
+    background: var(--gray-300);
+    border-color: var(--gray-300);
+    color: var(--gray-500);
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .form-status {
+    margin: var(--space-4) 0 0;
+    font-size: var(--text-sm);
+    padding: var(--space-3);
+    border-radius: var(--radius);
+    display: none;
+  }
+  .form-status.ok {
+    display: block;
+    background: #e8f3ec;
+    border: 1px solid #2f7d4f;
+    color: #1c4d31;
+  }
+  .form-status.err {
+    display: block;
+    background: #fbeceb;
+    border: 1px solid #b7410e;
+    color: #7a2c08;
+  }
+
+  .sample-note {
+    font-size: var(--text-xs);
+    color: var(--gray-500);
+    margin: var(--space-3) 0 0;
+  }
+
+  footer.site {
+    background: var(--gray-900);
+    color: var(--gray-300);
+    padding: var(--space-6) 0;
+    font-size: var(--text-sm);
+  }
+  footer.site a { color: var(--gray-100); }
+  footer.site p { margin: 0 0 var(--space-2); }
+  footer.site p:last-child { margin-bottom: 0; }
+
+  @media (max-width: 480px) {
+    .schedule li { grid-template-columns: 1fr; gap: var(--space-1); }
+    .venue dl { grid-template-columns: 1fr; gap: 0 var(--space-4); }
+    .venue dd { margin-bottom: var(--space-2); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <p class="kicker">Monthly community meetup</p>
+    <h1>Jakarta Rust Night</h1>
+    <p>Talks and hallway track for people writing Rust in and around Jakarta. Beginners welcome; bring a laptop if you want to pair on the exercises.</p>
+    <div class="meta">
+      <span>Thursday, 20 March 2025</span>
+      <span>18:30 – 21:00 WIB</span>
+      <span>Free, RSVP required</span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section aria-labelledby="schedule-h">
+    <h2 id="schedule-h">Schedule</h2>
+    <ol class="schedule">
+      <li>
+        <time datetime="18:30">18:30</time>
+        <span class="what"><strong>Doors open.</strong> Check in at the lobby, grab a seat.</span>
+      </li>
+      <li>
+        <time datetime="19:00">19:00</time>
+        <span class="what"><strong>Opening notes.</strong> Community announcements and job board.</span>
+      </li>
+      <li>
+        <time datetime="19:15">19:15</time>
+        <span class="what"><strong>Talk 1 — Ownership without the headache.</strong> A mental model for borrow-checker errors, with live fixes.</span>
+      </li>
+      <li>
+        <time datetime="19:50">19:50</time>
+        <span class="what"><strong>Break.</strong> Coffee, snacks, and the hallway track.</span>
+      </li>
+      <li>
+        <time datetime="20:10">20:10</time>
+        <span class="what"><strong>Talk 2 — Shipping a Rust service to production.</strong> What broke, what we measured, what we'd change.</span>
+      </li>
+      <li>
+        <time datetime="20:45">20:45</time>
+        <span class="what"><strong>Lightning talks &amp; closing.</strong> Five-minute slots, sign up at the door.</span>
+      </li>
+      <li>
+        <time datetime="21:00">21:00</time>
+        <span class="what"><strong>Wrap.</strong> Venue closes; optional dinner nearby.</span>
+      </li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="speakers-h">
+    <h2 id="speakers-h">Speakers</h2>
+    <div class="speakers">
+      <article class="speaker">
+        <h3>Rani Prameswari</h3>
+        <p class="role">Backend engineer, payments platform</p>
+        <p class="talk"><b>Ownership without the headache.</b> Why the borrow checker rejects your code, and the three refactors that fix most cases.</p>
+        <p class="bio">Writes Rust for high-throughput transaction services. Maintains an internal crate for idempotent retries.</p>
+      </article>
+      <article class="speaker">
+        <h3>Dimas Nugroho</h3>
+        <p class="role">Infrastructure lead, logistics startup</p>
+        <p class="talk"><b>Shipping a Rust service to production.</b> A postmortem-style walkthrough of a service that handles 4,000 requests per second at peak.</p>
+        <p class="bio">Runs the platform team. Spends most of his time on observability and on-call ergonomics.</p>
+      </article>
+    </div>
+  </section>
+
+  <section aria-labelledby="venue-h">
+    <h2 id="venue-h">Venue</h2>
+    <div class="venue">
+      <address>
+        <strong>Ruang Komunitas Lantai 3</strong><br>
+        Gedung Menara Kuningan, Jl. H. R. Rasuna Said Blok X-5<br>
+        Kuningan, Jakarta Selatan 12950
+      </address>
+      <dl>
+        <dt>Getting there</dt>
+        <dd>8 minutes on foot from MRT Blok M; TransJakarta stop Kuningan Timur is across the road.</dd>
+        <dt>Parking</dt>
+        <dd>Basement parking, Rp 5.000 per hour. Motorcycle parking at street level.</dd>
+        <dt>Access</dt>
+        <dd>Lift to level 3, then follow the signs. Step-free access from the lobby.</dd>
+        <dt>Food</dt>
+        <dd>Coffee and light snacks provided. Halal and vegetarian options available.</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section aria-labelledby="rsvp-h">
+    <h2 id="rsvp-h">RSVP</h2>
+    <form id="rsvp-form" novalidate>
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" autocomplete="name" required>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <span class="hint">We send the venue details and a reminder the day before.</span>
+        <input type="email" id="email" name="email" autocomplete="email" required>
+      </div>
+
+      <div class="field">
+        <label for="attending">Attending</label>
+        <select id="attending" name="attending" required>
+          <option value="">Choose one</option>
+          <option value="yes">Yes, I'll be there</option>
+          <option value="maybe">Maybe</option>
+          <option value="no">Can't make it this month</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="diet">Dietary notes</label>
+        <span class="hint">Optional. Anything we should know for the snacks.</span>
+        <textarea id="diet" name="diet" rows="2"></textarea>
+      </div>
+
+      <div class="field">
+        <label class="check" for="lightning">
+          <input type="checkbox" id="lightning" name="lightning">
+          <span>I'd like a five-minute lightning talk slot</span>
+        </label>
+      </div>
+
+      <button type="submit" id="submit-btn">Send RSVP</button>
+
+      <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+      <p class="sample-note">Sample form: submissions are not sent anywhere. Wire the handler to your backend before launch.</p>
+    </form>
+  </section>
+
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    <p>Jakarta Rust Night is run by volunteers. Code of conduct applies to all attendees and speakers.</p>
+    <p>Questions? <a href="mailto:hello@jakartarustnight.example">hello@jakartarustnight.example</a></p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var form = document.getElementById('rsvp-form');
+    var status = document.getElementById('form-status');
+    var btn = document.getElementById('submit-btn');
+
+    function setStatus(message, kind) {
+      status.textContent = message;
+      status.className = 'form-status ' + kind;
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      var name = form.name.value.trim();
+      var email = form.email.value.trim();
+      var attending = form.attending.value;
+
+      if (!name) {
+        setStatus('Enter your name.', 'err');
+        form.name.focus();
+        return;
+      }
+      if (!email || email.indexOf('@') === -1) {
+        setStatus('Enter a valid email address.', 'err');
+        form.email.focus();
+        return;
+      }
+      if (!attending) {
+        setStatus('Choose whether you are attending.', 'err');
+        form.attending.focus();
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      // Placeholder: replace with a fetch() to your RSVP endpoint.
+      window.setTimeout(function () {
+        btn.disabled = false;
+        btn.textContent = 'Send RSVP';
+        if (attending === 'no') {
+          setStatus('Thanks for letting us know. See you next month.', 'ok');
+        } else {
+          setStatus('Thanks, ' + name + '. Your RSVP is recorded. We\'ll email the details to ' + email + '.', 'ok');
+        }
+        form.reset();
+      }, 400);
+    });
+  })();
+</script>
+
+</body>
+</html>
+```

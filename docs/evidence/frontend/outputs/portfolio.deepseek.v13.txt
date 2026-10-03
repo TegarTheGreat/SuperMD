@@ -1,0 +1,528 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rangga Wibowo — Photographer, Yogyakarta</title>
+<style>
+  :root {
+    --ink: #1a1714;
+    --ink-soft: #5c554d;
+    --paper: #faf7f2;
+    --paper-alt: #f1ece3;
+    --line: #ddd5c8;
+    --accent: #8a4b2a;
+    --accent-ink: #ffffff;
+    --step--1: 0.875rem;
+    --step-0: 1rem;
+    --step-1: 1.25rem;
+    --step-2: 1.75rem;
+    --step-3: 2.75rem;
+    --step-4: 4rem;
+    --sp-1: 0.5rem;
+    --sp-2: 1rem;
+    --sp-3: 1.5rem;
+    --sp-4: 2.5rem;
+    --sp-5: 4rem;
+    --sp-6: 6rem;
+    --radius: 3px;
+    --shadow: 0 1px 2px rgba(26,23,20,.08), 0 8px 24px rgba(26,23,20,.06);
+    --serif: Georgia, 'Times New Roman', serif;
+    --sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; margin: 0; }
+
+  a { color: var(--accent); }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--sp-3); }
+
+  /* Header */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(250,247,242,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    padding: var(--sp-2) 0;
+  }
+  .brand {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    letter-spacing: .01em;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .brand span { color: var(--accent); }
+  nav ul {
+    display: flex;
+    gap: var(--sp-3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav a {
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: var(--step--1);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: var(--sp-1) 0;
+    border-bottom: 1px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  nav a:hover, nav a:focus-visible { color: var(--ink); border-bottom-color: var(--accent); }
+  nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* Hero */
+  .hero { padding: var(--sp-6) 0 var(--sp-5); }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: var(--sp-5);
+    align-items: center;
+  }
+  .eyebrow {
+    font-size: var(--step--1);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 var(--sp-2);
+  }
+  .hero h1 {
+    font-size: var(--step-4);
+    margin-bottom: var(--sp-3);
+  }
+  .hero p {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    max-width: 46ch;
+    margin: 0 0 var(--sp-4);
+  }
+  .cta-row { display: flex; flex-wrap: wrap; gap: var(--sp-2); }
+  .btn {
+    display: inline-block;
+    padding: .75rem 1.5rem;
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: var(--step--1);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border: 1px solid var(--accent);
+    transition: background .15s, color .15s;
+  }
+  .btn-primary { background: var(--accent); color: var(--accent-ink); }
+  .btn-primary:hover, .btn-primary:focus-visible { background: #6f3a1f; border-color: #6f3a1f; }
+  .btn-ghost { background: transparent; color: var(--accent); }
+  .btn-ghost:hover, .btn-ghost:focus-visible { background: var(--accent); color: var(--accent-ink); }
+  .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+
+  /* Hero visual: a contact-sheet grid built from CSS */
+  .sheet {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    background: var(--paper-alt);
+    padding: 6px;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  .frame {
+    aspect-ratio: 3 / 4;
+    position: relative;
+    overflow: hidden;
+    background: #2b2620;
+  }
+  .frame::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 6px;
+    bottom: 4px;
+    font-size: 9px;
+    letter-spacing: .08em;
+    color: rgba(255,255,255,.72);
+    font-family: var(--sans);
+  }
+  .f1 { background: linear-gradient(160deg, #6b4a2f 0%, #2b2620 70%); }
+  .f2 { background: linear-gradient(200deg, #8a6a45 0%, #3a2f24 65%); }
+  .f3 { background: linear-gradient(140deg, #4a5a52 0%, #232a26 70%); }
+  .f4 { background: linear-gradient(180deg, #a07a4e 0%, #4a3524 75%); }
+  .f5 { background: linear-gradient(120deg, #5a4a3a 0%, #241f1a 70%); }
+  .f6 { background: linear-gradient(210deg, #7a5c3a 0%, #2e2620 68%); }
+
+  /* Sections */
+  section { padding: var(--sp-5) 0; }
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--sp-3);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: var(--sp-2);
+    margin-bottom: var(--sp-4);
+  }
+  .section-head h2 { font-size: var(--step-3); }
+  .section-head p { margin: 0; color: var(--ink-soft); font-size: var(--step--1); }
+
+  /* Work */
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--sp-3);
+  }
+  .work-item {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--line);
+    background: #fff;
+    transition: transform .18s, box-shadow .18s;
+  }
+  .work-item:hover, .work-item:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  .work-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .work-thumb {
+    aspect-ratio: 4 / 3;
+    position: relative;
+  }
+  .work-thumb::after {
+    content: attr(data-count);
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 10px;
+    letter-spacing: .06em;
+    color: rgba(255,255,255,.85);
+    background: rgba(0,0,0,.35);
+    padding: 2px 6px;
+    border-radius: var(--radius);
+  }
+  .w1 { background: linear-gradient(150deg, #7a5a38, #2b2620); }
+  .w2 { background: linear-gradient(200deg, #4a5a52, #1f2622); }
+  .w3 { background: linear-gradient(130deg, #9a6a3a, #3a2a1c); }
+  .w4 { background: linear-gradient(170deg, #5a4a5a, #241f28); }
+  .w5 { background: linear-gradient(140deg, #8a7a4a, #2e2a1c); }
+  .w6 { background: linear-gradient(190deg, #6a4a3a, #241a16); }
+  .work-meta { padding: var(--sp-2) var(--sp-3) var(--sp-3); }
+  .work-meta h3 { font-size: var(--step-1); margin-bottom: .25rem; }
+  .work-meta p { margin: 0; font-size: var(--step--1); color: var(--ink-soft); }
+
+  /* Services */
+  .services { background: var(--paper-alt); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .service-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
+  .service h3 { font-size: var(--step-1); margin-bottom: var(--sp-1); }
+  .service .price {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    color: var(--accent);
+    margin: 0 0 var(--sp-2);
+  }
+  .service p { margin: 0 0 var(--sp-2); color: var(--ink-soft); font-size: var(--step--1); }
+  .service ul { margin: 0; padding-left: 1.1rem; font-size: var(--step--1); color: var(--ink-soft); }
+  .service li { margin-bottom: .35rem; }
+
+  /* Contact */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--sp-5);
+    align-items: start;
+  }
+  .contact-grid p { color: var(--ink-soft); max-width: 44ch; }
+  .contact-list { list-style: none; margin: var(--sp-3) 0 0; padding: 0; }
+  .contact-list li { padding: var(--sp-2) 0; border-bottom: 1px solid var(--line); }
+  .contact-list span { display: block; font-size: var(--step--1); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: .2rem; }
+  .contact-list a { font-size: var(--step-1); text-decoration: none; }
+  .contact-list a:hover, .contact-list a:focus-visible { text-decoration: underline; }
+
+  form { display: grid; gap: var(--sp-2); }
+  label { font-size: var(--step--1); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+  input, textarea, select {
+    width: 100%;
+    padding: .7rem .8rem;
+    font: inherit;
+    color: var(--ink);
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
+  }
+  textarea { resize: vertical; min-height: 120px; }
+  .field { display: grid; gap: .35rem; }
+  .form-note { font-size: var(--step--1); color: var(--ink-soft); margin: 0; }
+  .form-status { font-size: var(--step--1); color: var(--accent); min-height: 1.2em; margin: 0; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: var(--sp-4) 0;
+    font-size: var(--step--1);
+    color: var(--ink-soft);
+  }
+  .foot-row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: var(--sp-2); }
+
+  @media (max-width: 860px) {
+    .hero-grid, .contact-grid { grid-template-columns: 1fr; }
+    .work-grid, .service-list { grid-template-columns: repeat(2, 1fr); }
+    .hero h1 { font-size: var(--step-3); }
+  }
+  @media (max-width: 560px) {
+    .work-grid, .service-list { grid-template-columns: 1fr; }
+    nav ul { gap: var(--sp-2); }
+    nav a { font-size: 11px; }
+    .hero { padding: var(--sp-5) 0 var(--sp-4); }
+    section { padding: var(--sp-4) 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .work-item { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top">Rangga<span>.</span>Wibowo</a>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Photographer · Yogyakarta</p>
+        <h1>Documentary and editorial photography from the south of Java.</h1>
+        <p>I shoot weddings, cultural events, and brand work across Yogyakarta and Central Java. Ten years behind the camera, most of it in available light.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#contact">Check availability</a>
+          <a class="btn btn-ghost" href="#work">See selected work</a>
+        </div>
+      </div>
+      <div class="sheet" aria-hidden="true">
+        <div class="frame f1" data-label="01"></div>
+        <div class="frame f2" data-label="02"></div>
+        <div class="frame f3" data-label="03"></div>
+        <div class="frame f4" data-label="04"></div>
+        <div class="frame f5" data-label="05"></div>
+        <div class="frame f6" data-label="06"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Selected work</h2>
+        <p>2019 — 2024</p>
+      </div>
+      <div class="work-grid">
+        <a class="work-item" href="#contact">
+          <div class="work-thumb w1" data-count="42 frames"></div>
+          <div class="work-meta">
+            <h3>Pasar Beringharjo</h3>
+            <p>Street documentary · 2023</p>
+          </div>
+        </a>
+        <a class="work-item" href="#contact">
+          <div class="work-thumb w2" data-count="28 frames"></div>
+          <div class="work-meta">
+            <h3>Wedding — Dita &amp; Arif</h3>
+            <p>Full-day coverage · 2024</p>
+          </div>
+        </a>
+        <a class="work-item" href="#contact">
+          <div class="work-thumb w3" data-count="36 frames"></div>
+          <div class="work-meta">
+            <h3>Batik workshop</h3>
+            <p>Editorial · 2022</p>
+          </div>
+        </a>
+        <a class="work-item" href="#contact">
+          <div class="work-thumb w4" data-count="19 frames"></div>
+          <div class="work-meta">
+            <h3>Kopi Kenangan</h3>
+            <p>Brand campaign · 2023</p>
+          </div>
+        </a>
+        <a class="work-item" href="#contact">
+          <div class="work-thumb w5" data-count="51 frames"></div>
+          <div class="work-meta">
+            <h3>Borobudur at dawn</h3>
+            <p>Travel · 2021</p>
+          </div>
+        </a>
+        <a class="work-item" href="#contact">
+          <div class="work-thumb w6" data-count="24 frames"></div>
+          <div class="work-meta">
+            <h3>Studio portraits</h3>
+            <p>Portrait series · 2024</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="services" class="services">
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Services</h2>
+        <p>Rates in IDR, travel within DIY included</p>
+      </div>
+      <div class="service-list">
+        <div class="service">
+          <h3>Wedding coverage</h3>
+          <p class="price">from Rp 6.500.000</p>
+          <p>Full-day documentary coverage, two photographers, edited gallery delivered in three weeks.</p>
+          <ul>
+            <li>8 hours on site</li>
+            <li>300+ edited images</li>
+            <li>Online gallery + USB</li>
+          </ul>
+        </div>
+        <div class="service">
+          <h3>Editorial &amp; brand</h3>
+          <p class="price">from Rp 3.200.000</p>
+          <p>Half-day shoot for products, people, or spaces. Includes a shot list built with you beforehand.</p>
+          <ul>
+            <li>4 hours on site</li>
+            <li>60 edited images</li>
+            <li>Commercial usage license</li>
+          </ul>
+        </div>
+        <div class="service">
+          <h3>Portrait session</h3>
+          <p class="price">from Rp 1.500.000</p>
+          <p>One-hour session, studio or outdoor. Good for headshots, graduation, and family portraits.</p>
+          <ul>
+            <li>1 hour session</li>
+            <li>25 edited images</li>
+            <li>Print-ready files</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap contact-grid">
+      <div>
+        <h2 style="font-size: var(--step-3); margin-bottom: var(--sp-2);">Let's talk</h2>
+        <p>Tell me the date, the location, and what you have in mind. I reply within one working day.</p>
+        <ul class="contact-list">
+          <li>
+            <span>Email</span>
+            <a href="mailto:hello@ranggawibowo.id">hello@ranggawibowo.id</a>
+          </li>
+          <li>
+            <span>WhatsApp</span>
+            <a href="tel:+6281234567890">+62 812 3456 7890</a>
+          </li>
+          <li>
+            <span>Studio</span>
+            Jl. Prawirotaman II No. 14, Yogyakarta 55153
+          </li>
+        </ul>
+      </div>
+      <form id="contact-form" novalidate>
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" autocomplete="name" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="service">Service</label>
+          <select id="service" name="service">
+            <option>Wedding coverage</option>
+            <option>Editorial &amp; brand</option>
+            <option>Portrait session</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Send enquiry</button>
+        <p class="form-note">This form is a demo — it does not send email. Use the address on the left.</p>
+        <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <span>© 2024 Rangga Wibowo. All rights reserved.</span>
+    <span>Yogyakarta, Indonesia</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var form = document.getElementById('contact-form');
+    var status = document.getElementById('form-status');
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = form.name.value.trim();
+      var email = form.email.value.trim();
+      var message = form.message.value.trim();
+
+      if (!name || !email || !message) {
+        status.textContent = 'Please fill in your name, email, and message.';
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        status.textContent = 'That email address does not look right.';
+        return;
+      }
+      status.textContent = 'Thanks, ' + name + '. This demo form does not send — email hello@ranggawibowo.id directly.';
+      form.reset();
+    });
+  })();
+</script>
+
+</body>
+</html>
+```

@@ -1,0 +1,685 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raka Atmaja, Photographer in Yogyakarta</title>
+<meta name="description" content="Freelance photographer in Yogyakarta for weddings, portraits, events and product work.">
+<!--
+  Sample content to replace before launch:
+  - Name "Raka Atmaja", the About copy and the three booking steps
+  - Contact address hello@example.com (appears in the mailto link, the form script and the contact section)
+  - All six SVG frames in the sprite below (swap each <svg><use></svg> for an <img> of a real photograph)
+  - Hero readout (35 mm, f/2.8, 1/500 s, ISO 200) and work captions
+  - Service names, descriptions, inclusions and prices
+-->
+<style>
+:root {
+  --white: #fff;
+  --gray-50: #FAF8F5;
+  --gray-100: #F2EFEA;
+  --gray-200: #E3DED6;
+  --gray-300: #C9C2B7;
+  --gray-500: #6E675B;
+  --gray-700: #4A453D;
+  --gray-900: #1E1B17;
+
+  /* White on --accent is 5.51:1, on --accent-700 is 8.2:1. --accent-300 on --gray-900 is 7.3:1. */
+  --accent: #B4451F;
+  --accent-700: #8A3217;
+  --accent-300: #E8946F;
+  --accent-100: #F6DFD3;
+
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.25rem;
+  --fs-lg: 1.75rem;
+  --fs-xl: clamp(2rem, 4vw, 2.75rem);
+  --fs-2xl: clamp(2.25rem, 6vw, 4rem);
+
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4rem;
+  --s-9: 6rem;
+
+  --radius: 6px;
+  --shadow: 0 1px 2px rgb(30 27 23 / 0.08), 0 12px 32px rgb(30 27 23 / 0.12);
+
+  --page-max: 72rem;
+  --measure: 62ch;
+  --focus: var(--accent);
+
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--fs-base);
+  line-height: 1.6;
+  color: var(--gray-900);
+  background: var(--gray-50);
+}
+
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; }
+p { margin: 0; }
+a { color: inherit; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+dl, dd { margin: 0; }
+
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+.wrap { width: min(100% - 2 * var(--s-4), var(--page-max)); margin-inline: auto; }
+section[id] { scroll-margin-top: var(--s-9); }
+
+.skip {
+  position: absolute; left: var(--s-4); top: calc(-1 * var(--s-9));
+  padding: var(--s-3) var(--s-4);
+  background: var(--gray-900); color: var(--gray-50);
+  border-radius: var(--radius); z-index: 20;
+}
+.skip:focus { top: var(--s-4); }
+
+/* Header */
+.site-header { background: var(--gray-50); border-bottom: 1px solid var(--gray-200); z-index: 10; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; column-gap: var(--s-5); padding-block: var(--s-2); }
+.brand { font-family: var(--font-display); font-size: var(--fs-md); font-weight: 700; text-decoration: none; padding-block: var(--s-2); }
+.nav { display: flex; flex-wrap: wrap; }
+.nav a {
+  display: inline-flex; align-items: center; min-height: 44px;
+  padding: 0 var(--s-2); border-radius: var(--radius);
+  text-decoration: none; font-weight: 500;
+  transition: background-color 0.15s;
+}
+.nav a:hover { background: var(--gray-100); }
+.nav a:active { background: var(--gray-200); }
+
+/* Buttons and links */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 48px; padding: 0 var(--s-5);
+  border: 2px solid var(--accent); border-radius: var(--radius);
+  background: var(--accent); color: var(--white);
+  font: inherit; font-weight: 600; text-decoration: none; cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+}
+.btn:hover { background: var(--accent-700); border-color: var(--accent-700); }
+.btn:active { transform: translateY(1px); }
+.btn[disabled] { background: var(--gray-300); border-color: var(--gray-300); color: var(--gray-700); cursor: not-allowed; transform: none; }
+.btn-ghost { background: transparent; border-color: var(--gray-900); color: var(--gray-900); }
+.btn-ghost:hover { background: var(--gray-900); border-color: var(--gray-900); color: var(--gray-50); }
+
+.link {
+  display: inline-flex; align-items: center; min-height: 44px;
+  color: var(--accent-700); font-weight: 600; text-underline-offset: 0.2em;
+}
+.link:hover { color: var(--accent); text-decoration-thickness: 2px; }
+
+/* Shared type */
+.eyebrow { font-size: var(--fs-sm); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.section { padding-block: var(--s-8); }
+.section h2 { font-size: var(--fs-xl); line-height: 1.1; letter-spacing: -0.01em; margin-bottom: var(--s-4); }
+.muted { color: var(--gray-700); }
+.small { font-size: var(--fs-sm); color: var(--gray-500); }
+
+/* Scenes */
+.scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.g50 { fill: var(--gray-50); } .g200 { fill: var(--gray-200); } .g300 { fill: var(--gray-300); }
+.g500 { fill: var(--gray-500); } .g700 { fill: var(--gray-700); } .g900 { fill: var(--gray-900); }
+.a100 { fill: var(--accent-100); } .a300 { fill: var(--accent-300); }
+.wave path { fill: none; stroke: var(--gray-50); stroke-width: 4; stroke-linecap: round; }
+
+/* Hero */
+.hero { padding-block: var(--s-7) var(--s-8); }
+.hero-grid { display: grid; gap: var(--s-7); align-items: center; }
+.hero h1 { font-size: var(--fs-2xl); line-height: 1.05; letter-spacing: -0.02em; margin: var(--s-3) 0 var(--s-5); }
+.lead { font-size: var(--fs-md); color: var(--gray-700); max-width: 52ch; }
+.cta-row { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+.facts { display: flex; flex-wrap: wrap; gap: var(--s-4) var(--s-7); margin-top: var(--s-7); padding-top: var(--s-5); border-top: 1px solid var(--gray-300); }
+.facts dt { font-size: var(--fs-sm); color: var(--gray-500); }
+.facts dd { font-weight: 600; }
+
+.viewfinder { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); background: var(--gray-900); }
+.vf-frame { position: relative; aspect-ratio: 4 / 3; }
+.corner { position: absolute; width: 24px; height: 24px; border: 0 solid var(--gray-50); opacity: 0.85; }
+.corner.tl { top: var(--s-4); left: var(--s-4); border-width: 2px 0 0 2px; }
+.corner.tr { top: var(--s-4); right: var(--s-4); border-width: 2px 2px 0 0; }
+.corner.bl { bottom: var(--s-4); left: var(--s-4); border-width: 0 0 2px 2px; }
+.corner.br { bottom: var(--s-4); right: var(--s-4); border-width: 0 2px 2px 0; }
+.readout {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-2) var(--s-5);
+  padding: var(--s-3) var(--s-4);
+  background: var(--gray-900); color: var(--gray-100);
+  font-size: var(--fs-sm);
+}
+.exif { display: flex; flex-wrap: wrap; gap: var(--s-4); font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--accent-300); }
+.thumbs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-2); margin-top: var(--s-3); }
+.thumb { position: relative; display: block; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; transition: opacity 0.15s; }
+.thumb:hover { opacity: 0.8; }
+
+/* About */
+.about { background: var(--gray-50); }
+.about-grid { display: grid; gap: var(--s-7); }
+.about p + p { margin-top: var(--s-4); }
+.about .copy { max-width: var(--measure); }
+.steps-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius); padding: var(--s-5); box-shadow: var(--shadow); align-self: start; }
+.steps-card h3 { font-size: var(--fs-md); margin-bottom: var(--s-4); }
+.steps { display: grid; gap: var(--s-4); counter-reset: step; }
+.steps li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: var(--s-3); align-items: start; counter-increment: step; }
+.steps li::before {
+  content: counter(step);
+  display: grid; place-items: center; width: 2rem; height: 2rem;
+  border-radius: 50%; background: var(--accent); color: var(--white);
+  font-size: var(--fs-sm); font-weight: 700;
+}
+
+/* Work */
+.work-head { display: grid; gap: var(--s-2); margin-bottom: var(--s-6); max-width: var(--measure); }
+.work-grid { display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1fr); }
+.shot { margin: 0; display: flex; flex-direction: column; gap: var(--s-3); min-width: 0; }
+.frame { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--radius); background: var(--gray-200); }
+.frame .scene { transition: transform 0.4s; }
+.shot:hover .scene { transform: scale(1.03); }
+.shot figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-1) var(--s-4); }
+.shot-title { font-weight: 600; }
+.shot-meta { font-size: var(--fs-sm); color: var(--gray-500); }
+
+/* Services */
+.services { background: var(--gray-100); }
+.services-grid { display: grid; gap: var(--s-6); }
+.services-head p { max-width: 44ch; }
+.service-list > li { display: grid; gap: var(--s-4) var(--s-6); padding-block: var(--s-5); border-top: 1px solid var(--gray-300); }
+.service-list > li:last-child { border-bottom: 1px solid var(--gray-300); }
+.service h3 { font-size: var(--fs-md); margin-bottom: var(--s-2); }
+.terms { margin-top: var(--s-3); font-size: var(--fs-sm); color: var(--gray-500); }
+.price-block { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); }
+.price { font-family: var(--font-display); font-size: var(--fs-lg); font-weight: 700; line-height: 1.1; white-space: nowrap; }
+.price small { display: block; font-family: var(--font-body); font-size: var(--fs-sm); font-weight: 400; color: var(--gray-500); }
+
+/* Contact */
+.contact { background: var(--gray-900); color: var(--gray-100); --focus: var(--accent-300); }
+.contact h2 { color: var(--gray-50); }
+.contact p { color: var(--gray-300); max-width: 46ch; }
+.contact a:not(.btn) { color: var(--accent-300); text-underline-offset: 0.2em; }
+.contact a:not(.btn):hover { color: var(--gray-50); }
+.contact-grid { display: grid; gap: var(--s-7); align-items: start; }
+.details { display: grid; gap: var(--s-4); margin-top: var(--s-6); }
+.details dt { font-size: var(--fs-sm); color: var(--gray-300); }
+.details dd { color: var(--gray-50); font-weight: 600; }
+.card { background: var(--gray-50); color: var(--gray-900); border-radius: var(--radius); padding: var(--s-5); box-shadow: var(--shadow); --focus: var(--accent); }
+.form-grid { display: grid; gap: var(--s-5); }
+.field { display: grid; gap: var(--s-2); align-content: start; min-width: 0; }
+.field label { font-weight: 600; }
+.field .opt { font-weight: 400; color: var(--gray-500); }
+.field input, .field select, .field textarea {
+  width: 100%; min-height: 48px; padding: var(--s-3);
+  border: 1px solid var(--gray-500); border-radius: var(--radius);
+  background: var(--white); color: var(--gray-900); font: inherit;
+  transition: border-color 0.15s;
+}
+.field textarea { min-height: 8rem; resize: vertical; }
+.field input:hover, .field select:hover, .field textarea:hover { border-color: var(--gray-900); }
+.field [aria-invalid="true"] { border: 2px solid var(--accent-700); }
+.error { font-size: var(--fs-sm); font-weight: 600; color: var(--accent-700); }
+.error:empty { display: none; }
+.submit-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-4); }
+.submit-row p { font-size: var(--fs-sm); color: var(--gray-700); max-width: 34ch; }
+
+/* Footer */
+.site-footer { background: var(--gray-900); color: var(--gray-300); border-top: 1px solid var(--gray-700); padding-block: var(--s-6); font-size: var(--fs-sm); }
+.footer-bar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-3) var(--s-6); align-items: center; }
+.site-footer a { display: inline-flex; align-items: center; min-height: 44px; color: var(--gray-50); text-underline-offset: 0.2em; }
+.site-footer a:hover { color: var(--accent-300); }
+.site-footer { --focus: var(--accent-300); }
+
+@media (min-width: 640px) {
+  .nav a { padding: 0 var(--s-3); }
+  .work-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .service-list > li { grid-template-columns: minmax(0, 1fr) auto; align-items: start; }
+  .price-block { flex-direction: column; align-items: flex-end; justify-content: flex-start; gap: var(--s-1); text-align: right; }
+  .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .field.full { grid-column: 1 / -1; }
+  .card { padding: var(--s-6); }
+}
+
+@media (min-width: 768px) {
+  .site-header { position: sticky; top: 0; }
+  .section { padding-block: var(--s-9); }
+  .hero { padding-block: var(--s-8) var(--s-9); }
+}
+
+@media (min-width: 900px) {
+  .hero-grid { grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: var(--s-8); }
+  .about-grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--s-8); }
+  .services-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--s-8); }
+  .services-head { position: sticky; top: var(--s-9); align-self: start; }
+  .contact-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: var(--s-8); }
+}
+
+@media (min-width: 1024px) {
+  .work-grid { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 22rem; }
+  .frame { flex: 1; min-height: 0; aspect-ratio: auto; }
+  .shot:nth-child(1) { grid-column: span 7; }
+  .shot:nth-child(2) { grid-column: span 5; }
+  .shot:nth-child(3), .shot:nth-child(4), .shot:nth-child(5) { grid-column: span 4; }
+  .shot:nth-child(6) { grid-column: span 12; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  .shot:hover .scene { transform: none; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <polygon id="spire" points="400,70 420,170 440,170 440,230 470,230 470,300 500,300 500,380 300,380 300,300 330,300 330,230 360,230 360,170 380,170"/>
+  </defs>
+
+  <symbol id="s-merapi" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <rect class="a100" width="800" height="600"/>
+    <circle class="a300" cx="560" cy="250" r="70"/>
+    <polygon class="g300" points="0,420 140,360 260,400 380,250 440,150 500,240 620,380 760,340 800,360 800,600 0,600"/>
+    <polygon class="g500" points="0,470 160,420 320,460 480,400 640,450 800,410 800,600 0,600"/>
+    <polygon class="g700" points="0,530 800,495 800,600 0,600"/>
+    <polygon class="g900" points="0,565 800,545 800,600 0,600"/>
+    <rect class="g900" x="90" y="440" width="8" height="110"/>
+    <circle class="g900" cx="94" cy="430" r="38"/>
+  </symbol>
+
+  <symbol id="s-street" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <rect class="g900" width="800" height="600"/>
+    <rect class="g700" x="0" y="190" width="180" height="340"/>
+    <rect class="g500" x="190" y="120" width="150" height="410"/>
+    <rect class="g700" x="350" y="230" width="140" height="300"/>
+    <rect class="g500" x="500" y="150" width="170" height="380"/>
+    <rect class="g700" x="680" y="210" width="120" height="320"/>
+    <g class="a300">
+      <rect x="20" y="230" width="32" height="44"/><rect x="70" y="230" width="32" height="44"/><rect x="120" y="230" width="32" height="44"/>
+      <rect x="20" y="310" width="32" height="44"/><rect x="120" y="310" width="32" height="44"/>
+      <rect x="208" y="160" width="28" height="40"/><rect x="252" y="160" width="28" height="40"/><rect x="296" y="160" width="28" height="40"/>
+      <rect x="208" y="250" width="28" height="40"/><rect x="296" y="250" width="28" height="40"/><rect x="252" y="340" width="28" height="40"/>
+      <rect x="360" y="270" width="30" height="40"/><rect x="445" y="270" width="30" height="40"/><rect x="445" y="350" width="30" height="40"/>
+      <rect x="520" y="190" width="30" height="42"/><rect x="570" y="190" width="30" height="42"/><rect x="620" y="190" width="30" height="42"/>
+      <rect x="520" y="280" width="30" height="42"/><rect x="620" y="280" width="30" height="42"/><rect x="570" y="370" width="30" height="42"/>
+      <rect x="700" y="250" width="30" height="42"/><rect x="750" y="250" width="30" height="42"/><rect x="700" y="330" width="30" height="42"/>
+    </g>
+    <rect class="g700" y="530" width="800" height="70"/>
+    <g class="g300">
+      <rect x="40" y="560" width="90" height="8"/><rect x="200" y="560" width="90" height="8"/><rect x="360" y="560" width="90" height="8"/>
+      <rect x="520" y="560" width="90" height="8"/><rect x="680" y="560" width="90" height="8"/>
+    </g>
+    <rect class="g300" x="407" y="330" width="6" height="200"/>
+    <circle class="a300" cx="410" cy="322" r="48" opacity="0.25"/>
+    <circle class="a300" cx="410" cy="322" r="16"/>
+  </symbol>
+
+  <symbol id="s-temple" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <rect class="g200" width="800" height="600"/>
+    <circle class="a300" cx="545" cy="150" r="48"/>
+    <use href="#spire" class="g500" transform="translate(-80 152) scale(.6)"/>
+    <use href="#spire" class="g500" transform="translate(400 152) scale(.6)"/>
+    <use href="#spire" class="g900"/>
+    <rect class="g700" x="150" y="380" width="500" height="36"/>
+    <rect class="g900" y="416" width="800" height="184"/>
+  </symbol>
+
+  <symbol id="s-portrait" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <rect class="g500" width="800" height="600"/>
+    <rect class="a100" x="60" y="60" width="200" height="280"/>
+    <rect class="g500" x="158" y="60" width="6" height="280"/>
+    <rect class="g500" x="60" y="196" width="200" height="6"/>
+    <path class="g900" d="M190 600C190 470 290 440 400 440C510 440 610 470 610 600Z"/>
+    <rect class="g700" x="372" y="380" width="56" height="70"/>
+    <ellipse class="g700" cx="400" cy="320" rx="62" ry="78"/>
+    <path class="g900" d="M332 318C326 226 474 226 468 318C450 276 350 276 332 318Z"/>
+  </symbol>
+
+  <symbol id="s-coast" viewBox="0 0 800 600" preserveAspectRatio="xMidYMid slice">
+    <rect class="a100" width="800" height="600"/>
+    <circle class="a300" cx="520" cy="300" r="64"/>
+    <rect class="g300" y="330" width="800" height="270"/>
+    <g class="wave">
+      <path d="M0 380q50-14 100 0t100 0t100 0t100 0t100 0t100 0t100 0t100 0"/>
+      <path d="M-50 432q50-14 100 0t100 0t100 0t100 0t100 0t100 0t100 0t100 0t100 0"/>
+      <path d="M0 486q50-14 100 0t100 0t100 0t100 0t100 0t100 0t100 0t100 0"/>
+    </g>
+    <polygon class="g200" points="0,570 800,510 800,600 0,600"/>
+    <polygon class="g700" points="0,190 130,230 230,340 310,600 0,600"/>
+  </symbol>
+
+  <symbol id="s-arches" viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid slice">
+    <rect class="g700" width="1200" height="400"/>
+    <rect class="g900" width="1200" height="28"/>
+    <g class="a100">
+      <path d="M60 400V170A70 70 0 0 1 200 170V400Z"/>
+      <path d="M290 400V170A70 70 0 0 1 430 170V400Z"/>
+      <path d="M520 400V170A70 70 0 0 1 660 170V400Z"/>
+      <path d="M750 400V170A70 70 0 0 1 890 170V400Z"/>
+      <path d="M980 400V170A70 70 0 0 1 1120 170V400Z"/>
+    </g>
+    <rect class="g900" y="350" width="1200" height="50"/>
+    <g class="a300" opacity="0.6">
+      <polygon points="70,350 190,350 230,400 30,400"/>
+      <polygon points="300,350 420,350 460,400 260,400"/>
+      <polygon points="530,350 650,350 690,400 490,400"/>
+      <polygon points="760,350 880,350 920,400 720,400"/>
+      <polygon points="990,350 1110,350 1150,400 950,400"/>
+    </g>
+  </symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="#top">Raka Atmaja</a>
+    <nav class="nav" aria-label="Primary">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="hero" id="top" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Freelance photographer, Yogyakarta</p>
+        <h1 id="hero-title">Photography for weddings, portraits and events in Yogyakarta</h1>
+        <p class="lead">I shoot on location around the city and deliver a finished online gallery of edited images, ready to download and print.</p>
+        <div class="cta-row">
+          <a class="btn" href="#contact">Check a date</a>
+          <a class="btn btn-ghost" href="#work">See selected work</a>
+        </div>
+        <dl class="facts">
+          <div><dt>Based in</dt><dd>Yogyakarta</dd></div>
+          <div><dt>Shoots</dt><dd>Weddings, portraits, events, product</dd></div>
+          <div><dt>Delivery</dt><dd>Online gallery</dd></div>
+        </dl>
+      </div>
+
+      <div>
+        <div class="viewfinder">
+          <div class="vf-frame">
+            <svg class="scene" role="img" aria-label="Sample frame: layered mountain silhouettes under a low sun, with a single tree on the left"><use href="#s-merapi"/></svg>
+            <span class="corner tl" aria-hidden="true"></span><span class="corner tr" aria-hidden="true"></span>
+            <span class="corner bl" aria-hidden="true"></span><span class="corner br" aria-hidden="true"></span>
+          </div>
+          <div class="readout">
+            <span>Merapi, first light</span>
+            <span class="exif"><span>35 mm</span><span>f/2.8</span><span>1/500 s</span><span>ISO 200</span></span>
+          </div>
+        </div>
+        <ul class="thumbs">
+          <li><a class="thumb" href="#w-street" aria-label="See Malioboro after dark in selected work"><svg class="scene" aria-hidden="true"><use href="#s-street"/></svg></a></li>
+          <li><a class="thumb" href="#w-temple" aria-label="See Prambanan at dusk in selected work"><svg class="scene" aria-hidden="true"><use href="#s-temple"/></svg></a></li>
+          <li><a class="thumb" href="#w-portrait" aria-label="See Window light in selected work"><svg class="scene" aria-hidden="true"><use href="#s-portrait"/></svg></a></li>
+          <li><a class="thumb" href="#w-coast" aria-label="See Parangtritis, low tide in selected work"><svg class="scene" aria-hidden="true"><use href="#s-coast"/></svg></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about" id="about" aria-labelledby="about-title">
+    <div class="wrap about-grid">
+      <div class="copy">
+        <h2 id="about-title">About</h2>
+        <p>I'm Raka Atmaja, a freelance photographer based in Yogyakarta. I work on location and in natural light where the setting allows. I would rather spend an hour planning a shoot with you beforehand than reshoot afterwards.</p>
+        <p>Most commissions are weddings, portraits and events. Between jobs I photograph the city and the country around it, which is where the frames in the next section come from.</p>
+      </div>
+      <div class="steps-card">
+        <h3>How a booking works</h3>
+        <ol class="steps">
+          <li>Email the date, the place and the kind of shoot.</li>
+          <li>Agree the quote and a shot list.</li>
+          <li>Shoot, then receive an online gallery of edited images.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="work" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="work-head">
+        <h2 id="work-title">Selected work</h2>
+        <p class="muted">Frames across landscape, street, portrait and architecture work in and around Yogyakarta.</p>
+        <p class="small">Sample frames drawn in SVG, replace with photographs before launch.</p>
+      </div>
+      <div class="work-grid">
+        <figure class="shot" id="w-merapi">
+          <div class="frame"><svg class="scene" role="img" aria-label="Sample frame: layered mountain silhouettes under a low sun"><use href="#s-merapi"/></svg></div>
+          <figcaption><span class="shot-title">Merapi, first light</span><span class="shot-meta">Landscape, Sleman</span></figcaption>
+        </figure>
+        <figure class="shot" id="w-street">
+          <div class="frame"><svg class="scene" role="img" aria-label="Sample frame: lit windows in a row of buildings above a street at night, with one street lamp"><use href="#s-street"/></svg></div>
+          <figcaption><span class="shot-title">Malioboro after dark</span><span class="shot-meta">Street, Yogyakarta</span></figcaption>
+        </figure>
+        <figure class="shot" id="w-portrait">
+          <div class="frame"><svg class="scene" role="img" aria-label="Sample frame: a portrait silhouette beside a window"><use href="#s-portrait"/></svg></div>
+          <figcaption><span class="shot-title">Window light</span><span class="shot-meta">Portrait, studio</span></figcaption>
+        </figure>
+        <figure class="shot" id="w-temple">
+          <div class="frame"><svg class="scene" role="img" aria-label="Sample frame: three stepped temple spires against a pale sky"><use href="#s-temple"/></svg></div>
+          <figcaption><span class="shot-title">Prambanan at dusk</span><span class="shot-meta">Architecture, Prambanan</span></figcaption>
+        </figure>
+        <figure class="shot" id="w-coast">
+          <div class="frame"><svg class="scene" role="img" aria-label="Sample frame: a cliff above a sea with rows of waves and a low sun on the horizon"><use href="#s-coast"/></svg></div>
+          <figcaption><span class="shot-title">Parangtritis, low tide</span><span class="shot-meta">Coast, Bantul</span></figcaption>
+        </figure>
+        <figure class="shot" id="w-arches">
+          <div class="frame"><svg class="scene" role="img" aria-label="Sample frame: a row of five arches with light falling across the floor"><use href="#s-arches"/></svg></div>
+          <figcaption><span class="shot-title">Arches and afternoon light</span><span class="shot-meta">Architecture, Yogyakarta</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="section services" id="services" aria-labelledby="services-title">
+    <div class="wrap services-grid">
+      <div class="services-head">
+        <h2 id="services-title">Services</h2>
+        <p class="muted">Four kinds of job, each with a starting price in Indonesian rupiah. The final quote depends on date, location and travel.</p>
+        <p class="small" style="margin-top: var(--s-3)">Sample pricing, replace before launch.</p>
+      </div>
+      <ul class="service-list">
+        <li class="service">
+          <div>
+            <h3>Portrait and couple sessions</h3>
+            <p class="muted">Individual, family or couple portraits at a location you choose, with a short call beforehand to plan clothing and light.</p>
+            <p class="terms">1 hour, 15 edited images, 1 location</p>
+          </div>
+          <div class="price-block">
+            <p class="price"><small>From</small>Rp&nbsp;750.000</p>
+            <a class="link" href="#contact" data-service="Portrait or couple session">Enquire</a>
+          </div>
+        </li>
+        <li class="service">
+          <div>
+            <h3>Wedding day</h3>
+            <p class="muted">Ceremony, family portraits and reception, covered by one photographer with a shot list agreed in advance.</p>
+            <p class="terms">8 hours, 300 edited images, online gallery</p>
+          </div>
+          <div class="price-block">
+            <p class="price"><small>From</small>Rp&nbsp;6.500.000</p>
+            <a class="link" href="#contact" data-service="Wedding day">Enquire</a>
+          </div>
+        </li>
+        <li class="service">
+          <div>
+            <h3>Event coverage</h3>
+            <p class="muted">Launches, workshops, gatherings and performances, delivered as a gallery ordered by moment.</p>
+            <p class="terms">2 hour minimum, edited images, online gallery</p>
+          </div>
+          <div class="price-block">
+            <p class="price"><small>From</small>Rp&nbsp;1.250.000</p>
+            <a class="link" href="#contact" data-service="Event coverage">Enquire</a>
+          </div>
+        </li>
+        <li class="service">
+          <div>
+            <h3>Product and commercial</h3>
+            <p class="muted">Product photography for shops and makers, on plain or styled backgrounds, sized for web and print.</p>
+            <p class="terms">Half day, up to 10 products, web and print files</p>
+          </div>
+          <div class="price-block">
+            <p class="price"><small>From</small>Rp&nbsp;2.000.000</p>
+            <a class="link" href="#contact" data-service="Product or commercial">Enquire</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section contact" id="contact" aria-labelledby="contact-title">
+    <div class="wrap contact-grid">
+      <div>
+        <h2 id="contact-title">Book a shoot</h2>
+        <p>Send the date, the place and the kind of shoot, and you'll get a quote by email.</p>
+        <dl class="details">
+          <div><dt>Email</dt><dd><a href="mailto:hello@example.com">hello@example.com</a></dd></div>
+          <div><dt>Based in</dt><dd>Yogyakarta, Indonesia</dd></div>
+        </dl>
+      </div>
+
+      <div class="card">
+        <form id="enquiry" action="mailto:hello@example.com" method="post" enctype="text/plain">
+          <div class="form-grid">
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" name="name" type="text" autocomplete="name" required aria-invalid="false" aria-describedby="name-error">
+              <p class="error" id="name-error"></p>
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required aria-invalid="false" aria-describedby="email-error">
+              <p class="error" id="email-error"></p>
+            </div>
+            <div class="field">
+              <label for="type">Kind of shoot</label>
+              <select id="type" name="type" required aria-invalid="false" aria-describedby="type-error">
+                <option value="" disabled selected>Choose one</option>
+                <option>Portrait or couple session</option>
+                <option>Wedding day</option>
+                <option>Event coverage</option>
+                <option>Product or commercial</option>
+                <option>Something else</option>
+              </select>
+              <p class="error" id="type-error"></p>
+            </div>
+            <div class="field">
+              <label for="date">Preferred date <span class="opt">(optional)</span></label>
+              <input id="date" name="date" type="date">
+            </div>
+            <div class="field full">
+              <label for="details">Details</label>
+              <textarea id="details" name="details" required aria-invalid="false" aria-describedby="details-error"></textarea>
+              <p class="error" id="details-error"></p>
+            </div>
+            <div class="field full submit-row">
+              <button class="btn" type="submit">Send enquiry</button>
+              <p id="form-status" role="status"></p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-bar">
+    <p>&copy; 2026 Raka Atmaja. Photographer, Yogyakarta.</p>
+    <a href="#top">Back to top</a>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const TO = 'hello@example.com';
+  const form = document.getElementById('enquiry');
+  const status = document.getElementById('form-status');
+  const submit = form.querySelector('button[type="submit"]');
+
+  // Native bubbles are replaced by inline messages below.
+  form.noValidate = true;
+
+  const rules = {
+    name: (v) => (v.trim() ? '' : 'Enter your name.'),
+    email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) ? '' : 'Enter an email address like name@example.com.'),
+    type: (v) => (v ? '' : 'Choose the kind of shoot.'),
+    details: (v) => (v.trim().length >= 10 ? '' : 'Add a few details: place, time and what you need.')
+  };
+
+  const setError = (name, message) => {
+    document.getElementById(name + '-error').textContent = message;
+    form.elements[name].setAttribute('aria-invalid', message ? 'true' : 'false');
+    return message;
+  };
+
+  document.querySelectorAll('[data-service]').forEach((link) => {
+    link.addEventListener('click', () => { form.elements['type'].value = link.dataset.service; });
+  });
+
+  const revalidate = (event) => {
+    const field = event.target;
+    if (rules[field.name] && field.getAttribute('aria-invalid') === 'true') {
+      setError(field.name, rules[field.name](field.value));
+    }
+  };
+  form.addEventListener('input', revalidate);
+  form.addEventListener('change', revalidate);
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const invalid = Object.keys(rules).filter((name) => setError(name, rules[name](form.elements[name].value)));
+    if (invalid.length) {
+      status.textContent = invalid.length === 1 ? 'Fix 1 field and send again.' : 'Fix ' + invalid.length + ' fields and send again.';
+      form.elements[invalid[0]].focus();
+      return;
+    }
+
+    const data = new FormData(form);
+    const body = [
+      'Name: ' + data.get('name'),
+      'Email: ' + data.get('email'),
+      'Shoot: ' + data.get('type'),
+      'Date: ' + (data.get('date') || 'not decided'),
+      '',
+      data.get('details')
+    ].join('\r\n');
+
+    submit.disabled = true;
+    submit.textContent = 'Opening your mail app\u2026';
+    status.textContent = 'If nothing opens, write to ' + TO + ' directly.';
+    window.location.href = 'mailto:' + TO + '?subject=' + encodeURIComponent('Enquiry: ' + data.get('type')) + '&body=' + encodeURIComponent(body);
+
+    setTimeout(() => {
+      submit.disabled = false;
+      submit.textContent = 'Send enquiry';
+    }, 3000);
+  });
+})();
+</script>
+</body>
+</html>
+```

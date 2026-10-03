@@ -1,0 +1,946 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POST /v1/invoices — API Reference</title>
+<style>
+  :root {
+    --gray-50: #f7f8fa;
+    --gray-100: #eceef2;
+    --gray-200: #d9dde4;
+    --gray-400: #8b93a1;
+    --gray-600: #4a5261;
+    --gray-900: #1a1d23;
+    --accent: #1f5fd6;
+    --accent-dark: #17489f;
+    --accent-soft: #e8effc;
+    --red: #b3261e;
+    --red-soft: #fbeae9;
+    --green: #1a6b3c;
+    --green-soft: #e6f2ea;
+    --amber: #8a5a00;
+    --amber-soft: #fdf3e0;
+    --radius: 6px;
+    --shadow: 0 1px 2px rgba(26, 29, 35, .08), 0 4px 12px rgba(26, 29, 35, .06);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--gray-900);
+    background: #fff;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    min-height: 100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar {
+    border-right: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    padding: 24px 0 48px;
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .sidebar__brand {
+    padding: 0 20px 20px;
+    border-bottom: 1px solid var(--gray-200);
+    margin-bottom: 16px;
+  }
+
+  .sidebar__brand-name {
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    display: block;
+  }
+
+  .sidebar__brand-version {
+    font-size: 12px;
+    color: var(--gray-400);
+    font-family: var(--mono);
+  }
+
+  .sidebar__group {
+    padding: 0 20px;
+    margin-bottom: 20px;
+  }
+
+  .sidebar__group-title {
+    font-size: 11px;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    color: var(--gray-400);
+    margin: 0 0 8px;
+  }
+
+  .sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .sidebar__list li { margin: 0; }
+
+  .sidebar__link {
+    display: block;
+    padding: 5px 10px;
+    margin-left: -10px;
+    border-radius: var(--radius);
+    color: var(--gray-600);
+    font-size: 14px;
+    border-left: 2px solid transparent;
+  }
+
+  .sidebar__link:hover {
+    background: var(--gray-100);
+    color: var(--gray-900);
+    text-decoration: none;
+  }
+
+  .sidebar__link.is-active {
+    color: var(--accent-dark);
+    background: var(--accent-soft);
+    border-left-color: var(--accent);
+    font-weight: 550;
+  }
+
+  .sidebar__method {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+    margin-right: 6px;
+  }
+
+  /* ---------- Main ---------- */
+  .main {
+    padding: 40px 48px 96px;
+    max-width: 900px;
+  }
+
+  .breadcrumb {
+    font-size: 13px;
+    color: var(--gray-400);
+    margin-bottom: 20px;
+  }
+
+  .breadcrumb a { color: var(--gray-600); }
+
+  .endpoint-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .method-badge {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: #fff;
+    background: var(--green);
+    padding: 4px 9px;
+    border-radius: 4px;
+  }
+
+  .endpoint-path {
+    font-family: var(--mono);
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -.01em;
+  }
+
+  h1 {
+    font-size: 26px;
+    line-height: 1.25;
+    letter-spacing: -.02em;
+    margin: 0 0 12px;
+  }
+
+  h2 {
+    font-size: 19px;
+    letter-spacing: -.01em;
+    margin: 44px 0 12px;
+    padding-top: 8px;
+    scroll-margin-top: 24px;
+  }
+
+  h3 {
+    font-size: 15px;
+    margin: 28px 0 8px;
+    scroll-margin-top: 24px;
+  }
+
+  p { margin: 0 0 14px; max-width: 72ch; }
+
+  .lede {
+    font-size: 16px;
+    color: var(--gray-600);
+    max-width: 68ch;
+  }
+
+  code {
+    font-family: var(--mono);
+    font-size: .875em;
+    background: var(--gray-100);
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: var(--gray-900);
+  }
+
+  pre {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.55;
+    overflow-x: auto;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  .code-block {
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 0 0 20px;
+    background: var(--gray-50);
+  }
+
+  .code-block__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 12px;
+    background: var(--gray-100);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .code-block__label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-600);
+    font-family: var(--mono);
+  }
+
+  .code-block__body { padding: 14px 16px; }
+
+  .copy-btn {
+    font: inherit;
+    font-size: 12px;
+    font-family: var(--sans);
+    color: var(--gray-600);
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: 4px;
+    padding: 3px 10px;
+    cursor: pointer;
+  }
+
+  .copy-btn:hover { background: var(--gray-50); color: var(--gray-900); }
+  .copy-btn:active { background: var(--gray-100); }
+  .copy-btn[data-copied="true"] {
+    color: var(--green);
+    border-color: var(--green);
+    background: var(--green-soft);
+  }
+
+  /* ---------- Tables ---------- */
+  .table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    margin: 0 0 20px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: top;
+  }
+
+  thead th {
+    background: var(--gray-50);
+    font-size: 12px;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--gray-600);
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  td code { white-space: nowrap; }
+
+  .col-name { white-space: nowrap; }
+  .col-type { white-space: nowrap; color: var(--gray-600); font-family: var(--mono); font-size: 13px; }
+
+  .req {
+    font-size: 11px;
+    font-weight: 650;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+
+  .req--yes { color: var(--red); background: var(--red-soft); }
+  .req--no  { color: var(--gray-600); background: var(--gray-100); }
+
+  /* ---------- Callouts ---------- */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    padding: 12px 16px;
+    border-radius: 0 var(--radius) var(--radius) 0;
+    margin: 0 0 20px;
+    font-size: 14px;
+  }
+
+  .callout p:last-child { margin-bottom: 0; }
+  .callout--warn { border-left-color: var(--amber); background: var(--amber-soft); }
+
+  /* ---------- Status pills ---------- */
+  .status {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .status--2xx { color: var(--green); background: var(--green-soft); }
+  .status--4xx { color: var(--red); background: var(--red-soft); }
+  .status--5xx { color: var(--amber); background: var(--amber-soft); }
+
+  /* ---------- Mobile ---------- */
+  .nav-toggle {
+    display: none;
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    z-index: 20;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    background: #fff;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+  }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+
+    .nav-toggle { display: block; }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 280px;
+      z-index: 15;
+      transform: translateX(-100%);
+      transition: transform .18s ease;
+      box-shadow: var(--shadow);
+      padding-top: 64px;
+    }
+
+    .sidebar.is-open { transform: translateX(0); }
+
+    .main { padding: 64px 20px 72px; }
+
+    .endpoint-path { font-size: 17px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sidebar { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="sidebar">Menu</button>
+
+<div class="layout">
+
+  <nav class="sidebar" id="sidebar" aria-label="Documentation">
+    <div class="sidebar__brand">
+      <span class="sidebar__brand-name">Billing API</span>
+      <span class="sidebar__brand-version">v1</span>
+    </div>
+
+    <div class="sidebar__group">
+      <p class="sidebar__group-title">Invoices</p>
+      <ul class="sidebar__list">
+        <li><a class="sidebar__link is-active" href="#overview"><span class="sidebar__method">POST</span>/v1/invoices</a></li>
+        <li><a class="sidebar__link" href="#parameters">Parameters</a></li>
+        <li><a class="sidebar__link" href="#request-example">Request example</a></li>
+        <li><a class="sidebar__link" href="#response-example">Response example</a></li>
+        <li><a class="sidebar__link" href="#errors">Error codes</a></li>
+      </ul>
+    </div>
+
+    <div class="sidebar__group">
+      <p class="sidebar__group-title">Related</p>
+      <ul class="sidebar__list">
+        <li><a class="sidebar__link" href="#related">GET /v1/invoices/{id}</a></li>
+        <li><a class="sidebar__link" href="#related">POST /v1/invoices/{id}/finalize</a></li>
+        <li><a class="sidebar__link" href="#related">POST /v1/invoices/{id}/void</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main">
+
+    <p class="breadcrumb"><a href="#overview">Billing API</a> / Invoices / Create invoice</p>
+
+    <div class="endpoint-head">
+      <span class="method-badge">POST</span>
+      <span class="endpoint-path">/v1/invoices</span>
+    </div>
+
+    <h1>Create an invoice</h1>
+
+    <p class="lede">
+      Creates a draft invoice for a customer. The invoice is not billable until it is
+      finalized with <code>POST /v1/invoices/{id}/finalize</code>.
+    </p>
+
+    <h2 id="overview">Overview</h2>
+
+    <p>
+      The request body carries the customer, the line items, and an optional set of
+      metadata. Line item amounts are computed server-side from <code>unit_amount</code>
+      and <code>quantity</code>; any <code>amount</code> you send is ignored. Totals,
+      tax, and currency rounding are applied when the invoice is finalized, not at
+      creation.
+    </p>
+
+    <p>
+      Requests are idempotent when you supply an <code>Idempotency-Key</code> header.
+      Replaying the same key with the same body returns the original invoice and does
+      not create a second one. Keys are retained for 24 hours.
+    </p>
+
+    <div class="callout">
+      <p>
+        Amounts are integers in the smallest currency unit. <code>unit_amount: 2500</code>
+        with <code>currency: "usd"</code> is $25.00. Sending a decimal such as
+        <code>25.00</code> returns <code>400 invalid_amount</code>.
+      </p>
+    </div>
+
+    <h2 id="parameters">Parameters</h2>
+
+    <h3>Headers</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Header</th>
+            <th>Type</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-name"><code>Authorization</code></td>
+            <td class="col-type">string</td>
+            <td><span class="req req--yes">Required</span></td>
+            <td>Bearer token. <code>Bearer sk_live_…</code></td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>Content-Type</code></td>
+            <td class="col-type">string</td>
+            <td><span class="req req--yes">Required</span></td>
+            <td>Must be <code>application/json</code>.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>Idempotency-Key</code></td>
+            <td class="col-type">string</td>
+            <td><span class="req req--no">Optional</span></td>
+            <td>UUID or other unique string, up to 255 characters. Prevents duplicate invoices on retry.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Body</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Required</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-name"><code>customer_id</code></td>
+            <td class="col-type">string</td>
+            <td><span class="req req--yes">Required</span></td>
+            <td>ID of an existing customer, e.g. <code>cus_9f2a</code>.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>currency</code></td>
+            <td class="col-type">string</td>
+            <td><span class="req req--yes">Required</span></td>
+            <td>ISO 4217 code, lowercase. Must match the customer's currency.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>line_items</code></td>
+            <td class="col-type">array</td>
+            <td><span class="req req--yes">Required</span></td>
+            <td>One or more line items. Minimum length 1, maximum 250.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>line_items[].description</code></td>
+            <td class="col-type">string</td>
+            <td><span class="req req--yes">Required</span></td>
+            <td>Shown on the invoice. Maximum 500 characters.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>line_items[].unit_amount</code></td>
+            <td class="col-type">integer</td>
+            <td><span class="req req--yes">Required</span></td>
+            <td>Price per unit in the smallest currency unit. Must be ≥ 0.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>line_items[].quantity</code></td>
+            <td class="col-type">integer</td>
+            <td><span class="req req--yes">Required</span></td>
+            <td>Number of units. Must be ≥ 1.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>due_date</code></td>
+            <td class="col-type">string</td>
+            <td><span class="req req--no">Optional</span></td>
+            <td>ISO 8601 date, <code>YYYY-MM-DD</code>. Defaults to 30 days after finalization.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>description</code></td>
+            <td class="col-type">string</td>
+            <td><span class="req req--no">Optional</span></td>
+            <td>Memo shown to the customer. Maximum 1000 characters.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>metadata</code></td>
+            <td class="col-type">object</td>
+            <td><span class="req req--no">Optional</span></td>
+            <td>Up to 50 key/value pairs. Keys ≤ 40 characters, values ≤ 500 characters.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="request-example">Request example</h2>
+
+    <div class="code-block">
+      <div class="code-block__bar">
+        <span class="code-block__label">curl</span>
+        <button class="copy-btn" data-copy-target="req-curl">Copy</button>
+      </div>
+      <div class="code-block__body">
+<pre><code id="req-curl">curl https://api.example.com/v1/invoices \
+  -X POST \
+  -H "Authorization: Bearer sk_live_REDACTED_EXAMPLE_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: 8f14e45f-ceea-467a-9c1b-2f0a1d3e5b77" \
+  -d '{
+    "customer_id": "cus_9f2a",
+    "currency": "usd",
+    "due_date": "2025-03-15",
+    "description": "March retainer",
+    "line_items": [
+      {
+        "description": "Design retainer — March",
+        "unit_amount": 250000,
+        "quantity": 1
+      },
+      {
+        "description": "Additional revision rounds",
+        "unit_amount": 15000,
+        "quantity": 3
+      }
+    ],
+    "metadata": {
+      "project_id": "prj_4471"
+    }
+  }'</code></pre>
+      </div>
+    </div>
+
+    <h2 id="response-example">Response example</h2>
+
+    <p>
+      <span class="status status--2xx">201 Created</span> — the invoice was created in
+      <code>draft</code> status. The <code>Location</code> header points at the new
+      resource.
+    </p>
+
+    <div class="code-block">
+      <div class="code-block__bar">
+        <span class="code-block__label">application/json</span>
+        <button class="copy-btn" data-copy-target="res-json">Copy</button>
+      </div>
+      <div class="code-block__body">
+<pre><code id="res-json">{
+  "id": "inv_1Mk2Qp9rTbXw",
+  "object": "invoice",
+  "status": "draft",
+  "customer_id": "cus_9f2a",
+  "currency": "usd",
+  "subtotal": 295000,
+  "tax": 0,
+  "total": 295000,
+  "amount_due": 295000,
+  "amount_paid": 0,
+  "due_date": "2025-03-15",
+  "description": "March retainer",
+  "line_items": [
+    {
+      "id": "li_8a1c",
+      "description": "Design retainer — March",
+      "unit_amount": 250000,
+      "quantity": 1,
+      "amount": 250000
+    },
+    {
+      "id": "li_8a1d",
+      "description": "Additional revision rounds",
+      "unit_amount": 15000,
+      "quantity": 3,
+      "amount": 45000
+    }
+  ],
+  "metadata": {
+    "project_id": "prj_4471"
+  },
+  "created_at": "2025-02-13T09:41:22Z",
+  "finalized_at": null
+}</code></pre>
+      </div>
+    </div>
+
+    <h3>Response fields</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-name"><code>id</code></td>
+            <td class="col-type">string</td>
+            <td>Invoice identifier, prefixed <code>inv_</code>.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>status</code></td>
+            <td class="col-type">string</td>
+            <td>One of <code>draft</code>, <code>open</code>, <code>paid</code>, <code>void</code>, <code>uncollectible</code>.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>subtotal</code></td>
+            <td class="col-type">integer</td>
+            <td>Sum of line item amounts, before tax.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>tax</code></td>
+            <td class="col-type">integer</td>
+            <td>Tax amount. <code>0</code> until the invoice is finalized.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>total</code></td>
+            <td class="col-type">integer</td>
+            <td><code>subtotal</code> plus <code>tax</code>.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>amount_due</code></td>
+            <td class="col-type">integer</td>
+            <td><code>total</code> minus <code>amount_paid</code>.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>created_at</code></td>
+            <td class="col-type">string</td>
+            <td>ISO 8601 timestamp, UTC.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>finalized_at</code></td>
+            <td class="col-type">string | null</td>
+            <td><code>null</code> while the invoice is a draft.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="errors">Error codes</h2>
+
+    <p>
+      Errors return a JSON body with a machine-readable <code>code</code> and a
+      human-readable <code>message</code>. The <code>param</code> field names the
+      offending field when the error is tied to one.
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Code</th>
+            <th>Cause</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="status status--4xx">400</span></td>
+            <td><code>invalid_request</code></td>
+            <td>Malformed JSON, or a required field is missing.</td>
+          </tr>
+          <tr>
+            <td><span class="status status--4xx">400</span></td>
+            <td><code>invalid_amount</code></td>
+            <td><code>unit_amount</code> is negative or not an integer.</td>
+          </tr>
+          <tr>
+            <td><span class="status status--4xx">400</span></td>
+            <td><code>invalid_quantity</code></td>
+            <td><code>quantity</code> is less than 1.</td>
+          </tr>
+          <tr>
+            <td><span class="status status--4xx">401</span></td>
+            <td><code>unauthorized</code></td>
+            <td>Missing, malformed, or revoked API key.</td>
+          </tr>
+          <tr>
+            <td><span class="status status--4xx">403</span></td>
+            <td><code>permission_denied</code></td>
+            <td>The key lacks the <code>invoices:write</code> scope.</td>
+          </tr>
+          <tr>
+            <td><span class="status status--4xx">404</span></td>
+            <td><code>customer_not_found</code></td>
+            <td>No customer matches <code>customer_id</code>.</td>
+          </tr>
+          <tr>
+            <td><span class="status status--4xx">409</span></td>
+            <td><code>idempotency_conflict</code></td>
+            <td>The <code>Idempotency-Key</code> was reused with a different body.</td>
+          </tr>
+          <tr>
+            <td><span class="status status--4xx">422</span></td>
+            <td><code>currency_mismatch</code></td>
+            <td><code>currency</code> differs from the customer's currency.</td>
+          </tr>
+          <tr>
+            <td><span class="status status--4xx">429</span></td>
+            <td><code>rate_limited</code></td>
+            <td>Too many requests. Retry after the <code>Retry-After</code> header.</td>
+          </tr>
+          <tr>
+            <td><span class="status status--5xx">500</span></td>
+            <td><code>internal_error</code></td>
+            <td>Unexpected server fault. Safe to retry with the same idempotency key.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Error response example</h3>
+
+    <div class="code-block">
+      <div class="code-block__bar">
+        <span class="code-block__label">422 Unprocessable Entity</span>
+        <button class="copy-btn" data-copy-target="err-json">Copy</button>
+      </div>
+      <div class="code-block__body">
+<pre><code id="err-json">{
+  "error": {
+    "code": "currency_mismatch",
+    "message": "Customer cus_9f2a is billed in eur, not usd.",
+    "param": "currency",
+    "request_id": "req_7c3b91a4e0"
+  }
+}</code></pre>
+      </div>
+    </div>
+
+    <div class="callout callout--warn">
+      <p>
+        Include the <code>request_id</code> from the error body when contacting support.
+        It is the only reliable way to locate the request in server logs.
+      </p>
+    </div>
+
+    <h2 id="related">Related endpoints</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Endpoint</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="col-name"><code>GET /v1/invoices/{id}</code></td>
+            <td>Retrieve a single invoice by ID.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>POST /v1/invoices/{id}/finalize</code></td>
+            <td>Lock the invoice, compute tax, and move it to <code>open</code>.</td>
+          </tr>
+          <tr>
+            <td class="col-name"><code>POST /v1/invoices/{id}/void</code></td>
+            <td>Void an open invoice. Drafts are deleted instead.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // Copy buttons
+  document.querySelectorAll('.copy-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = document.getElementById(btn.dataset.copyTarget);
+      if (!target) return;
+
+      var text = target.textContent;
+      var done = function () {
+        var original = btn.textContent;
+        btn.textContent = 'Copied';
+        btn.dataset.copied = 'true';
+        window.setTimeout(function () {
+          btn.textContent = original;
+          delete btn.dataset.copied;
+        }, 1500);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () {
+          fallbackCopy(text, done);
+        });
+      } else {
+        fallbackCopy(text, done);
+      }
+    });
+  });
+
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) { /* no-op */ }
+    document.body.removeChild(ta);
+  }
+
+  // Mobile sidebar toggle
+  var toggle = document.getElementById('navToggle');
+  var sidebar = document.getElementById('sidebar');
+
+  toggle.addEventListener('click', function () {
+    var open = sidebar.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+
+  // Close the drawer after navigating on small screens
+  sidebar.addEventListener('click', function (e) {
+    if (e.target.closest('a') && window.matchMedia('(max-width: 860px)').matches) {
+      sidebar.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Scroll spy
+  var links = Array.prototype.slice.call(sidebar.querySelectorAll('.sidebar__link[href^="#"]'));
+  var sections = links
+    .map(function (link) { return document.getElementById(link.getAttribute('href').slice(1)); })
+    .filter(Boolean);
+
+  if ('IntersectionObserver' in window && sections.length) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        links.forEach(function (link) {
+          link.classList.toggle(
+            'is-active',
+            link.getAttribute('href') === '#' + entry.target.id
+          );
+        });
+      });
+    }, { rootMargin: '-10% 0px -75% 0px', threshold: 0 });
+
+    sections.forEach(function (section) { observer.observe(section); });
+  }
+})();
+</script>
+
+</body>
+</html>
+```

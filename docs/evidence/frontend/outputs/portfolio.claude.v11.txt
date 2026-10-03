@@ -1,0 +1,487 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[Photographer Name] | Photographer in Yogyakarta</title>
+<meta name="description" content="Freelance photographer in Yogyakarta for weddings, portraits, events and commercial work.">
+<style>
+  :root {
+    --bg: #f4efe8;
+    --ink: #1a1714;
+    --muted: #5c544b;
+    --accent: #9a3b1f;
+    --on-accent: #ffffff;
+    --dark: #1a1714;
+    --on-dark: #f4efe8;
+    --muted-dark: #b9afa3;
+    --accent-dark: #e0875f;
+    --line: #cfc5b8;
+    --error: #a3201a;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --serif: Georgia, "Times New Roman", serif;
+    --wrap: 72rem;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 1rem/1.65 var(--sans); }
+  img, svg { display: block; max-width: 100%; }
+  a { color: var(--accent); text-underline-offset: 3px; }
+  a:hover { text-decoration-thickness: 2px; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  .dark :focus-visible { outline-color: var(--accent-dark); }
+  .wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 1.5rem; }
+  section { padding: 5rem 0; }
+  h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.15; margin: 0; }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); margin-bottom: 2rem; }
+  .eyebrow { font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 1rem; }
+  .dark .eyebrow { color: var(--muted-dark); }
+
+  .skip { position: absolute; left: -999px; top: 0; background: var(--ink); color: var(--on-dark); padding: .6rem 1rem; z-index: 100; }
+  .skip:focus { left: 0; }
+
+  header.site { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+  header.site .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem 1.5rem; min-height: 3.5rem; }
+  .brand { font-family: var(--serif); font-size: 1.15rem; color: var(--ink); text-decoration: none; }
+  nav ul { display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; list-style: none; margin: 0; padding: 0; }
+  nav a { color: var(--ink); text-decoration: none; padding: .5rem 0; display: inline-block; border-bottom: 2px solid transparent; }
+  nav a:hover { border-bottom-color: var(--accent); }
+
+  .hero { padding: 5rem 0 4rem; }
+  .hero .wrap { display: grid; grid-template-columns: 1.1fr .9fr; gap: 3rem; align-items: center; }
+  .hero h1 { font-size: clamp(2.4rem, 6vw, 4.2rem); margin-bottom: 1.25rem; }
+  .hero p.lede { font-size: 1.15rem; max-width: 34rem; color: var(--muted); margin: 0 0 2rem; }
+  .hero figure { margin: 0; }
+  .hero figcaption { font-size: .85rem; color: var(--muted); margin-top: .6rem; }
+
+  .btn { display: inline-block; font: inherit; font-weight: 600; padding: .8rem 1.4rem; border: 2px solid var(--accent); background: var(--accent); color: var(--on-accent); text-decoration: none; cursor: pointer; border-radius: 2px; transition: background .15s, color .15s; }
+  .btn:hover { background: #7f2f17; border-color: #7f2f17; }
+  .btn:active { transform: translateY(1px); }
+  .btn[disabled] { opacity: .6; cursor: not-allowed; }
+  .btn.ghost { background: transparent; color: var(--accent); margin-left: .5rem; }
+  .btn.ghost:hover { background: var(--accent); color: var(--on-accent); }
+
+  .facts { display: flex; flex-wrap: wrap; gap: .5rem 2rem; margin: 2.5rem 0 0; padding: 0; list-style: none; color: var(--muted); font-size: .95rem; }
+
+  .filters { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 1.75rem; }
+  .filters button { font: inherit; padding: .45rem 1rem; background: transparent; color: var(--ink); border: 1px solid var(--ink); border-radius: 999px; cursor: pointer; }
+  .filters button:hover { background: #e7ded2; }
+  .filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; list-style: none; margin: 0; padding: 0; }
+  .grid li[hidden] { display: none; }
+  .tile { display: block; width: 100%; padding: 0; border: 0; background: none; text-align: left; font: inherit; color: inherit; cursor: zoom-in; }
+  .tile .frame { aspect-ratio: 4 / 5; overflow: hidden; background: #e7ded2; }
+  .tile svg { width: 100%; height: 100%; transition: transform .4s ease; }
+  .tile:hover svg { transform: scale(1.04); }
+  .tile .cap { display: flex; justify-content: space-between; gap: 1rem; padding-top: .6rem; font-size: .95rem; }
+  .tile .cap span:last-child { color: var(--muted); }
+  .note { margin-top: 1.5rem; font-size: .9rem; color: var(--muted); }
+
+  dialog { border: 0; padding: 0; background: var(--dark); color: var(--on-dark); max-width: min(92vw, 42rem); width: 100%; }
+  dialog::backdrop { background: rgba(10, 8, 6, .8); }
+  dialog .view { aspect-ratio: 4 / 5; max-height: 75vh; margin: 0 auto; }
+  dialog .view svg { width: 100%; height: 100%; }
+  dialog .bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .9rem 1.1rem; }
+  dialog button { font: inherit; background: transparent; color: var(--on-dark); border: 1px solid var(--on-dark); padding: .4rem .9rem; cursor: pointer; border-radius: 2px; }
+  dialog button:hover { background: var(--on-dark); color: var(--dark); }
+  dialog :focus-visible { outline-color: var(--accent-dark); }
+
+  .dark { background: var(--dark); color: var(--on-dark); }
+  .dark a { color: var(--accent-dark); }
+  .services { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .service { border-top: 1px solid var(--muted-dark); padding-top: 1.25rem; display: flex; flex-direction: column; }
+  .service h3 { font-size: 1.5rem; margin-bottom: .75rem; }
+  .service p { color: var(--muted-dark); margin: 0 0 1rem; }
+  .service ul { margin: 0 0 1.25rem; padding-left: 1.1rem; color: var(--muted-dark); }
+  .service .price { margin-top: auto; font-weight: 600; }
+  .process { margin: 3.5rem 0 0; padding: 0; list-style: none; counter-reset: s; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .process li { counter-increment: s; color: var(--muted-dark); }
+  .process li::before { content: counter(s, decimal-leading-zero); display: block; font-family: var(--serif); font-size: 1.6rem; color: var(--accent-dark); }
+  .process strong { color: var(--on-dark); display: block; }
+
+  .contact { display: grid; grid-template-columns: .8fr 1.2fr; gap: 3rem; }
+  .contact address { font-style: normal; color: var(--muted); }
+  .contact address p { margin: 0 0 .75rem; }
+  form { display: grid; gap: 1.1rem; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+  label { display: block; font-weight: 600; font-size: .95rem; margin-bottom: .3rem; }
+  input, select, textarea { width: 100%; font: inherit; color: var(--ink); background: #fff; border: 1px solid #7d7266; padding: .65rem .75rem; border-radius: 2px; }
+  input:hover, select:hover, textarea:hover { border-color: var(--ink); }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid var(--accent); outline-offset: 1px; }
+  input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--error); border-width: 2px; }
+  .err { color: var(--error); font-size: .9rem; margin: .3rem 0 0; min-height: 0; }
+  .err:empty { display: none; }
+  .status { margin: 0; font-size: .95rem; }
+
+  footer { padding: 2rem 0; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 2rem; }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .services { grid-template-columns: 1fr; }
+    .process { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 720px) {
+    section { padding: 3.5rem 0; }
+    .hero .wrap, .contact { grid-template-columns: 1fr; }
+    .row { grid-template-columns: 1fr; }
+    .btn.ghost { margin: .75rem 0 0; }
+  }
+  @media (max-width: 480px) {
+    .grid { grid-template-columns: 1fr; }
+    .process { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site">
+  <div class="wrap">
+    <a class="brand" href="#top">[Photographer Name]</a>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top" aria-labelledby="h-intro">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Freelance photographer, Yogyakarta</p>
+        <h1 id="h-intro">Photographs of people and places in Yogyakarta and Central Java.</h1>
+        <p class="lede">[Two or three sentences in your own voice: how you started, what you look for in a frame, and how you work with the people in front of the camera.]</p>
+        <a class="btn" href="#contact">Check availability</a>
+        <a class="btn ghost" href="#work">See selected work</a>
+        <ul class="facts">
+          <li>Based in Yogyakarta</li>
+          <li>Travels within Java</li>
+          <li>[confirm: years shooting]</li>
+        </ul>
+      </div>
+      <figure>
+        <svg viewBox="0 0 400 500" role="img" aria-label="Placeholder illustration: Mount Merapi silhouette at dawn" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="hero-sky" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#3a2f3d"/><stop offset=".6" stop-color="#c8643a"/><stop offset="1" stop-color="#f1b77a"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="500" fill="url(#hero-sky)"/>
+          <circle cx="270" cy="300" r="46" fill="#f8dca8"/>
+          <path d="M-20 500 L150 190 L190 215 L230 170 L430 500 Z" fill="#2a2024"/>
+          <path d="M-20 500 L90 380 L200 430 L320 370 L430 500 Z" fill="#17120f"/>
+        </svg>
+        <figcaption>Placeholder illustration. Replace with a portrait or a signature photograph.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="work" aria-labelledby="h-work">
+    <div class="wrap">
+      <h2 id="h-work">Selected work</h2>
+      <div class="filters" role="group" aria-label="Filter by category">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="landscape" aria-pressed="false">Landscape</button>
+        <button type="button" data-filter="street" aria-pressed="false">Street</button>
+        <button type="button" data-filter="people" aria-pressed="false">People</button>
+      </div>
+
+      <ul class="grid">
+        <li data-cat="landscape">
+          <button class="tile" type="button" data-title="Merapi, first light" data-meta="Landscape">
+            <div class="frame">
+              <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder: mountain at dawn">
+                <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a3b52"/><stop offset="1" stop-color="#e59a62"/></linearGradient></defs>
+                <rect width="400" height="500" fill="url(#g1)"/>
+                <circle cx="120" cy="280" r="34" fill="#fbe3b5"/>
+                <path d="M0 500 L170 170 L330 500 Z" fill="#2c2127"/>
+                <path d="M0 500 L0 400 L140 440 L400 380 L400 500 Z" fill="#17120f"/>
+              </svg>
+            </div>
+            <div class="cap"><span>Merapi, first light</span><span>Landscape</span></div>
+          </button>
+        </li>
+        <li data-cat="street">
+          <button class="tile" type="button" data-title="Evening on the main street" data-meta="Street">
+            <div class="frame">
+              <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder: street at dusk with lit windows">
+                <defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#27323f"/><stop offset="1" stop-color="#7a5a4a"/></linearGradient></defs>
+                <rect width="400" height="500" fill="url(#g3)"/>
+                <rect x="20" y="170" width="120" height="330" fill="#15110f"/>
+                <rect x="150" y="120" width="110" height="380" fill="#1d1714"/>
+                <rect x="270" y="210" width="120" height="290" fill="#15110f"/>
+                <g fill="#f4c46d">
+                  <rect x="40" y="200" width="16" height="22"/><rect x="80" y="200" width="16" height="22"/><rect x="40" y="260" width="16" height="22"/>
+                  <rect x="170" y="160" width="16" height="22"/><rect x="215" y="220" width="16" height="22"/><rect x="170" y="280" width="16" height="22"/>
+                  <rect x="295" y="250" width="16" height="22"/><rect x="345" y="310" width="16" height="22"/>
+                </g>
+                <rect x="0" y="440" width="400" height="60" fill="#0e0b09"/>
+              </svg>
+            </div>
+            <div class="cap"><span>Evening on the main street</span><span>Street</span></div>
+          </button>
+        </li>
+        <li data-cat="people">
+          <button class="tile" type="button" data-title="Portrait in window light" data-meta="People">
+            <div class="frame">
+              <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder: portrait silhouette in soft light">
+                <defs><radialGradient id="g4" cx=".3" cy=".25" r=".9"><stop offset="0" stop-color="#f1dcc0"/><stop offset="1" stop-color="#8d7765"/></radialGradient></defs>
+                <rect width="400" height="500" fill="url(#g4)"/>
+                <circle cx="210" cy="210" r="64" fill="#2a2024"/>
+                <path d="M70 500 C70 360 140 300 210 300 C280 300 350 360 350 500 Z" fill="#2a2024"/>
+              </svg>
+            </div>
+            <div class="cap"><span>Portrait in window light</span><span>People</span></div>
+          </button>
+        </li>
+        <li data-cat="landscape">
+          <button class="tile" type="button" data-title="Temple towers at dusk" data-meta="Landscape">
+            <div class="frame">
+              <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder: temple spires in silhouette">
+                <defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f3a52"/><stop offset="1" stop-color="#d88a5c"/></linearGradient></defs>
+                <rect width="400" height="500" fill="url(#g2)"/>
+                <g fill="#1a1411">
+                  <path d="M200 90 L222 200 L236 200 L246 300 L260 300 L270 500 L130 500 L140 300 L154 300 L164 200 L178 200 Z"/>
+                  <path d="M80 250 L95 330 L105 330 L112 500 L48 500 L55 330 L65 330 Z"/>
+                  <path d="M320 250 L335 330 L345 330 L352 500 L288 500 L295 330 L305 330 Z"/>
+                </g>
+              </svg>
+            </div>
+            <div class="cap"><span>Temple towers at dusk</span><span>Landscape</span></div>
+          </button>
+        </li>
+        <li data-cat="people">
+          <button class="tile" type="button" data-title="Wedding, the exchange" data-meta="People">
+            <div class="frame">
+              <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder: two interlocked rings under an arch">
+                <rect width="400" height="500" fill="#e9dccb"/>
+                <path d="M60 500 L60 220 A140 140 0 0 1 340 220 L340 500 Z" fill="#cdb79c"/>
+                <g fill="none" stroke="#9a3b1f" stroke-width="10">
+                  <circle cx="170" cy="320" r="60"/><circle cx="230" cy="320" r="60"/>
+                </g>
+              </svg>
+            </div>
+            <div class="cap"><span>Wedding, the exchange</span><span>People</span></div>
+          </button>
+        </li>
+        <li data-cat="street">
+          <button class="tile" type="button" data-title="Pattern study, market cloth" data-meta="Street">
+            <div class="frame">
+              <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Placeholder: repeating circular cloth pattern">
+                <defs>
+                  <pattern id="batik" width="60" height="60" patternUnits="userSpaceOnUse">
+                    <rect width="60" height="60" fill="#3b2a20"/>
+                    <circle cx="30" cy="30" r="20" fill="none" stroke="#e8c48a" stroke-width="3"/>
+                    <circle cx="30" cy="30" r="8" fill="#c8643a"/>
+                    <circle cx="0" cy="0" r="8" fill="#e8c48a"/><circle cx="60" cy="0" r="8" fill="#e8c48a"/>
+                    <circle cx="0" cy="60" r="8" fill="#e8c48a"/><circle cx="60" cy="60" r="8" fill="#e8c48a"/>
+                  </pattern>
+                </defs>
+                <rect width="400" height="500" fill="url(#batik)"/>
+              </svg>
+            </div>
+            <div class="cap"><span>Pattern study, market cloth</span><span>Street</span></div>
+          </button>
+        </li>
+      </ul>
+      <p class="note">These tiles are illustrated placeholders. Replace each inline SVG with your own image, and rewrite the titles.</p>
+    </div>
+  </section>
+
+  <dialog id="viewer" aria-label="Photo viewer">
+    <div class="view" id="viewer-img"></div>
+    <div class="bar">
+      <span id="viewer-cap"></span>
+      <button type="button" id="viewer-close">Close</button>
+    </div>
+  </dialog>
+
+  <section id="services" class="dark" aria-labelledby="h-services">
+    <div class="wrap">
+      <p class="eyebrow">Services</p>
+      <h2 id="h-services">What I shoot</h2>
+      <div class="services">
+        <article class="service">
+          <h3>Weddings and pre-wedding</h3>
+          <p>Coverage from preparation to the last dance, in documentary style with a short list of posed portraits.</p>
+          <ul>
+            <li>[confirm: hours of coverage]</li>
+            <li>[confirm: second shooter option]</li>
+            <li>[confirm: delivery format and turnaround]</li>
+          </ul>
+          <p class="price">[confirm: starting price, IDR]</p>
+        </article>
+        <article class="service">
+          <h3>Portraits and families</h3>
+          <p>One-location sessions at a place that means something to you, or one I scout for the light.</p>
+          <ul>
+            <li>[confirm: session length]</li>
+            <li>[confirm: number of edited photos]</li>
+            <li>[confirm: delivery format and turnaround]</li>
+          </ul>
+          <p class="price">[confirm: starting price, IDR]</p>
+        </article>
+        <article class="service">
+          <h3>Events and commercial</h3>
+          <p>Product, venue, food and event photography for local businesses, with usage terms agreed in writing.</p>
+          <ul>
+            <li>[confirm: half-day and full-day rates]</li>
+            <li>[confirm: usage licence terms]</li>
+            <li>[confirm: delivery format and turnaround]</li>
+          </ul>
+          <p class="price">[confirm: starting price, IDR]</p>
+        </article>
+      </div>
+      <ol class="process" aria-label="How a booking works">
+        <li><strong>Enquire</strong>Send the date, place and what you need.</li>
+        <li><strong>Confirm</strong>Quote, agreement and deposit. [confirm: deposit terms]</li>
+        <li><strong>Shoot</strong>On the day, with a plan agreed beforehand.</li>
+        <li><strong>Deliver</strong>Edited gallery online. [confirm: turnaround]</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="contact" aria-labelledby="h-contact">
+    <div class="wrap contact">
+      <div>
+        <h2 id="h-contact">Book a date</h2>
+        <address>
+          <p>Yogyakarta, Special Region of Yogyakarta, Indonesia</p>
+          <p>Email: <a href="mailto:hello@example.com" data-email>hello@example.com</a></p>
+          <p>WhatsApp: [confirm: number]</p>
+          <p>Instagram: [confirm: handle]</p>
+        </address>
+        <p class="note">Include the date, location and kind of shoot. Replies: [confirm: response time].</p>
+      </div>
+
+      <form id="form" novalidate>
+        <div class="row">
+          <div>
+            <label for="f-name">Name</label>
+            <input id="f-name" name="name" autocomplete="name" required aria-describedby="e-name">
+            <p class="err" id="e-name"></p>
+          </div>
+          <div>
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="e-email">
+            <p class="err" id="e-email"></p>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label for="f-type">Type of shoot</label>
+            <select id="f-type" name="type">
+              <option>Wedding or pre-wedding</option>
+              <option>Portrait or family</option>
+              <option>Event or commercial</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div>
+            <label for="f-date">Date (if known)</label>
+            <input id="f-date" name="date" type="date">
+          </div>
+        </div>
+        <div>
+          <label for="f-msg">Details</label>
+          <textarea id="f-msg" name="message" rows="6" required aria-describedby="e-msg"></textarea>
+          <p class="err" id="e-msg"></p>
+        </div>
+        <div>
+          <button class="btn" type="submit" id="submit">Open in email app</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; <span id="yr"></span> [Photographer Name]. All photographs are the photographer's property.</span>
+    <a href="#top">Back to top</a>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Filters
+  const filterBtns = document.querySelectorAll('.filters button');
+  const items = document.querySelectorAll('.grid li');
+  filterBtns.forEach(btn => btn.addEventListener('click', () => {
+    filterBtns.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    const f = btn.dataset.filter;
+    items.forEach(li => { li.hidden = f !== 'all' && li.dataset.cat !== f; });
+  }));
+
+  // Viewer: clones the tile's SVG so replacing placeholders with <img> needs no JS change
+  const dlg = document.getElementById('viewer');
+  const view = document.getElementById('viewer-img');
+  const cap = document.getElementById('viewer-cap');
+  document.querySelectorAll('.tile').forEach(tile => tile.addEventListener('click', () => {
+    const media = tile.querySelector('svg, img').cloneNode(true);
+    view.replaceChildren(media);
+    cap.textContent = tile.dataset.title + ' (' + tile.dataset.meta + ')';
+    dlg.showModal();
+  }));
+  document.getElementById('viewer-close').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+
+  // Contact form: no backend, so build a mailto: link after validating
+  const form = document.getElementById('form');
+  const status = document.getElementById('status');
+  const EMAIL = document.querySelector('[data-email]').textContent.trim();
+
+  function setError(id, msg) {
+    const input = document.getElementById(id);
+    const err = document.getElementById('e-' + id.slice(2));
+    err.textContent = msg;
+    if (msg) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid');
+    return !msg;
+  }
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const d = new FormData(form);
+    const email = String(d.get('email')).trim();
+    const results = [
+      setError('f-name', String(d.get('name')).trim() ? '' : 'Enter your name.'),
+      setError('f-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? '' : 'Enter a valid email address.'),
+      setError('f-msg', String(d.get('message')).trim().length >= 10 ? '' : 'Add a few details (at least 10 characters).')
+    ];
+    if (results.includes(false)) {
+      status.textContent = 'Fix the highlighted fields.';
+      form.querySelector('[aria-invalid="true"]').focus();
+      return;
+    }
+    const body = [
+      'Name: ' + d.get('name'),
+      'Reply-to: ' + email,
+      'Type: ' + d.get('type'),
+      'Date: ' + (d.get('date') || 'not set'),
+      '',
+      d.get('message')
+    ].join('\n');
+    const href = 'mailto:' + EMAIL + '?subject=' + encodeURIComponent('Booking enquiry: ' + d.get('type')) + '&body=' + encodeURIComponent(body);
+    status.textContent = 'Opening your email app. If nothing opens, write to ' + EMAIL + ' directly.';
+    window.location.href = href;
+  });
+
+  form.addEventListener('input', e => {
+    if (e.target.getAttribute('aria-invalid')) setError(e.target.id, '');
+  });
+</script>
+</body>
+</html>
+```

@@ -163,15 +163,21 @@ What the latest full run (2026-10-03) says, without rounding in our favor:
 
 ### Frontend check
 
-Frontend is where slop is easiest to see, so it has its own recorded experiment: the same landing-page and React-component prompts, with and without SuperMD, on DeepSeek and on Claude Code ([full write-up and raw outputs](docs/evidence/frontend/README.md)).
+Frontend is where slop is easiest to see, so it has its own recorded experiment: eight page prompts and a React component, with and without SuperMD, on DeepSeek and on Claude Code, scored by counts from a headless browser and by a blind visual comparison ([full write-up and raw outputs](docs/evidence/frontend/README.md)). Prompts were split into a set used while writing the module and sets held out from it.
 
 <div align="center">
-<img src="docs/assets/frontend-landing.png" alt="The same Taskly landing-page prompt rendered four ways: DeepSeek and Claude Code, each with and without SuperMD" width="860">
+<img src="docs/assets/frontend-portfolio.png" alt="A photographer-portfolio page from Claude Code: without SuperMD, with the previous frontend module, and with module 1.2" width="860">
+<br>
+<img src="docs/assets/frontend-docs.png" alt="An API reference page from Claude Code in the same three conditions; the rightmost page lost its comparison because its code blocks render light text on a light background" width="860">
 </div>
 
-- **It works on copy and on engineering rigor.** Without SuperMD, DeepSeek used four emoji as feature icons and headlined the page "Project management, minus the chaos"; with it, no emoji and a concrete headline. A generated React table covered all ten states and accessibility hooks we checked (loading, error, empty, `aria-sort`, focus style, and more) in every run with SuperMD, against 8 or 9 of 10 without.
-- **The test found three gaps, and they are fixed in this release.** The linter flagged `© 2026` in a footer as hard slop. Claude's headline became "takes ten minutes to set up", a claim nobody supplied. The core's no-decoration rule leaked into the interface and stripped a page's icons. The frontend modules now require labeled placeholders for unsupplied product claims and say the rule governs prose, not the UI; Claude then wrote 8 `[confirm: …]` placeholders for prices and limits instead of inventing them.
-- **It has limits.** DeepSeek ignored the placeholder rule and still invented prices. SuperMD has no opinion on visual taste, so the stock three-card feature grid survives with and without it. One sample per cell: an illustration, not a benchmark.
+- **The first revision of the frontend module was not good, and the test said so.** Against no rules it won 2 blind comparisons, tied 3, and lost 3. Its pages read as unfinished templates, with 88 `[confirm: …]` placeholders across 16 pages. That matches the impression that frontend output with SuperMD looked weak.
+- **Module 1.2 fixes the cause.** It separates sample content (allowed, marked once in small print) from claims about the real world (customer counts, testimonials, ratings: left out, never mocked), and adds a "Building UI from scratch" standard: design tokens first, a hero built from the product's own UI, balanced grids, a finished-state checklist. On held-out prompts it beat no rules in 5 blind comparisons, tied 1, and lost 2, and beat the previous revision 4 of 4 on the fresh round. On the same eight pages, axe-core accessibility violations fell from 13 to 3 and pages with a reduced-motion rule rose from 3 to 7.
+- **It still loses sometimes.** One of the two losses is a real defect, shown above on the right: an inline-code style leaked into `pre` blocks. DeepSeek is a weaker designer than Claude. SuperMD does not choose a design for you, and the generic card grid appears with and without it. One sample per cell, and the judge is a model.
+
+### What still gets through
+
+The hard lexicon is clean in every full run, but it gates only named phrases. An audit of the same outputs found forms it does not: contrast punchlines ("X is not a strategy, it's the absence of one") rose from 2 to 5, and bold run-in labels did not move. A sharper wording of the rule made no measurable difference over 48 samples per condition, so it was not shipped; `supermd check` now reports the form as a soft hit instead ([audit and probe](docs/evidence/residual-slop/README.md)).
 
 Beyond the eval, the repository is its own test case: `npm test` runs 11 checks, including 30 installer tests, 21 MCP protocol tests, and the anti-slop linter over both language trees and every front-door document.
 

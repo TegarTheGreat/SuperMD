@@ -1,0 +1,576 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POST /v1/invoices | Billing API</title>
+<!--
+  Sample content to replace before launch: hosts (api.example.com, pay.example.com),
+  ID formats (cus_, inv_, req_), the invoices:write scope, field names and defaults,
+  error codes, example amounts and dates.
+  Accent #1d4ed8 with white text computes to 6.7:1 (WCAG AA needs 4.5:1).
+-->
+<script>document.documentElement.classList.add("js");</script>
+<style>
+:root{
+  --gray-50:#f9fafb;--gray-100:#f3f4f6;--gray-200:#e5e7eb;--gray-300:#d1d5db;
+  --gray-500:#6b7280;--gray-600:#4b5563;--gray-700:#374151;--gray-800:#1f2937;--gray-900:#111827;
+  --accent:#1d4ed8;--accent-tint:#eff6ff;--on-accent:#fff;
+  --code-key:#93c5fd;--code-str:#86efac;--code-num:#fcd34d;
+  --text-xs:.75rem;--text-sm:.875rem;--text-md:1rem;--text-lg:1.25rem;--text-xl:2rem;
+  --s-1:4px;--s-2:8px;--s-3:16px;--s-4:24px;--s-5:32px;--s-6:48px;--s-7:64px;
+  --radius:6px;
+  --shadow:0 1px 3px rgba(17,24,39,.12);
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:var(--s-7)}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{margin:0;font:var(--text-md)/1.6 var(--font);color:var(--gray-700);background:#fff}
+a{color:var(--accent);text-underline-offset:2px}
+a:hover{color:var(--gray-900)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.skip{position:absolute;left:var(--s-3);top:-48px;padding:var(--s-2) var(--s-3);background:var(--accent);color:var(--on-accent);border-radius:var(--radius);z-index:20}
+.skip:focus{top:var(--s-2)}
+
+.top{position:sticky;top:0;z-index:10;height:56px;display:flex;align-items:center;gap:var(--s-3);padding:0 var(--s-4);background:#fff;border-bottom:1px solid var(--gray-200)}
+.brand{font-weight:700;color:var(--gray-900);text-decoration:none}
+.ver{font:var(--text-xs)/1 var(--mono);padding:var(--s-1) var(--s-2);border:1px solid var(--gray-300);border-radius:var(--radius);color:var(--gray-700)}
+.top .label{margin-left:auto;font-size:var(--text-sm);color:var(--gray-600)}
+
+.layout{display:grid;grid-template-columns:256px minmax(0,1fr);max-width:1200px;margin:0 auto}
+.toc{position:sticky;top:56px;align-self:start;max-height:calc(100vh - 56px);overflow:auto;padding:var(--s-4) var(--s-3);border-right:1px solid var(--gray-200)}
+.toc-title{margin:0 0 var(--s-2) var(--s-3);font-size:var(--text-xs);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-600)}
+.toc ul{list-style:none;margin:0;padding:0}
+.toc a{display:block;padding:var(--s-2) var(--s-3);font-size:var(--text-sm);color:var(--gray-700);text-decoration:none;border-left:2px solid transparent;transition:background-color .12s,color .12s}
+.toc a:hover{background:var(--gray-100);color:var(--gray-900)}
+.toc a:focus-visible{outline-offset:-2px}
+.toc a[aria-current]{color:var(--accent);background:var(--accent-tint);border-left-color:var(--accent);font-weight:600}
+
+main{min-width:0;padding:var(--s-6) var(--s-6) var(--s-7)}
+section[id]{scroll-margin-top:var(--s-7)}
+section+section{margin-top:var(--s-6);padding-top:var(--s-6);border-top:1px solid var(--gray-200)}
+h1{margin:0 0 var(--s-4);font-size:var(--text-xl);line-height:1.2;letter-spacing:-.01em;color:var(--gray-900)}
+h2{margin:0 0 var(--s-3);font-size:var(--text-lg);line-height:1.3;color:var(--gray-900)}
+p{margin:0 0 var(--s-3);max-width:68ch}
+code{font:var(--text-sm) var(--mono);background:var(--gray-100);color:var(--gray-900);padding:1px var(--s-1);border-radius:var(--radius)}
+
+.endpoint{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-3);margin:0 0 var(--s-4);padding:var(--s-3) var(--s-4);border:1px solid var(--gray-200);border-radius:var(--radius);box-shadow:var(--shadow)}
+.method{font:700 var(--text-sm)/1 var(--mono);padding:var(--s-2) var(--s-3);background:var(--accent);color:var(--on-accent);border-radius:var(--radius);letter-spacing:.04em}
+.url{font:600 var(--text-md)/1.4 var(--mono);color:var(--gray-900);overflow-wrap:anywhere}
+.url span{font-weight:400;color:var(--gray-600)}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s-4);margin:var(--s-5) 0 var(--s-3);padding:0}
+.facts div{border-top:2px solid var(--gray-200);padding-top:var(--s-2)}
+.facts dt{font-size:var(--text-xs);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-600)}
+.facts dd{margin:var(--s-1) 0 0;font-size:var(--text-sm);font-weight:600;color:var(--gray-900);overflow-wrap:anywhere}
+.note{max-width:none;font-size:var(--text-xs);color:var(--gray-600)}
+.status{display:inline-block;margin-right:var(--s-2);padding:2px var(--s-2);font:600 var(--text-sm) var(--mono);background:var(--gray-100);color:var(--gray-900);border-radius:var(--radius)}
+
+.table{width:100%;border-collapse:collapse;margin:0 0 var(--s-3);font-size:var(--text-sm)}
+.table th{padding:var(--s-2) var(--s-3) var(--s-2) 0;text-align:left;font-size:var(--text-xs);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--gray-600);border-bottom:2px solid var(--gray-200)}
+.table td{padding:var(--s-3) var(--s-3) var(--s-3) 0;vertical-align:top;border-bottom:1px solid var(--gray-200);overflow-wrap:anywhere}
+.table tbody tr:hover{background:var(--gray-50)}
+.table .name{font:600 var(--text-sm) var(--mono);color:var(--gray-900)}
+.table .type{color:var(--gray-600)}
+.req{font-weight:600;color:var(--accent)}
+.opt{color:var(--gray-600)}
+
+.code{margin:0 0 var(--s-4);background:var(--gray-900);border-radius:var(--radius);min-width:0}
+.code figcaption{display:flex;align-items:center;gap:var(--s-3);min-height:40px;padding:var(--s-1) var(--s-2) var(--s-1) var(--s-3);border-bottom:1px solid var(--gray-800);font:var(--text-xs) var(--mono);color:var(--gray-300)}
+.code pre{margin:0;padding:var(--s-3);overflow-x:auto;color:var(--gray-200);font:var(--text-sm)/1.6 var(--mono);tab-size:2}
+.code pre code{padding:0;background:none;color:inherit;font:inherit}
+.tok-k{color:var(--code-key)}.tok-s{color:var(--code-str)}.tok-n{color:var(--code-num)}
+.copy{margin-left:auto;min-height:32px;padding:var(--s-1) var(--s-3);background:transparent;color:var(--gray-200);border:1px solid var(--gray-500);border-radius:var(--radius);font:600 var(--text-xs) var(--font);cursor:pointer;transition:background-color .12s}
+.copy:hover{background:var(--gray-800)}
+.copy:focus-visible{outline-color:var(--gray-200)}
+.copy:disabled{opacity:.5;cursor:not-allowed}
+
+.tablist{display:flex;gap:var(--s-1);margin-bottom:var(--s-3);border-bottom:1px solid var(--gray-200)}
+.tab{appearance:none;margin-bottom:-1px;padding:var(--s-3);background:none;border:0;border-bottom:2px solid transparent;border-radius:var(--radius) var(--radius) 0 0;font:600 var(--text-sm)/1 var(--font);color:var(--gray-600);cursor:pointer;transition:background-color .12s,color .12s}
+.tab:hover{background:var(--gray-100);color:var(--gray-900)}
+.tab:focus-visible{outline-offset:-2px}
+.tab:disabled{opacity:.5;cursor:not-allowed}
+.tab[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+.panel[hidden]{display:none}
+.is-enhanced .code-label{display:none}
+
+footer{max-width:1200px;margin:0 auto;padding:var(--s-5) var(--s-6);border-top:1px solid var(--gray-200);display:flex;flex-wrap:wrap;gap:var(--s-3);justify-content:space-between;font-size:var(--text-sm);color:var(--gray-600)}
+footer p{margin:0}
+
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .toc{position:static;max-height:none;padding:var(--s-3) var(--s-4);border-right:0;border-bottom:1px solid var(--gray-200)}
+  .toc-title{margin-left:0}
+  .toc ul{display:flex;flex-wrap:wrap;gap:var(--s-2)}
+  .toc a{border:1px solid var(--gray-200);border-radius:var(--radius)}
+  .toc a[aria-current]{border-color:var(--accent)}
+  main{padding:var(--s-5) var(--s-4) var(--s-6)}
+  footer{padding:var(--s-4)}
+}
+@media (max-width:640px){
+  .top{padding:0 var(--s-3)}
+  .facts{grid-template-columns:repeat(2,1fr)}
+  .table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  .table tbody,.table tr{display:block}
+  .table tr{display:flex;flex-wrap:wrap;gap:var(--s-1) var(--s-3);padding:var(--s-3) 0;border-bottom:1px solid var(--gray-200)}
+  .table td{display:block;padding:0;border:0}
+  .table td.full{flex:1 0 100%}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#overview">Skip to content</a>
+
+<header class="top" id="top">
+  <a class="brand" href="#top">Billing API</a>
+  <span class="ver">v1</span>
+  <span class="label">Reference</span>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <ul>
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#authentication">Headers</a></li>
+      <li><a href="#parameters">Parameters</a></li>
+      <li><a href="#request">Request</a></li>
+      <li><a href="#response">Response</a></li>
+      <li><a href="#errors">Errors</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <section id="overview">
+      <h1>Create an invoice</h1>
+      <div class="endpoint">
+        <span class="method">POST</span>
+        <span class="url"><span>https://api.example.com</span>/v1/invoices</span>
+      </div>
+      <p>Creates an invoice for an existing customer. The invoice starts in <code>open</code> status and the customer is notified according to <code>collection_method</code>. Set <code>draft</code> to <code>true</code> to create it in <code>draft</code> status instead; nothing is sent until a draft is finalized.</p>
+      <p>Amounts are integers in the currency's smallest unit, so <code>120000</code> in <code>usd</code> is $1,200.00.</p>
+      <dl class="facts">
+        <div><dt>Auth</dt><dd>Bearer API key</dd></div>
+        <div><dt>Scope</dt><dd>invoices:write</dd></div>
+        <div><dt>Success</dt><dd>201 Created</dd></div>
+        <div><dt>Retries</dt><dd>Idempotency-Key header</dd></div>
+      </dl>
+      <p class="note">Sample content: hosts, IDs, amounts, field limits and error codes are illustrative. Replace before launch.</p>
+    </section>
+
+    <section id="authentication">
+      <h2>Authentication and headers</h2>
+      <p>Send the API key as a bearer token. Keys are secret; call this endpoint from a server, never from browser code.</p>
+      <table class="table">
+        <thead><tr><th scope="col">Header</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="name full">Authorization</td>
+            <td><span class="req">Required</span></td>
+            <td class="full"><code>Bearer &lt;API key&gt;</code>. The key needs the <code>invoices:write</code> scope.</td>
+          </tr>
+          <tr>
+            <td class="name full">Content-Type</td>
+            <td><span class="req">Required</span></td>
+            <td class="full"><code>application/json</code></td>
+          </tr>
+          <tr>
+            <td class="name full">Idempotency-Key</td>
+            <td><span class="opt">Optional</span></td>
+            <td class="full">A unique string per logical request, such as a UUID. Retrying with the same key and body returns the original response. The same key with a different body returns <code>409</code>. Send it on every call.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="parameters">
+      <h2>Body parameters</h2>
+      <table class="table">
+        <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="name full">customer_id</td>
+            <td class="type">string</td>
+            <td><span class="req">Required</span></td>
+            <td class="full">ID of an existing customer, such as <code>cus_8f3k2d</code>. An unknown ID returns <code>customer_not_found</code>.</td>
+          </tr>
+          <tr>
+            <td class="name full">currency</td>
+            <td class="type">string</td>
+            <td><span class="req">Required</span></td>
+            <td class="full">Lowercase three-letter ISO 4217 code, such as <code>usd</code>. Applies to every line item.</td>
+          </tr>
+          <tr>
+            <td class="name full">line_items</td>
+            <td class="type">array of objects</td>
+            <td><span class="req">Required</span></td>
+            <td class="full">One or more items to bill. Each item takes the fields below.</td>
+          </tr>
+          <tr>
+            <td class="name full">line_items[].description</td>
+            <td class="type">string</td>
+            <td><span class="req">Required</span></td>
+            <td class="full">Text shown on the invoice row.</td>
+          </tr>
+          <tr>
+            <td class="name full">line_items[].unit_amount</td>
+            <td class="type">integer</td>
+            <td><span class="req">Required</span></td>
+            <td class="full">Price per unit in the currency's smallest unit (cents for <code>usd</code>). Zero-decimal currencies such as <code>jpy</code> use whole units.</td>
+          </tr>
+          <tr>
+            <td class="name full">line_items[].quantity</td>
+            <td class="type">integer</td>
+            <td><span class="opt">Optional</span></td>
+            <td class="full">Units billed. Default <code>1</code>.</td>
+          </tr>
+          <tr>
+            <td class="name full">due_date</td>
+            <td class="type">string</td>
+            <td><span class="opt">Optional</span></td>
+            <td class="full">Date as <code>YYYY-MM-DD</code>, today or later. Default: 30 days after creation.</td>
+          </tr>
+          <tr>
+            <td class="name full">collection_method</td>
+            <td class="type">string</td>
+            <td><span class="opt">Optional</span></td>
+            <td class="full"><code>send_invoice</code> emails the customer a payment link. <code>charge_automatically</code> charges the customer's default payment method. Default <code>send_invoice</code>.</td>
+          </tr>
+          <tr>
+            <td class="name full">draft</td>
+            <td class="type">boolean</td>
+            <td><span class="opt">Optional</span></td>
+            <td class="full">When <code>true</code>, the invoice is created as <code>draft</code> and nothing is sent. Default <code>false</code>.</td>
+          </tr>
+          <tr>
+            <td class="name full">memo</td>
+            <td class="type">string</td>
+            <td><span class="opt">Optional</span></td>
+            <td class="full">Free text printed at the bottom of the invoice.</td>
+          </tr>
+          <tr>
+            <td class="name full">metadata</td>
+            <td class="type">object</td>
+            <td><span class="opt">Optional</span></td>
+            <td class="full">String key-value pairs stored with the invoice and returned unchanged. Not shown to the customer.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="request">
+      <h2>Request example</h2>
+      <p>Bills one retainer and six hours of revisions: $1,200.00 plus 6 × $75.00.</p>
+      <div data-tabs="Request language">
+        <div class="panel" data-tab="cURL">
+          <figure class="code">
+            <figcaption><span class="code-label">cURL</span></figcaption>
+<pre tabindex="0" aria-label="cURL request example"><code>curl https://api.example.com/v1/invoices \
+  -X POST \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: 6b0f3a52-4c1e-4f0e-9a41-0d7f0b7f2c11" \
+  -d '{
+    "customer_id": "cus_8f3k2d",
+    "currency": "usd",
+    "due_date": "2026-11-02",
+    "collection_method": "send_invoice",
+    "memo": "Thank you for your business.",
+    "line_items": [
+      { "description": "Design retainer, October 2026", "quantity": 1, "unit_amount": 120000 },
+      { "description": "Additional revisions (hours)", "quantity": 6, "unit_amount": 7500 }
+    ],
+    "metadata": { "po_number": "PO-4471" }
+  }'</code></pre>
+          </figure>
+        </div>
+        <div class="panel" data-tab="JavaScript">
+          <figure class="code">
+            <figcaption><span class="code-label">JavaScript (fetch, ES module)</span></figcaption>
+<pre tabindex="0" aria-label="JavaScript request example"><code>import { randomUUID } from "node:crypto";
+
+const res = await fetch("https://api.example.com/v1/invoices", {
+  method: "POST",
+  headers: {
+    Authorization: `Bearer ${process.env.API_KEY}`,
+    "Content-Type": "application/json",
+    "Idempotency-Key": randomUUID(),
+  },
+  body: JSON.stringify({
+    customer_id: "cus_8f3k2d",
+    currency: "usd",
+    due_date: "2026-11-02",
+    collection_method: "send_invoice",
+    memo: "Thank you for your business.",
+    line_items: [
+      { description: "Design retainer, October 2026", quantity: 1, unit_amount: 120000 },
+      { description: "Additional revisions (hours)", quantity: 6, unit_amount: 7500 },
+    ],
+    metadata: { po_number: "PO-4471" },
+  }),
+});
+
+const body = await res.json();
+if (!res.ok) throw new Error(`${body.error.code}: ${body.error.message}`);
+console.log(body.id, body.status);</code></pre>
+          </figure>
+        </div>
+        <div class="panel" data-tab="Python">
+          <figure class="code">
+            <figcaption><span class="code-label">Python (requests)</span></figcaption>
+<pre tabindex="0" aria-label="Python request example"><code>import os
+import uuid
+
+import requests
+
+res = requests.post(
+    "https://api.example.com/v1/invoices",
+    headers={
+        "Authorization": f"Bearer {os.environ['API_KEY']}",
+        "Idempotency-Key": str(uuid.uuid4()),
+    },
+    json={
+        "customer_id": "cus_8f3k2d",
+        "currency": "usd",
+        "due_date": "2026-11-02",
+        "collection_method": "send_invoice",
+        "memo": "Thank you for your business.",
+        "line_items": [
+            {"description": "Design retainer, October 2026", "quantity": 1, "unit_amount": 120000},
+            {"description": "Additional revisions (hours)", "quantity": 6, "unit_amount": 7500},
+        ],
+        "metadata": {"po_number": "PO-4471"},
+    },
+    timeout=10,
+)
+res.raise_for_status()
+print(res.json()["id"])</code></pre>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section id="response">
+      <h2>Response</h2>
+      <p><span class="status">201 Created</span>Returns the invoice. <code>status</code> is <code>open</code>, or <code>draft</code> when the request set <code>draft</code> to <code>true</code>. Send the customer <code>hosted_invoice_url</code> to let them pay.</p>
+      <figure class="code">
+        <figcaption>Response body, 201 Created</figcaption>
+<pre tabindex="0" aria-label="Response body example"><code data-lang="json">{
+  "id": "inv_3Qm7xT",
+  "object": "invoice",
+  "status": "open",
+  "customer_id": "cus_8f3k2d",
+  "currency": "usd",
+  "collection_method": "send_invoice",
+  "line_items": [
+    {
+      "description": "Design retainer, October 2026",
+      "quantity": 1,
+      "unit_amount": 120000,
+      "amount": 120000
+    },
+    {
+      "description": "Additional revisions (hours)",
+      "quantity": 6,
+      "unit_amount": 7500,
+      "amount": 45000
+    }
+  ],
+  "subtotal": 165000,
+  "amount_due": 165000,
+  "due_date": "2026-11-02",
+  "memo": "Thank you for your business.",
+  "metadata": { "po_number": "PO-4471" },
+  "hosted_invoice_url": "https://pay.example.com/i/inv_3Qm7xT",
+  "created_at": "2026-10-03T09:14:22Z"
+}</code></pre>
+      </figure>
+    </section>
+
+    <section id="errors">
+      <h2>Errors</h2>
+      <p>Failures return a standard HTTP status and a JSON body with an <code>error</code> object. <code>param</code> names the offending field when one applies. Include <code>request_id</code> when you contact support.</p>
+      <table class="table">
+        <thead><tr><th scope="col">Status</th><th scope="col">Code</th><th scope="col">Meaning</th><th scope="col">What to do</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="name">400</td>
+            <td class="name"><code>invalid_request</code></td>
+            <td class="full">The body is not valid JSON, or a required parameter is missing.</td>
+            <td class="full">Fix the payload. Do not retry it unchanged.</td>
+          </tr>
+          <tr>
+            <td class="name">401</td>
+            <td class="name"><code>unauthenticated</code></td>
+            <td class="full">The API key is missing, malformed, or revoked.</td>
+            <td class="full">Send a valid key in <code>Authorization</code>.</td>
+          </tr>
+          <tr>
+            <td class="name">403</td>
+            <td class="name"><code>forbidden</code></td>
+            <td class="full">The key lacks the <code>invoices:write</code> scope.</td>
+            <td class="full">Use a key that has the scope.</td>
+          </tr>
+          <tr>
+            <td class="name">404</td>
+            <td class="name"><code>customer_not_found</code></td>
+            <td class="full">No customer matches <code>customer_id</code>.</td>
+            <td class="full">Check the ID.</td>
+          </tr>
+          <tr>
+            <td class="name">409</td>
+            <td class="name"><code>idempotency_conflict</code></td>
+            <td class="full">The <code>Idempotency-Key</code> was already used with a different body.</td>
+            <td class="full">Generate a new key for the new request.</td>
+          </tr>
+          <tr>
+            <td class="name">422</td>
+            <td class="name"><code>validation_failed</code></td>
+            <td class="full">The body parses but a value is invalid, such as a past <code>due_date</code> or an unsupported <code>currency</code>.</td>
+            <td class="full">Read <code>message</code> and <code>param</code>, then correct the value.</td>
+          </tr>
+          <tr>
+            <td class="name">429</td>
+            <td class="name"><code>rate_limited</code></td>
+            <td class="full">Too many requests.</td>
+            <td class="full">Wait the number of seconds in <code>Retry-After</code>, then retry with the same key.</td>
+          </tr>
+          <tr>
+            <td class="name">500</td>
+            <td class="name"><code>internal_error</code></td>
+            <td class="full">The request failed on the server.</td>
+            <td class="full">Retry with the same <code>Idempotency-Key</code> so the invoice is not duplicated.</td>
+          </tr>
+        </tbody>
+      </table>
+      <figure class="code">
+        <figcaption>Error body, 422 Unprocessable Entity</figcaption>
+<pre tabindex="0" aria-label="Error body example"><code data-lang="json">{
+  "error": {
+    "code": "validation_failed",
+    "message": "due_date must be today or later.",
+    "param": "due_date",
+    "request_id": "req_9d2c41b7"
+  }
+}</code></pre>
+      </figure>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <p>Billing API reference, version v1. POST /v1/invoices.</p>
+  <a href="#top">Back to top</a>
+</footer>
+
+<script>
+(() => {
+  const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  // JSON highlighting; without JS the blocks stay plain text.
+  const token = /("(?:\\.|[^"\\])*")(\s*:)?|\b(?:true|false|null)\b|-?\b\d+(?:\.\d+)?\b/g;
+  document.querySelectorAll('code[data-lang="json"]').forEach((el) => {
+    const src = el.textContent;
+    let out = "", last = 0, m;
+    token.lastIndex = 0;
+    while ((m = token.exec(src))) {
+      out += esc(src.slice(last, m.index));
+      out += m[1]
+        ? `<span class="${m[2] ? "tok-k" : "tok-s"}">${esc(m[1])}</span>${esc(m[2] || "")}`
+        : `<span class="tok-n">${esc(m[0])}</span>`;
+      last = token.lastIndex;
+    }
+    el.innerHTML = out + esc(src.slice(last));
+  });
+
+  // Copy buttons need the async clipboard API (secure contexts only).
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    document.querySelectorAll("figure.code").forEach((fig) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "copy";
+      btn.textContent = "Copy";
+      btn.setAttribute("aria-live", "polite");
+      btn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(fig.querySelector("code").textContent);
+          btn.textContent = "Copied";
+        } catch {
+          btn.textContent = "Copy failed";
+        }
+        setTimeout(() => { btn.textContent = "Copy"; }, 1600);
+      });
+      fig.querySelector("figcaption").append(btn);
+    });
+  }
+
+  // Tabs: without JS every panel stays visible with its own label.
+  document.querySelectorAll("[data-tabs]").forEach((root, i) => {
+    const panels = [...root.querySelectorAll(":scope > .panel")];
+    const list = document.createElement("div");
+    list.className = "tablist";
+    list.setAttribute("role", "tablist");
+    list.setAttribute("aria-label", root.dataset.tabs);
+
+    const tabs = panels.map((panel, n) => {
+      const tab = document.createElement("button");
+      tab.type = "button";
+      tab.className = "tab";
+      tab.id = `tab-${i}-${n}`;
+      tab.textContent = panel.dataset.tab;
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("aria-controls", `panel-${i}-${n}`);
+      panel.id = `panel-${i}-${n}`;
+      panel.setAttribute("role", "tabpanel");
+      panel.setAttribute("aria-labelledby", tab.id);
+      tab.addEventListener("click", () => select(n));
+      list.append(tab);
+      return tab;
+    });
+
+    function select(n, focus) {
+      tabs.forEach((t, k) => {
+        t.setAttribute("aria-selected", k === n);
+        t.tabIndex = k === n ? 0 : -1;
+        panels[k].hidden = k !== n;
+      });
+      if (focus) tabs[n].focus();
+    }
+
+    list.addEventListener("keydown", (e) => {
+      const cur = tabs.indexOf(document.activeElement);
+      if (cur < 0) return;
+      const target = { ArrowRight: cur + 1, ArrowLeft: cur - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (target === undefined) return;
+      e.preventDefault();
+      select((target + tabs.length) % tabs.length, true);
+    });
+
+    root.prepend(list);
+    root.classList.add("is-enhanced");
+    select(0);
+  });
+
+  // Highlight the current section in the sidebar.
+  const links = [...document.querySelectorAll(".toc a")];
+  const byId = new Map(links.map((a) => [a.hash.slice(1), a]));
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        links.forEach((a) => a.removeAttribute("aria-current"));
+        const link = byId.get(e.target.id);
+        if (link) link.setAttribute("aria-current", "true");
+      });
+    }, { rootMargin: "-72px 0px -65% 0px" });
+    document.querySelectorAll("main section[id]").forEach((s) => io.observe(s));
+  }
+})();
+</script>
+</body>
+</html>
+```

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raka Wicaksono — Fotografer Freelance, Yogyakarta</title>
+<meta name="description" content="Fotografer freelance di Yogyakarta: pernikahan, potret, event, dan produk. Cahaya alami, cerita jujur.">
+<style>
+  :root {
+    --bg: #14110f;
+    --bg-2: #1c1815;
+    --ink: #f3ece2;
+    --muted: #b3a89a;
+    --line: #2e2823;
+    --accent: #e0a458;
+    --accent-2: #c2562f;
+    --radius: 14px;
+    --max: 1120px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, .sans, nav, button, input, textarea, select, label {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  a { color: inherit; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
+  section { padding: 96px 0; }
+  .eyebrow {
+    font-family: system-ui, sans-serif;
+    font-size: .78rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.15; font-weight: 600; letter-spacing: -.01em; }
+  .lead { color: var(--muted); max-width: 56ch; margin-top: 14px; }
+  .skip { position: absolute; left: -999px; top: 8px; background: var(--accent); color: #000; padding: 8px 14px; border-radius: 8px; z-index: 100; }
+  .skip:focus { left: 8px; }
+
+  /* Nav */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(20,17,15,.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { text-decoration: none; font-weight: 700; letter-spacing: .02em; display: flex; align-items: center; gap: 10px; }
+  .logo i { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(224,164,88,.18); }
+  .links { display: flex; gap: 28px; list-style: none; font-size: .92rem; }
+  .links a { text-decoration: none; color: var(--muted); transition: color .2s; }
+  .links a:hover, .links a:focus-visible { color: var(--ink); }
+  .menu-btn { display: none; background: none; border: 1px solid var(--line); color: var(--ink); padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: .85rem; }
+
+  /* Hero */
+  .hero { padding: 72px 0 96px; position: relative; overflow: hidden; }
+  .hero-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 56px; align-items: center; }
+  h1 { font-size: clamp(2.4rem, 6.2vw, 4.4rem); line-height: 1.04; font-weight: 600; letter-spacing: -.025em; }
+  h1 em { font-family: Georgia, serif; font-weight: 400; color: var(--accent); }
+  .hero p { color: var(--muted); font-size: 1.1rem; max-width: 50ch; margin-top: 22px; }
+  .cta { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 34px; }
+  .btn {
+    display: inline-block; text-decoration: none; cursor: pointer;
+    padding: 13px 24px; border-radius: 999px; font-size: .95rem; font-weight: 600;
+    border: 1px solid transparent; transition: transform .2s, background .2s, border-color .2s;
+  }
+  .btn.primary { background: var(--accent); color: #1a1209; }
+  .btn.primary:hover { transform: translateY(-2px); background: #ecb46a; }
+  .btn.ghost { border-color: var(--line); color: var(--ink); background: transparent; }
+  .btn.ghost:hover { border-color: var(--muted); }
+  .stats { display: flex; gap: 36px; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--line); flex-wrap: wrap; }
+  .stats b { display: block; font-family: system-ui, sans-serif; font-size: 1.7rem; font-weight: 600; }
+  .stats span { color: var(--muted); font-size: .85rem; font-family: system-ui, sans-serif; }
+  .hero-art { aspect-ratio: 4/5; border-radius: 200px 200px var(--radius) var(--radius); overflow: hidden; border: 1px solid var(--line); position: relative; }
+  .hero-art svg { width: 100%; height: 100%; display: block; }
+  .tag {
+    position: absolute; left: 16px; bottom: 16px; right: 16px;
+    background: rgba(20,17,15,.7); backdrop-filter: blur(8px);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 14px; font-size: .82rem; font-family: system-ui, sans-serif; color: var(--muted);
+  }
+
+  /* About */
+  .about { background: var(--bg-2); border-block: 1px solid var(--line); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 56px; align-items: start; }
+  .about p + p { margin-top: 16px; }
+  .about p { color: var(--muted); }
+  .about p strong { color: var(--ink); font-weight: normal; }
+  .gear { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
+  .gear span { font-family: system-ui, sans-serif; font-size: .8rem; border: 1px solid var(--line); border-radius: 999px; padding: 5px 13px; color: var(--muted); }
+
+  /* Work */
+  .work-head { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 36px; }
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filters button {
+    background: transparent; color: var(--muted); border: 1px solid var(--line);
+    padding: 8px 16px; border-radius: 999px; cursor: pointer; font-size: .85rem; transition: all .2s;
+  }
+  .filters button:hover { color: var(--ink); border-color: var(--muted); }
+  .filters button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .tile {
+    position: relative; border: 0; padding: 0; cursor: pointer; overflow: hidden;
+    border-radius: var(--radius); aspect-ratio: 4/5; background: var(--bg-2);
+    text-align: left; color: inherit;
+  }
+  .tile.wide { grid-column: span 2; aspect-ratio: auto; }
+  .tile svg { width: 100%; height: 100%; display: block; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+  .tile:hover svg, .tile:focus-visible svg { transform: scale(1.05); }
+  .tile .cap {
+    position: absolute; inset: auto 0 0 0; padding: 40px 18px 16px;
+    background: linear-gradient(transparent, rgba(0,0,0,.75));
+    font-family: system-ui, sans-serif;
+    transform: translateY(8px); opacity: 0; transition: all .3s;
+  }
+  .tile:hover .cap, .tile:focus-visible .cap { transform: none; opacity: 1; }
+  .cap b { display: block; font-size: 1rem; font-weight: 600; }
+  .cap span { font-size: .8rem; color: #d8cdbd; }
+  .tile.hide { display: none; }
+  .note { margin-top: 18px; font-size: .82rem; color: var(--muted); font-family: system-ui, sans-serif; }
+
+  /* Lightbox */
+  dialog { border: 0; background: transparent; max-width: min(92vw, 880px); width: 100%; margin: auto; color: var(--ink); }
+  dialog::backdrop { background: rgba(8,6,5,.88); }
+  .lb-frame { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: var(--bg-2); }
+  .lb-frame svg { width: 100%; height: auto; max-height: 72vh; display: block; }
+  .lb-meta { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 4px; font-family: system-ui, sans-serif; }
+  .lb-meta small { color: var(--muted); display: block; }
+  .lb-ctrl { display: flex; gap: 8px; }
+  .lb-ctrl button { background: var(--bg-2); border: 1px solid var(--line); color: var(--ink); border-radius: 999px; padding: 8px 14px; cursor: pointer; }
+  .lb-ctrl button:hover { border-color: var(--muted); }
+
+  /* Services */
+  .services { background: var(--bg-2); border-block: 1px solid var(--line); }
+  .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 44px; }
+  .card {
+    background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 28px 22px; display: flex; flex-direction: column; transition: transform .25s, border-color .25s;
+  }
+  .card:hover { transform: translateY(-4px); border-color: #4a3f34; }
+  .card .ico { width: 42px; height: 42px; border-radius: 12px; background: rgba(224,164,88,.12); display: grid; place-items: center; margin-bottom: 18px; }
+  .card .ico svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .card h3 { font-size: 1.1rem; font-weight: 600; }
+  .card p { color: var(--muted); font-size: .92rem; margin-top: 8px; flex: 1; }
+  .card ul { list-style: none; margin-top: 16px; font-family: system-ui, sans-serif; font-size: .84rem; color: var(--muted); }
+  .card li { padding: 4px 0 4px 18px; position: relative; }
+  .card li::before { content: ""; position: absolute; left: 0; top: .85em; width: 8px; height: 1px; background: var(--accent); }
+  .price { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); font-family: system-ui, sans-serif; font-size: .82rem; color: var(--muted); }
+  .price b { color: var(--ink); font-size: 1.05rem; font-weight: 600; }
+
+  /* Process */
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; margin-top: 40px; counter-reset: s; }
+  .step { counter-increment: s; }
+  .step::before { content: "0" counter(s); font-family: system-ui, sans-serif; color: var(--accent); font-size: .85rem; letter-spacing: .15em; }
+  .step h3 { font-size: 1.1rem; margin: 6px 0; font-weight: 600; }
+  .step p { color: var(--muted); font-size: .94rem; }
+
+  /* Contact */
+  .contact { background: var(--bg-2); border-top: 1px solid var(--line); }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 56px; }
+  .info { margin-top: 32px; display: grid; gap: 18px; font-family: system-ui, sans-serif; }
+  .info div small { display: block; color: var(--muted); font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+  .info a { text-decoration: none; border-bottom: 1px solid var(--line); }
+  .info a:hover { border-color: var(--accent); }
+  form { display: grid; gap: 16px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  label { font-size: .82rem; color: var(--muted); display: grid; gap: 6px; }
+  input, select, textarea {
+    background: var(--bg); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 10px; padding: 12px 14px; font-size: .95rem; width: 100%;
+  }
+  textarea { min-height: 120px; resize: vertical; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  .form-note { font-size: .8rem; color: var(--muted); font-family: system-ui, sans-serif; min-height: 1.2em; }
+
+  footer { border-top: 1px solid var(--line); padding: 28px 0; color: var(--muted); font-size: .85rem; font-family: system-ui, sans-serif; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 920px) {
+    section { padding: 72px 0; }
+    .hero-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    .hero-art { max-width: 420px; }
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .steps { grid-template-columns: 1fr; gap: 24px; }
+  }
+  @media (max-width: 640px) {
+    .menu-btn { display: block; }
+    .links {
+      position: absolute; top: 64px; left: 0; right: 0; background: var(--bg);
+      flex-direction: column; gap: 0; border-bottom: 1px solid var(--line); display: none;
+    }
+    .links.open { display: flex; }
+    .links a { display: block; padding: 16px 24px; }
+    .grid, .cards, .row { grid-template-columns: 1fr; }
+    .tile.wide { grid-column: auto; aspect-ratio: 4/5; }
+    .tile .cap { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lewati ke konten</a>
+
+<header>
+  <nav class="wrap" aria-label="Utama">
+    <a class="logo" href="#top"><i></i>Raka Wicaksono</a>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="links">Menu</button>
+    <ul class="links" id="links">
+      <li><a href="#tentang">Tentang</a></li>
+      <li><a href="#karya">Karya</a></li>
+      <li><a href="#layanan">Layanan</a></li>
+      <li><a href="#kontak">Kontak</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main id="main">
+  <!-- Intro -->
+  <section class="hero" id="top">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Fotografer freelance · Yogyakarta</p>
+        <h1>Cahaya pagi, <em>wajah jujur,</em> kota yang tak pernah selesai bercerita.</h1>
+        <p>Saya memotret pernikahan, potret, acara, dan produk di Yogyakarta dan sekitarnya. Pendekatan saya sederhana: hadir tenang, memakai cahaya yang ada, dan mengabadikan momen sebelum sempat dipoles.</p>
+        <div class="cta">
+          <a class="btn primary" href="#kontak">Cek tanggal tersedia</a>
+          <a class="btn ghost" href="#karya">Lihat karya</a>
+        </div>
+        <div class="stats">
+          <div><b>9 th</b><span>memotret profesional</span></div>
+          <div><b>240+</b><span>sesi &amp; acara</span></div>
+          <div><b>48 jam</b><span>preview pertama</span></div>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="hs" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2b2a4a"/><stop offset=".45" stop-color="#b8556a"/><stop offset=".75" stop-color="#f0a35e"/><stop offset="1" stop-color="#f7d49a"/>
+            </linearGradient>
+          </defs>
+          <rect width="400" height="500" fill="url(#hs)"/>
+          <circle cx="270" cy="300" r="46" fill="#fbe3b0" opacity=".9"/>
+          <path d="M0 340 L90 270 L150 320 L230 235 L330 330 L400 290 V500 H0Z" fill="#3a2a3d" opacity=".75"/>
+          <path d="M0 400 L70 350 L140 395 L220 330 L310 400 L400 360 V500 H0Z" fill="#241a26"/>
+          <g fill="#150f16">
+            <path d="M120 400 h20 v-40 h-6 v-14 h-8 v14 h-6z"/>
+            <path d="M150 400 h110 v-24 h-10 v-22 h-12 v-18 h-8 v-16 h-6 v16 h-8 v18 h-12 v22 h-10 v14 h-44z" transform="translate(-20 0)"/>
+          </g>
+          <rect y="400" width="400" height="100" fill="#150f16"/>
+        </svg>
+        <div class="tag">Prambanan, 05.42 — sebelum rombongan pertama datang.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about reveal" id="tentang">
+    <div class="wrap about-grid">
+      <div>
+        <p class="eyebrow">Tentang</p>
+        <h2>Lahir dan besar di Jogja, memotret dengan cara orang sini.</h2>
+      </div>
+      <div>
+        <p>Saya mulai dari kamera pinjaman untuk memotret keluarga di Kotagede. Sembilan tahun kemudian, yang tidak berubah adalah kebiasaan <strong>mengamati dulu, memotret belakangan</strong>.</p>
+        <p>Pengantin yang gugup, pengrajin perak yang sedang bekerja, pasar Beringharjo jam enam pagi: yang saya cari adalah momen kecil yang membuat orang berkata, “ya, memang begitu rasanya.”</p>
+        <p>Saya bekerja sendiri atau dengan satu asisten, supaya suasana tetap santai dan tidak terasa seperti produksi besar. Siap bergerak ke Magelang, Gunungkidul, Solo, atau kota lain sesuai kebutuhan.</p>
+        <div class="gear" aria-label="Peralatan">
+          <span>Mirrorless full-frame</span><span>Lensa 35 / 50 / 85 mm</span><span>Cahaya alami</span><span>Flash portabel</span><span>Drone (izin lokasi)</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Selected work -->
+  <section id="karya">
+    <div class="wrap">
+      <div class="work-head reveal">
+        <div>
+          <p class="eyebrow">Karya pilihan</p>
+          <h2>Beberapa cerita terbaru</h2>
+        </div>
+        <div class="filters" role="group" aria-label="Filter kategori" id="filters">
+          <button aria-pressed="true" data-f="all">Semua</button>
+          <button aria-pressed="false" data-f="Pernikahan">Pernikahan</button>
+          <button aria-pressed="false" data-f="Potret">Potret</button>
+          <button aria-pressed="false" data-f="Lanskap">Lanskap</button>
+          <button aria-pressed="false" data-f="Produk">Produk</button>
+        </div>
+      </div>
+      <div class="grid" id="grid"></div>
+      <p class="note">Ilustrasi di atas adalah placeholder. Ganti dengan foto asli Anda pada bagian data <code>works</code> di skrip.</p>
+    </div>
+  </section>
+
+  <dialog id="lb" aria-label="Pratinjau karya">
+    <div class="lb-frame" id="lbArt"></div>
+    <div class="lb-meta">
+      <div><b id="lbTitle"></b><small id="lbSub"></small></div>
+      <div class="lb-ctrl">
+        <button id="lbPrev" aria-label="Sebelumnya">←</button>
+        <button id="lbNext" aria-label="Berikutnya">→</button>
+        <button id="lbClose" aria-label="Tutup">Tutup</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Services -->
+  <section class="services" id="layanan">
+    <div class="wrap">
+      <div class="reveal">
+        <p class="eyebrow">Layanan</p>
+        <h2>Paket yang jelas, tanpa kejutan di akhir.</h2>
+        <p class="lead">Harga awal di bawah berlaku untuk area Yogyakarta. Di luar kota, ada tambahan transportasi dan akomodasi. Semua paket bisa disesuaikan.</p>
+      </div>
+      <div class="cards">
+        <article class="card reveal">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.600-9 9-9 9z"/></svg></div>
+          <h3>Pernikahan</h3>
+          <p>Dari akad atau pemberkatan sampai resepsi, dengan gaya dokumenter yang tidak mengganggu tamu.</p>
+          <ul><li>6–10 jam liputan</li><li>400+ foto terseleksi</li><li>Galeri online privat</li></ul>
+          <div class="price">mulai dari <b>Rp 4.500.000</b></div>
+        </article>
+        <article class="card reveal">
+          <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.500 4-6 8-6s7 1.500 8 6"/></svg></div>
+          <h3>Potret &amp; Pre-wedding</h3>
+          <p>Sesi pasangan, keluarga, atau profil profesional di lokasi pilihan: Kraton, Tamansari, pantai, atau studio mini.</p>
+          <ul><li>2–3 jam sesi</li><li>40 foto retouch</li><li>Panduan pose &amp; busana</li></ul>
+          <div class="price">mulai dari <b>Rp 1.800.000</b></div>
+        </article>
+        <article class="card reveal">
+          <div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="M8 5V3h8v2M3 11h18"/></svg></div>
+          <h3>Acara &amp; Korporat</h3>
+          <p>Seminar, peluncuran, wisuda, dan festival. Hasil cepat untuk kebutuhan media sosial dan laporan.</p>
+          <ul><li>Per jam atau setengah hari</li><li>Preview di hari yang sama</li><li>Lisensi penggunaan komersial</li></ul>
+          <div class="price">mulai dari <b>Rp 750.000</b> / jam</div>
+        </article>
+        <article class="card reveal">
+          <div class="ico"><svg viewBox="0 0 24 24"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/></svg></div>
+          <h3>Produk &amp; Kuliner</h3>
+          <p>Foto untuk UMKM, kerajinan, fesyen, dan menu. Latar bersih atau suasana gaya hidup.</p>
+          <ul><li>10–30 produk per sesi</li><li>Latar putih &amp; lifestyle</li><li>Siap marketplace</li></ul>
+          <div class="price">mulai dari <b>Rp 1.200.000</b></div>
+        </article>
+      </div>
+
+      <div class="steps">
+        <div class="step reveal"><h3>Ngobrol dulu</h3><p>Ceritakan acara, suasana, dan referensi Anda lewat WhatsApp atau telepon singkat. Gratis.</p></div>
+        <div class="step reveal"><h3>Hari pemotretan</h3><p>Saya datang lebih awal, survei cahaya, lalu bekerja dengan tenang di sekitar Anda.</p></div>
+        <div class="step reveal"><h3>Pengiriman</h3><p>Preview dalam 48 jam, galeri final dalam 7–14 hari kerja, dengan berkas resolusi penuh.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="kontak">
+    <div class="wrap contact-grid">
+      <div class="reveal">
+        <p class="eyebrow">Kontak</p>
+        <h2>Punya tanggal atau ide? Mari kita bicarakan.</h2>
+        <p class="lead">Biasanya saya membalas dalam satu hari kerja. Untuk musim pernikahan (Mei–Oktober), sebaiknya hubungi 2–3 bulan sebelumnya.</p>
+        <div class="info">
+          <div><small>WhatsApp</small><a href="https://wa.me/6281200000000">+62 812-0000-0000</a></div>
+          <div><small>Email</small><a href="mailto:halo@example.com">halo@example.com</a></div>
+          <div><small>Instagram</small><a href="#kontak">@raka.frames</a></div>
+          <div><small>Basis</small>Yogyakarta, Indonesia — bersedia ke luar kota</div>
+        </div>
+      </div>
+      <form id="form" class="reveal" novalidate>
+        <div class="row">
+          <label>Nama<input name="nama" required autocomplete="name"></label>
+          <label>Email<input name="email" type="email" required autocomplete="email"></label>
+        </div>
+        <div class="row">
+          <label>Jenis pemotretan
+            <select name="jenis">
+              <option>Pernikahan</option><option>Potret / Pre-wedding</option><option>Acara / Korporat</option><option>Produk / Kuliner</option><option>Lainnya</option>
+            </select>
+          </label>
+          <label>Tanggal perkiraan<input name="tanggal" type="date"></label>
+        </div>
+        <label>Pesan<textarea name="pesan" required placeholder="Lokasi, jumlah orang, suasana yang dibayangkan…"></textarea></label>
+        <button class="btn primary" type="submit">Kirim lewat WhatsApp</button>
+        <p class="form-note" id="formNote" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> Raka Wicaksono. Seluruh hak cipta dilindungi.</span>
+    <a href="#top">Kembali ke atas ↑</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Placeholder "photos": generated SVG scenes. Replace with real images if desired.
+  var works = [
+    { t: "Pagi di Prambanan", c: "Lanskap", s: "Candi · 2025", wide: true, g: ["#2b2a4a", "#b8556a", "#f0a35e"], k: "temple" },
+    { t: "Rani & Dimas", c: "Pernikahan", s: "Kotagede · 2025", g: ["#3b2a22", "#a2593a", "#e9b87a"], k: "pair" },
+    { t: "Perajin Perak", c: "Potret", s: "Kotagede · 2024", g: ["#1f2a33", "#47636f", "#c6b79a"], k: "portrait" },
+    { t: "Merapi Berkabut", c: "Lanskap", s: "Kaliurang · 2025", g: ["#1c2b2a", "#4f7a6f", "#d9d4b0"], k: "mount" },
+    { t: "Batik Tulis", c: "Produk", s: "Katalog UMKM · 2025", g: ["#2a2118", "#7a5a2f", "#e8cf9c"], k: "product" },
+    { t: "Akad di Pendopo", c: "Pernikahan", s: "Sleman · 2024", g: ["#2a1d2e", "#8c4a62", "#f2c48d"], k: "pair" },
+    { t: "Senja Parangtritis", c: "Lanskap", s: "Bantul · 2024", wide: true, g: ["#1d2340", "#c0574a", "#f7c77e"], k: "sea" },
+    { t: "Kopi Tubruk", c: "Produk", s: "Kafe lokal · 2025", g: ["#22160f", "#6a4128", "#d8a76b"], k: "product" }
+  ];
+
+  function shape(k) {
+    switch (k) {
+      case "temple":
+        return '<path d="M0 430 L0 330 L120 330 L140 290 L160 330 L260 330 L280 250 L300 210 L320 170 L340 210 L360 250 L380 330 L480 330 L500 290 L520 330 L640 330 L640 430Z" fill="#150f16" opacity=".92" transform="translate(0 40)"/>';
+      case "mount":
+        return '<path d="M0 400 L160 250 L230 320 L380 120 L520 300 L640 230 V480 H0Z" fill="#10201e" opacity=".7"/><path d="M0 440 L120 360 L260 420 L420 340 L640 430 V480 H0Z" fill="#0b1615"/>';
+      case "sea":
+        return '<rect y="330" width="640" height="150" fill="#10142b" opacity=".85"/><path d="M0 370 Q80 355 160 370 T320 370 T480 370 T640 370" stroke="#f7c77e" stroke-opacity=".5" fill="none" stroke-width="2"/><path d="M0 400 Q80 388 160 400 T320 400 T480 400 T640 400" stroke="#f7c77e" stroke-opacity=".3" fill="none" stroke-width="2"/><path d="M0 330 L90 300 L170 330Z" fill="#0b0e22"/>';
+      case "pair":
+        return '<ellipse cx="320" cy="470" rx="320" ry="60" fill="#120b0d"/><g fill="#120b0d"><circle cx="280" cy="250" r="26"/><path d="M240 480 L248 300 Q280 280 312 300 L322 480Z"/><circle cx="352" cy="262" r="24"/><path d="M318 480 L326 312 Q352 294 380 312 L392 480Z"/></g>';
+      case "portrait":
+        return '<g fill="#0e1519"><circle cx="320" cy="230" r="58"/><path d="M180 480 Q190 330 320 320 Q450 330 460 480Z"/></g><circle cx="320" cy="230" r="58" fill="none" stroke="#c6b79a" stroke-opacity=".25" stroke-width="2"/>';
+      case "product":
+        return '<ellipse cx="320" cy="400" rx="190" ry="26" fill="#000" opacity=".35"/><path d="M240 400 L250 260 Q320 235 390 260 L400 400Z" fill="#150f0a"/><rect x="296" y="205" width="48" height="40" rx="6" fill="#150f0a"/><path d="M250 300 H390" stroke="#e8cf9c" stroke-opacity=".5"/><path d="M252 330 H388" stroke="#e8cf9c" stroke-opacity=".3"/>';
+    }
+    return "";
+  }
+
+  var uid = 0;
+  function art(w) {
+    var id = "g" + (uid++);
+    var sun = (w.k === "product" || w.k === "portrait") ? "" :
+      '<circle cx="430" cy="250" r="44" fill="#fff3cf" opacity=".8"/>';
+    return '<svg viewBox="0 0 640 480" preserveAspectRatio="xMidYMid slice" role="img" aria-label="' + w.t + '">' +
+      '<defs><linearGradient id="' + id + '" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0" stop-color="' + w.g[0] + '"/><stop offset=".55" stop-color="' + w.g[1] + '"/><stop offset="1" stop-color="' + w.g[2] + '"/>' +
+      '</linearGradient></defs><rect width="640" height="480" fill="url(#' + id + ')"/>' + sun + shape(w.k) + '</svg>';
+  }
+
+  var grid = document.getElementById("grid");
+  works.forEach(function (w, i) {
+    var b = document.createElement("button");
+    b.className = "tile" + (w.wide ? " wide" : "");
+    b.dataset.cat = w.c;
+    b.dataset.i = i;
+    b.setAttribute("aria-label", w.t + ", " + w.c);
+    b.innerHTML = art(w) + '<span class="cap"><b>' + w.t + '</b><span>' + w.c + ' · ' + w.s + '</span></span>';
+    grid.appendChild(b);
+  });
+
+  // Filter
+  var filters = document.getElementById("filters");
+  filters.addEventListener("click", function (e) {
+    var btn = e.target.closest("button");
+    if (!btn) return;
+    filters.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", x === btn); });
+    var f = btn.dataset.f;
+    grid.querySelectorAll(".tile").forEach(function (t) {
+      t.classList.toggle("hide", f !== "all" && t.dataset.cat !== f);
+    });
+  });
+
+  // Lightbox
+  var lb = document.getElementById("lb"), cur = 0;
+  function visible() { return Array.prototype.filter.call(grid.querySelectorAll(".tile"), function (t) { return !t.classList.contains("hide"); }).map(function (t) { return +t.dataset.i; }); }
+  function show(i) {
+    cur = i;
+    var w = works[i];
+    document.getElementById("lbArt").innerHTML = art(w);
+    document.getElementById("lbTitle").textContent = w.t;
+    document.getElementById("lbSub").textContent = w.c + " · " + w.s;
+  }
+  function step(d) {
+    var v = visible(), p = v.indexOf(cur);
+    show(v[(p + d + v.length) % v.length]);
+  }
+  grid.addEventListener("click", function (e) {
+    var t = e.target.closest(".tile");
+    if (!t) return;
+    show(+t.dataset.i);
+    lb.showModal();
+  });
+  document.getElementById("lbClose").onclick = function () { lb.close(); };
+  document.getElementById("lbPrev").onclick = function () { step(-1); };
+  document.getElementById("lbNext").onclick = function () { step(1); };
+  lb.addEventListener("click", function (e) { if (e.target === lb) lb.close(); });
+  lb.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowLeft") step(-1);
+    if (e.key === "ArrowRight") step(1);
+  });
+
+  // Mobile menu
+  var mb = document.getElementById("menuBtn"), links = document.getElementById("links");
+  mb.addEventListener("click", function () {
+    var o = links.classList.toggle("open");
+    mb.setAttribute("aria-expanded", o);
+  });
+  links.addEventListener("click", function (e) {
+    if (e.target.tagName === "A") { links.classList.remove("open"); mb.setAttribute("aria-expanded", "false"); }
+  });
+
+  // Reveal on scroll
+  var els = document.querySelectorAll(".reveal");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (en) {
+      en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add("in"); io.unobserve(x.target); } });
+    }, { threshold: .12 });
+    els.forEach(function (el) { io.observe(el); });
+  } else {
+    els.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  // Contact form -> WhatsApp
+  document.getElementById("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var f = e.target, note = document.getElementById("formNote");
+    if (!f.nama.value.trim() || !f.pesan.value.trim() || !f.email.checkValidity() || !f.email.value) {
+      note.textContent = "Mohon isi nama, email yang valid, dan pesan.";
+      return;
+    }
+    var msg = "Halo Raka, saya " + f.nama.value.trim() +
+      ".\nJenis: " + f.jenis.value +
+      (f.tanggal.value ? "\nTanggal: " + f.tanggal.value : "") +
+      "\nEmail: " + f.email.value.trim() +
+      "\n\n" + f.pesan.value.trim();
+    note.textContent = "Membuka WhatsApp…";
+    window.open("https://wa.me/6281200000000?text=" + encodeURIComponent(msg), "_blank", "noopener");
+  });
+
+  document.getElementById("yr").textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>

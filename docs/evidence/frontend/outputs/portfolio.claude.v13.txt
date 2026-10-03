@@ -1,0 +1,477 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Raka Wicaksono, Photographer in Yogyakarta</title>
+<meta name="description" content="Freelance photographer in Yogyakarta for weddings, portraits and brands. Selected work, services and booking.">
+<!--
+  Replace before launch:
+  - Name "Raka Wicaksono", email hello@example.com (header, about, contact, form action, mailto script)
+  - The six illustrated frames in the <symbol> sprite and the gallery captions: swap each <svg><use></svg> for an <img> of a real photograph
+  - Service descriptions, inclusions, prices (IDR) and the 14-day delivery line
+  - About text and the facts list
+-->
+<style>
+:root{
+  --g100:#f4f0e8;--g200:#e9e3d6;--g400:#a39a8a;--g600:#5c554b;--g900:#1c1915;
+  --accent:#b3261e;--accent-dark:#8f1d17;--on-accent:#fff;
+  --fs-0:.8125rem;--fs-1:1rem;--fs-2:1.25rem;--fs-3:1.75rem;--fs-4:clamp(2rem,6vw,3.5rem);
+  --s1:4px;--s2:8px;--s3:12px;--s4:16px;--s5:24px;--s6:32px;--s7:48px;--s8:80px;
+  --radius:2px;--shadow:0 8px 24px rgba(28,25,21,.18);
+  --serif:Georgia,"Times New Roman",serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --focus:var(--accent);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--g100);color:var(--g900);font:var(--fs-1)/1.6 var(--sans)}
+img,svg{max-width:100%}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--focus);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding-inline:var(--s5)}
+.skip{position:absolute;left:var(--s4);top:-60px;background:var(--g900);color:var(--g100);padding:var(--s2) var(--s4);z-index:5}
+.skip:focus{top:var(--s2)}
+
+/* header */
+header .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s2) var(--s5);padding-block:var(--s4)}
+.brand{font:700 var(--fs-2)/1 var(--serif);text-decoration:none}
+nav ul{display:flex;flex-wrap:wrap;gap:var(--s1) var(--s5);list-style:none;margin:0;padding:0}
+nav a{display:inline-block;padding:var(--s2) 0;font-size:var(--fs-0);font-family:var(--mono);text-transform:uppercase;letter-spacing:.08em;text-decoration:none;border-bottom:2px solid transparent}
+nav a:hover{border-color:var(--accent)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 var(--s5);border:1.5px solid var(--g900);border-radius:var(--radius);font:600 var(--fs-1)/1 var(--sans);text-decoration:none;cursor:pointer;background:transparent;color:var(--g900)}
+.btn:hover{background:var(--g900);color:var(--g100)}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn-primary:hover{background:var(--accent-dark);border-color:var(--accent-dark);color:var(--on-accent)}
+.btn:disabled{background:var(--g200);border-color:var(--g400);color:var(--g600);cursor:not-allowed;transform:none}
+
+/* shared section bits */
+section{padding-block:var(--s8);scroll-margin-top:var(--s4)}
+.label{font:var(--fs-0)/1.4 var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--g600);margin:0 0 var(--s3)}
+h1,h2,h3{font-family:var(--serif);line-height:1.15;margin:0}
+h2{font-size:var(--fs-3);margin-bottom:var(--s5)}
+h3{font-size:var(--fs-2)}
+.lede{font-size:var(--fs-2);max-width:60ch;margin:var(--s5) 0 var(--s6)}
+.fine{font-size:var(--fs-0);color:var(--g600);margin:var(--s3) 0 0}
+
+/* hero */
+.hero{padding-block:var(--s7) var(--s8)}
+.hero .wrap{display:grid;grid-template-columns:1.25fr .75fr;gap:var(--s7);align-items:start}
+h1{font-size:var(--fs-4);letter-spacing:-.01em}
+.actions{display:flex;flex-wrap:wrap;gap:var(--s3)}
+.strip{position:relative;margin:0;padding:var(--s5) 30px;background:var(--g900);color:var(--g200);display:grid;gap:var(--s3);border-radius:var(--radius);box-shadow:var(--shadow)}
+.strip::before,.strip::after{content:"";position:absolute;top:var(--s3);bottom:var(--s3);width:8px;background:repeating-linear-gradient(var(--g100) 0 10px,transparent 10px 20px)}
+.strip::before{left:11px}
+.strip::after{right:11px}
+.strip figure{margin:0}
+.strip svg{display:block;width:100%;aspect-ratio:3/2;border-radius:var(--radius)}
+.strip figcaption{font:var(--fs-0)/1 var(--mono);padding-top:var(--s2);letter-spacing:.1em}
+
+/* about */
+.about{background:var(--g200)}
+.about .wrap{display:grid;grid-template-columns:1fr 1fr;gap:var(--s7)}
+.about h2{font-size:var(--fs-4);margin:0}
+.about p{max-width:62ch;margin:0 0 var(--s5)}
+dl{margin:0;display:grid;grid-template-columns:max-content 1fr;gap:var(--s3) var(--s5);font-size:var(--fs-1)}
+dt{font:var(--fs-0)/1.9 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--g600)}
+dd{margin:0}
+
+/* work */
+.work{background:var(--g900);color:var(--g100);--focus:var(--g100)}
+.work .label{color:var(--g400)}
+.chips{display:flex;flex-wrap:wrap;gap:var(--s2);margin-bottom:var(--s6)}
+.chip{min-height:44px;padding:0 var(--s4);background:transparent;color:var(--g200);border:1.5px solid var(--g400);border-radius:var(--radius);font:var(--fs-0)/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;cursor:pointer}
+.chip:hover{border-color:var(--g100);color:var(--g100)}
+.chip[aria-pressed="true"]{background:var(--g100);border-color:var(--g100);color:var(--g900)}
+.frames{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s6) var(--s5)}
+.frames figure{margin:0}
+.frames svg{display:block;width:100%;aspect-ratio:3/2;border-radius:var(--radius);outline:1px solid var(--g600)}
+.frames figcaption{padding-top:var(--s3)}
+.frames .no{font:var(--fs-0)/1 var(--mono);letter-spacing:.1em;color:var(--g400)}
+.frames .t{display:block;font:var(--fs-2)/1.3 var(--serif);margin:var(--s1) 0}
+.frames .m{font-size:var(--fs-0);color:var(--g400)}
+
+/* services */
+.services{background:var(--g100)}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s6) var(--s6)}
+.tier{border-top:2px solid var(--g900);padding-top:var(--s4);display:flex;flex-direction:column}
+.tier p{margin:var(--s3) 0 var(--s4)}
+.tier ul{margin:0 0 var(--s5);padding-left:var(--s5);color:var(--g600)}
+.tier li+li{margin-top:var(--s1)}
+.price{margin-top:auto;font:700 var(--fs-2)/1.2 var(--serif)}
+.price small{display:block;font:400 var(--fs-0)/1.6 var(--mono);color:var(--g600);text-transform:uppercase;letter-spacing:.08em}
+.note{margin:var(--s6) 0 0;max-width:62ch}
+
+/* contact */
+.contact{background:var(--g200)}
+.contact .wrap{display:grid;grid-template-columns:.8fr 1.2fr;gap:var(--s7)}
+.contact p{max-width:44ch;margin:0 0 var(--s5)}
+form{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4)}
+.field{display:flex;flex-direction:column;gap:var(--s1)}
+.field.full{grid-column:1/-1}
+label{font-size:var(--fs-0);font-weight:600}
+input,select,textarea{width:100%;min-height:44px;padding:var(--s2) var(--s3);background:var(--g100);color:var(--g900);border:1.5px solid var(--g600);border-radius:var(--radius);font:inherit}
+textarea{min-height:128px;resize:vertical}
+input:hover,select:hover,textarea:hover{border-color:var(--g900)}
+input:disabled,select:disabled,textarea:disabled{background:var(--g200);border-color:var(--g400);color:var(--g600)}
+[aria-invalid="true"]{border-color:var(--accent)}
+.err{min-height:0;margin:0;font-size:var(--fs-0);color:var(--accent)}
+.status{grid-column:1/-1;margin:0;font-size:var(--fs-0);min-height:1.6em}
+
+/* footer */
+footer{background:var(--g900);color:var(--g200);--focus:var(--g100)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s3) var(--s5);padding-block:var(--s6);font-size:var(--fs-0)}
+footer p{margin:0}
+
+@media (max-width:900px){
+  .hero .wrap,.about .wrap,.contact .wrap{grid-template-columns:1fr;gap:var(--s6)}
+  .frames{grid-template-columns:repeat(2,1fr)}
+  .tiers{grid-template-columns:1fr}
+}
+@media (max-width:720px){
+  section{padding-block:var(--s7)}
+  .hero{padding-block:var(--s5) var(--s7)}
+  .strip{grid-auto-flow:column;grid-auto-columns:1fr;padding:34px var(--s4) var(--s4)}
+  .strip svg{aspect-ratio:3/4}
+  .strip::before,.strip::after{left:var(--s3);right:var(--s3);width:auto;height:8px;background:repeating-linear-gradient(90deg,var(--g100) 0 10px,transparent 10px 20px)}
+  .strip::before{top:10px;bottom:auto}
+  .strip::after{top:auto;bottom:auto;display:none}
+}
+@media (max-width:560px){
+  .frames{grid-template-columns:1fr}
+  form{grid-template-columns:1fr}
+  dl{grid-template-columns:1fr;gap:0}
+  dd{margin-bottom:var(--s3)}
+}
+@media (prefers-reduced-motion:no-preference){
+  html{scroll-behavior:smooth}
+  .btn,.chip,nav a,input,select,textarea{transition:background-color .15s,border-color .15s,color .15s}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <pattern id="kawung" width="40" height="40" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="var(--g200)" stroke-width="2">
+        <circle cx="10" cy="10" r="9"/><circle cx="30" cy="10" r="9"/>
+        <circle cx="10" cy="30" r="9"/><circle cx="30" cy="30" r="9"/>
+      </g>
+      <circle cx="20" cy="20" r="3" fill="var(--accent)"/>
+    </pattern>
+  </defs>
+  <symbol id="f-merapi" viewBox="0 0 300 200">
+    <rect width="300" height="200" fill="var(--g200)"/>
+    <circle cx="214" cy="98" r="24" fill="var(--accent)"/>
+    <path d="M30 168 L146 62 Q150 56 154 62 L276 168Z" fill="var(--g600)"/>
+    <rect y="118" width="300" height="26" fill="var(--g200)" opacity=".55"/>
+    <path d="M0 172 Q70 150 140 168 T300 160 V200 H0Z" fill="var(--g900)"/>
+  </symbol>
+  <symbol id="f-temple" viewBox="0 0 300 200">
+    <rect width="300" height="200" fill="var(--g200)"/>
+    <circle cx="150" cy="120" r="44" fill="var(--accent)"/>
+    <g fill="var(--g900)">
+      <path d="M112 172V128H124L128 108H136L140 80H160L164 108H172L176 128H188V172Z"/>
+      <path d="M150 40L158 80H142Z"/>
+      <path d="M68 172V146h8l6-26 6 26h8v26z"/>
+      <path d="M214 172V146h8l6-26 6 26h8v26z"/>
+      <rect y="172" width="300" height="28"/>
+    </g>
+  </symbol>
+  <symbol id="f-street" viewBox="0 0 300 200">
+    <rect width="300" height="200" fill="var(--g900)"/>
+    <g fill="var(--g600)">
+      <rect y="60" width="70" height="110"/><rect x="78" y="40" width="62" height="130"/>
+      <rect x="148" y="70" width="66" height="100"/><rect x="222" y="50" width="78" height="120"/>
+    </g>
+    <rect x="84" y="128" width="50" height="8" fill="var(--accent)"/>
+    <path fill="var(--g200)" d="M14 76h8v10h-8z M34 76h8v10h-8z M54 76h8v10h-8z M90 58h8v10h-8z M110 58h8v10h-8z M90 82h8v10h-8z M110 82h8v10h-8z M90 104h8v10h-8z M110 104h8v10h-8z M160 88h8v10h-8z M184 88h8v10h-8z M230 68h8v10h-8z M254 68h8v10h-8z M278 68h8v10h-8z M230 92h8v10h-8z M254 92h8v10h-8z"/>
+    <rect y="170" width="300" height="30" fill="var(--g900)"/>
+    <path d="M20 180h60M110 188h50M200 182h70" stroke="var(--g400)" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+    <circle cx="176" cy="104" r="18" fill="var(--g200)" opacity=".2"/>
+    <path d="M176 108V170" stroke="var(--g200)" stroke-width="2"/>
+    <circle cx="176" cy="104" r="5" fill="var(--g200)"/>
+  </symbol>
+  <symbol id="f-wedding" viewBox="0 0 300 200">
+    <rect width="300" height="200" fill="var(--g200)"/>
+    <path d="M90 180V90a60 60 0 0 1 120 0v90" fill="none" stroke="var(--g600)" stroke-width="6"/>
+    <g fill="var(--accent)">
+      <circle cx="90" cy="90" r="6"/><circle cx="98" cy="60" r="6"/><circle cx="120" cy="38" r="6"/>
+      <circle cx="150" cy="30" r="6"/><circle cx="180" cy="38" r="6"/><circle cx="202" cy="60" r="6"/><circle cx="210" cy="90" r="6"/>
+    </g>
+    <rect y="180" width="300" height="20" fill="var(--g400)"/>
+    <circle cx="136" cy="112" r="8" fill="var(--g900)"/>
+    <path d="M136 121L120 180H152Z" fill="var(--g100)" stroke="var(--g900)" stroke-width="2"/>
+    <circle cx="168" cy="112" r="8" fill="var(--g900)"/>
+    <path d="M160 121h16l2 59h-20z" fill="var(--g900)"/>
+  </symbol>
+  <symbol id="f-batik" viewBox="0 0 300 200">
+    <rect width="300" height="200" fill="var(--g900)"/>
+    <rect width="300" height="200" fill="url(#kawung)"/>
+    <rect y="150" width="300" height="50" fill="var(--g900)" opacity=".5"/>
+  </symbol>
+  <symbol id="f-beach" viewBox="0 0 300 200">
+    <rect width="300" height="200" fill="var(--g200)"/>
+    <circle cx="150" cy="116" r="26" fill="var(--accent)"/>
+    <rect y="120" width="300" height="80" fill="var(--g400)"/>
+    <path d="M128 128h44M134 138h32M141 148h18" stroke="var(--accent)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M0 164q25-8 50 0t50 0t50 0t50 0t50 0t50 0M0 182q25-8 50 0t50 0t50 0t50 0t50 0t50 0" fill="none" stroke="var(--g200)" stroke-width="2"/>
+    <path d="M0 192Q150 172 300 194V200H0Z" fill="var(--g600)"/>
+  </symbol>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top">Raka Wicaksono</a>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <section class="hero" id="top">
+    <div class="wrap">
+      <div>
+        <p class="label">Frame 01 / Yogyakarta, Indonesia</p>
+        <h1>Photography for weddings, families and brands in Yogyakarta</h1>
+        <p class="lede">Freelance photographer working on location across Yogyakarta and Central Java, from Kotagede lanes to the slopes of Merapi.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#work">See selected work</a>
+          <a class="btn" href="#contact">Book a date</a>
+        </div>
+      </div>
+      <div>
+        <div class="strip" role="group" aria-label="Contact strip of three sample frames">
+          <figure>
+            <svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Merapi cone against a pale sky with a red sun"><use href="#f-merapi"/></svg>
+            <figcaption>01</figcaption>
+          </figure>
+          <figure>
+            <svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Temple spires silhouetted against a low red sun"><use href="#f-temple"/></svg>
+            <figcaption>02</figcaption>
+          </figure>
+          <figure>
+            <svg viewBox="0 0 300 200" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Red sun on the horizon above a grey sea"><use href="#f-beach"/></svg>
+            <figcaption>06</figcaption>
+          </figure>
+        </div>
+        <p class="fine">Sample frames and pricing, replace before launch.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="about" id="about" aria-labelledby="about-h">
+    <div class="wrap">
+      <div>
+        <p class="label">00 / Intro</p>
+        <h2 id="about-h">I photograph people where they already are.</h2>
+      </div>
+      <div>
+        <p>My sessions happen outside a studio: the kraton quarter in morning light, Malioboro after rain, a family courtyard in Bantul. I scout the location with you beforehand and shoot at the hour the light suits it.</p>
+        <p>You get a small set of edited photographs, not a folder of near-duplicates.</p>
+        <dl>
+          <dt>Based</dt><dd>Yogyakarta</dd>
+          <dt>Covers</dt><dd>Yogyakarta, Central Java, travel on request</dd>
+          <dt>Languages</dt><dd>Bahasa Indonesia, English</dd>
+          <dt>Delivery</dt><dd>Edited files in an online gallery</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="work" id="work" aria-labelledby="work-h">
+    <div class="wrap">
+      <p class="label">01 / Selected work</p>
+      <h2 id="work-h">Six frames from the contact sheet</h2>
+      <div class="chips" role="group" aria-label="Filter frames by category">
+        <button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip" type="button" data-filter="Landscape" aria-pressed="false">Landscape</button>
+        <button class="chip" type="button" data-filter="Culture" aria-pressed="false">Culture</button>
+        <button class="chip" type="button" data-filter="Street" aria-pressed="false">Street</button>
+        <button class="chip" type="button" data-filter="Wedding" aria-pressed="false">Wedding</button>
+      </div>
+      <p class="fine" id="count" role="status" style="color:var(--g400);margin:0 0 var(--s5)">Showing 6 frames</p>
+      <div class="frames" id="frames">
+        <figure data-cat="Landscape">
+          <svg viewBox="0 0 300 200" role="img" aria-label="Merapi cone against a pale sky with a red sun"><use href="#f-merapi"/></svg>
+          <figcaption><span class="no">01</span><span class="t">Merapi before sunrise</span><span class="m">Landscape, Kaliurang</span></figcaption>
+        </figure>
+        <figure data-cat="Culture">
+          <svg viewBox="0 0 300 200" role="img" aria-label="Temple spires silhouetted against a low red sun"><use href="#f-temple"/></svg>
+          <figcaption><span class="no">02</span><span class="t">Candi silhouette, late light</span><span class="m">Culture, Sleman</span></figcaption>
+        </figure>
+        <figure data-cat="Street">
+          <svg viewBox="0 0 300 200" role="img" aria-label="Lit shopfronts and a street lamp on a dark street at night"><use href="#f-street"/></svg>
+          <figcaption><span class="no">03</span><span class="t">Malioboro after rain</span><span class="m">Street, Yogyakarta</span></figcaption>
+        </figure>
+        <figure data-cat="Wedding">
+          <svg viewBox="0 0 300 200" role="img" aria-label="A couple standing under a floral arch"><use href="#f-wedding"/></svg>
+          <figcaption><span class="no">04</span><span class="t">Under the arch</span><span class="m">Wedding, Bantul</span></figcaption>
+        </figure>
+        <figure data-cat="Culture">
+          <svg viewBox="0 0 300 200" role="img" aria-label="Kawung batik pattern in cream and red on dark cloth"><use href="#f-batik"/></svg>
+          <figcaption><span class="no">05</span><span class="t">Kawung, hand-drawn</span><span class="m">Culture, Yogyakarta</span></figcaption>
+        </figure>
+        <figure data-cat="Landscape">
+          <svg viewBox="0 0 300 200" role="img" aria-label="Red sun on the horizon above a grey sea"><use href="#f-beach"/></svg>
+          <figcaption><span class="no">06</span><span class="t">Parangtritis, low tide</span><span class="m">Landscape, Bantul</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="services" id="services" aria-labelledby="services-h">
+    <div class="wrap">
+      <p class="label">02 / Services</p>
+      <h2 id="services-h">Three ways to work together</h2>
+      <div class="tiers">
+        <article class="tier">
+          <h3>Weddings and pre-wedding</h3>
+          <p>Ceremony, family portraits and the quiet moments between, for a half or full day.</p>
+          <ul>
+            <li>Up to 8 hours on location</li>
+            <li>Second photographer on request</li>
+            <li>Online gallery of edited files</li>
+          </ul>
+          <div class="price"><small>From</small>Rp 6.500.000</div>
+        </article>
+        <article class="tier">
+          <h3>Portraits and family</h3>
+          <p>A session at a place that means something to you, planned around the light.</p>
+          <ul>
+            <li>90-minute session, one location</li>
+            <li>25 edited photographs</li>
+            <li>One outfit change</li>
+          </ul>
+          <div class="price"><small>From</small>Rp 1.200.000</div>
+        </article>
+        <article class="tier">
+          <h3>Brand and product</h3>
+          <p>Menus, craft and product photography for small businesses, cropped to the sizes your channels use.</p>
+          <ul>
+            <li>Half-day shoot</li>
+            <li>Web and print crops</li>
+            <li>Licence for your own channels</li>
+          </ul>
+          <div class="price"><small>From</small>Rp 2.500.000</div>
+        </article>
+      </div>
+      <p class="note">Every package includes edited files in an online gallery, delivered within 14 days of the shoot. Travel outside Yogyakarta is quoted separately.</p>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <div class="wrap">
+      <div>
+        <p class="label">03 / Contact</p>
+        <h2 id="contact-h">Book a date</h2>
+        <p>Send the date, the place and what you need. I will reply with availability and a quote.</p>
+        <dl>
+          <dt>Email</dt><dd><a href="mailto:hello@example.com">hello@example.com</a></dd>
+          <dt>Studio</dt><dd>Yogyakarta, by appointment</dd>
+        </dl>
+      </div>
+      <form id="enquiry" action="mailto:hello@example.com" method="post" enctype="text/plain" aria-label="Booking enquiry">
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" autocomplete="name" required aria-describedby="e-name">
+          <p class="err" id="e-name"></p>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required aria-describedby="e-email">
+          <p class="err" id="e-email"></p>
+        </div>
+        <div class="field">
+          <label for="type">Type of shoot</label>
+          <select id="type" name="type">
+            <option>Wedding or pre-wedding</option>
+            <option>Portrait or family</option>
+            <option>Brand or product</option>
+            <option>Something else</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="date">Preferred date</label>
+          <input id="date" name="date" type="date">
+        </div>
+        <div class="field full">
+          <label for="msg">Details</label>
+          <textarea id="msg" name="message" required aria-describedby="e-msg"></textarea>
+          <p class="err" id="e-msg"></p>
+        </div>
+        <div class="field full"><button class="btn btn-primary" type="submit">Send enquiry</button></div>
+        <p class="status" id="status" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; <span id="yr">2026</span> Raka Wicaksono. Yogyakarta, Indonesia.</p>
+    <p><a href="#top">Back to top</a></p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var chips=document.querySelectorAll('[data-filter]'),
+      frames=document.querySelectorAll('#frames figure'),
+      count=document.getElementById('count');
+  chips.forEach(function(chip){
+    chip.addEventListener('click',function(){
+      var f=chip.dataset.filter,n=0;
+      chips.forEach(function(c){c.setAttribute('aria-pressed',String(c===chip))});
+      frames.forEach(function(fr){
+        var hide=f!=='all'&&fr.dataset.cat!==f;
+        fr.hidden=hide;
+        if(!hide)n++;
+      });
+      count.textContent='Showing '+n+(n===1?' frame':' frames');
+    });
+  });
+
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  var form=document.getElementById('enquiry'),status=document.getElementById('status');
+  form.noValidate=true;
+  function check(id,msg){
+    var el=document.getElementById(id),err=document.getElementById('e-'+id),ok=el.checkValidity()&&el.value.trim()!=='';
+    el.setAttribute('aria-invalid',String(!ok));
+    err.textContent=ok?'':msg;
+    return ok;
+  }
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var ok=[check('name','Enter your name.'),check('email','Enter a valid email address.'),check('msg','Add a few details about the shoot.')];
+    if(ok.indexOf(false)!==-1){
+      status.textContent='Fix the highlighted fields and send again.';
+      form.querySelector('[aria-invalid="true"]').focus();
+      return;
+    }
+    var d=new FormData(form),
+        body='Name: '+d.get('name')+'\nEmail: '+d.get('email')+'\nDate: '+(d.get('date')||'not set')+'\n\n'+d.get('message');
+    status.textContent='Opening your email app. If nothing happens, write to hello@example.com.';
+    window.location.href='mailto:hello@example.com?subject='+encodeURIComponent('Photo enquiry: '+d.get('type'))+'&body='+encodeURIComponent(body);
+  });
+})();
+</script>
+</body>
+</html>
+```

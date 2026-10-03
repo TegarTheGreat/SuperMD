@@ -1,0 +1,522 @@
+```html
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orders · dockside/admin</title>
+<style>
+:root{
+  --g0:#fff; --g50:#f7f8f9; --g100:#eff1f3; --g200:#e1e5e9; --g300:#c9cfd6;
+  --g500:#5d6671; --g700:#323941; --g900:#14181c;
+  --accent:#1d4ed8; --accent-strong:#1e40af; --accent-soft:#e8eefc;
+  --warn-bg:#fdf1d3; --warn-ink:#6b4a00;
+  --info-bg:var(--accent-soft); --info-ink:#1e3a8a;
+  --ship-bg:#e0f0f3; --ship-ink:#0f4c5c;
+  --ok-bg:#dcf1e3; --ok-ink:#14532d;
+  --bad-bg:#fbe3e1; --bad-ink:#7a1f17;
+  --fs-1:.75rem; --fs-2:.875rem; --fs-3:1rem; --fs-4:1.25rem; --fs-5:1.75rem;
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px;
+  --radius:6px; --shadow:0 8px 24px rgba(20,24,28,.16);
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--g50);color:var(--g900);font:var(--fs-2)/1.5 var(--sans)}
+h1,h2,h3,p,dl,dd,ol,ul{margin:0}
+ul,ol{padding:0;list-style:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:var(--s2);top:-48px;z-index:10;padding:var(--s2) var(--s3);background:var(--g0);border-radius:var(--radius)}
+.skip:focus{top:var(--s2)}
+.in{max-width:1120px;margin:0 auto}
+
+.top{background:var(--g900);color:var(--g0)}
+.top .in{padding:var(--s3) var(--s4);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s2) var(--s5)}
+.brand{font:700 var(--fs-3)/1 var(--mono);letter-spacing:.02em}
+.brand span{color:var(--g300)}
+.top nav ul{display:flex;flex-wrap:wrap;gap:var(--s4)}
+.top nav a{display:block;padding:var(--s1) 0;color:var(--g300);text-decoration:none;border-bottom:2px solid transparent}
+.top nav a:hover{color:var(--g0)}
+.top nav a[aria-current]{color:var(--g0);border-color:var(--g0)}
+.top :focus-visible{outline-color:var(--g0)}
+
+main{max-width:1120px;margin:0 auto;padding:var(--s5) var(--s4) var(--s6);display:grid;gap:var(--s4)}
+h1{font-size:var(--fs-5);line-height:1.2;font-weight:650}
+
+.stats{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:var(--s4)}
+.stat{background:var(--g0);border:1px solid var(--g200);border-radius:var(--radius);padding:var(--s4)}
+.stat dt{color:var(--g500);font-size:var(--fs-1);font-weight:600}
+.stat dd{margin-top:var(--s1);font-size:var(--fs-4);font-weight:650;font-variant-numeric:tabular-nums}
+.stat.lead dd{font-size:var(--fs-5);color:var(--accent)}
+.stat small{display:block;font-size:var(--fs-1);font-weight:400;color:var(--g500)}
+.note{font-size:var(--fs-1);color:var(--g500)}
+
+.card{background:var(--g0);border:1px solid var(--g200);border-radius:var(--radius)}
+.bar{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--s3);padding:var(--s4)}
+.field{display:grid;gap:var(--s1);font-size:var(--fs-1);font-weight:600;color:var(--g500)}
+.field.grow{flex:1 1 240px}
+input,select{height:36px;padding:0 var(--s3);font:inherit;font-weight:400;color:var(--g900);background:var(--g0);border:1px solid var(--g300);border-radius:var(--radius)}
+select{padding-right:var(--s2)}
+input:hover,select:hover{border-color:var(--g500)}
+input:focus-visible,select:focus-visible{outline-offset:0;border-color:var(--accent)}
+input::placeholder{color:var(--g500)}
+
+.btn{height:36px;padding:0 var(--s4);font:inherit;font-weight:600;color:var(--g900);background:var(--g0);border:1px solid var(--g300);border-radius:var(--radius);cursor:pointer}
+.btn:hover{background:var(--g100)}
+.btn.primary{color:var(--g0);background:var(--accent);border-color:var(--accent)}
+.btn.primary:hover{background:var(--accent-strong);border-color:var(--accent-strong)}
+.btn:disabled{color:var(--g500);background:var(--g100);border-color:var(--g200);cursor:not-allowed}
+.btn.icon{width:36px;padding:0;display:grid;place-items:center}
+
+.scroll{overflow-x:auto;border-top:1px solid var(--g200)}
+.orders{width:100%;border-collapse:collapse}
+.orders th{padding:0;background:var(--g50);border-bottom:1px solid var(--g300);text-align:left;font-size:var(--fs-1);font-weight:600;color:var(--g500);white-space:nowrap}
+.orders th[aria-sort]{color:var(--g900)}
+.sort{display:flex;align-items:center;gap:var(--s1);width:100%;padding:var(--s3) var(--s4);font:inherit;color:inherit;text-align:inherit;background:none;border:0;cursor:pointer}
+.sort:hover{background:var(--g100);color:var(--g900)}
+.num{text-align:right}
+.num .sort{justify-content:flex-end}
+.arr{display:inline-block;width:1em;text-align:center}
+.arr::after{content:"\2195";opacity:.45}
+[aria-sort=ascending] .arr::after{content:"\2191";opacity:1}
+[aria-sort=descending] .arr::after{content:"\2193";opacity:1}
+.orders td{padding:var(--s3) var(--s4);border-bottom:1px dashed var(--g300);vertical-align:middle}
+.orders tbody tr:last-child td{border-bottom:0}
+.orders tr[data-id]{cursor:pointer}
+.orders tr[data-id]:hover td{background:var(--g50)}
+.orders td.num,.date{font-variant-numeric:tabular-nums}
+.date{white-space:nowrap}
+.idlink{padding:0;font:600 var(--fs-2) var(--mono);color:var(--accent);background:none;border:0;cursor:pointer}
+.idlink:hover{text-decoration:underline}
+.cust{max-width:260px}
+.name,.mail{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.name{font-weight:600}
+.mail{font-size:var(--fs-1);color:var(--g500)}
+.empty{padding:var(--s6) var(--s4);text-align:center;color:var(--g500)}
+.empty .btn{margin-top:var(--s3)}
+
+.badge{display:inline-flex;align-items:center;gap:var(--s1);padding:2px var(--s2);border-radius:var(--radius);font-size:var(--fs-1);font-weight:600;white-space:nowrap;background:var(--g100);color:var(--g700)}
+.badge::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.badge[data-s=Pending]{background:var(--warn-bg);color:var(--warn-ink)}
+.badge[data-s=Paid]{background:var(--info-bg);color:var(--info-ink)}
+.badge[data-s=Shipped]{background:var(--ship-bg);color:var(--ship-ink)}
+.badge[data-s=Delivered]{background:var(--ok-bg);color:var(--ok-ink)}
+.badge[data-s=Cancelled]{background:var(--bad-bg);color:var(--bad-ink)}
+
+.pager{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--s3) var(--s5);padding:var(--s3) var(--s4);border-top:1px solid var(--g200)}
+.pager .left{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s3) var(--s4);color:var(--g500)}
+.pager .left label{display:flex;align-items:center;gap:var(--s2)}
+#pages{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s1)}
+.pg{min-width:36px;height:36px;padding:0 var(--s2);font:inherit;font-variant-numeric:tabular-nums;color:var(--g900);background:var(--g0);border:1px solid var(--g300);border-radius:var(--radius);cursor:pointer}
+.pg:hover{background:var(--g100)}
+.pg[aria-current]{color:var(--g0);background:var(--accent);border-color:var(--accent);font-weight:600}
+.pg:disabled{color:var(--g500);background:var(--g100);border-color:var(--g200);cursor:not-allowed}
+.gap{min-width:var(--s4);text-align:center;color:var(--g500)}
+
+.drawer{width:min(480px,100%);max-width:none;height:100%;max-height:none;margin:0 0 0 auto;padding:0;border:0;background:var(--g0);color:var(--g900);box-shadow:var(--shadow)}
+.drawer::backdrop{background:rgba(20,24,28,.5)}
+.drawer[open]{display:flex;flex-direction:column;animation:in .18s ease-out}
+@keyframes in{from{transform:translateX(24px);opacity:0}}
+.d-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s4);padding:var(--s4) var(--s5);border-bottom:1px dashed var(--g300)}
+.eyebrow{font:600 var(--fs-1)/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}
+#d-id{margin-top:var(--s2);font:700 var(--fs-4)/1.2 var(--mono)}
+#d-meta{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s3);margin-top:var(--s2);font-size:var(--fs-1);color:var(--g500)}
+.d-body{flex:1;overflow-y:auto;display:grid;align-content:start;gap:var(--s4);padding:var(--s5)}
+.d-body section+section{padding-top:var(--s4);border-top:1px dashed var(--g300)}
+.d-body h3{margin-bottom:var(--s2);font:600 var(--fs-1)/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--g500)}
+.stack{display:grid}
+.stack span{color:var(--g700)}
+.lines{width:100%;border-collapse:collapse}
+.lines th{padding:0 0 var(--s1);font-size:var(--fs-1);font-weight:600;color:var(--g500);text-align:left}
+.lines th.num,.lines td.num{text-align:right}
+.lines td{padding:var(--s2) 0;border-bottom:1px dashed var(--g200);vertical-align:top;font-variant-numeric:tabular-nums}
+.sku{display:block;font:var(--fs-1) var(--mono);color:var(--g500)}
+.totals .row{display:flex;justify-content:space-between;padding:2px 0;font-variant-numeric:tabular-nums}
+.totals dt{color:var(--g500)}
+.totals .row:last-child{margin-top:var(--s2);padding-top:var(--s2);border-top:1px solid var(--g900);font-size:var(--fs-3);font-weight:700}
+.totals .row:last-child dt{color:var(--g900)}
+.events{display:grid;gap:var(--s3);margin-left:4px;padding-left:var(--s4);border-left:1px solid var(--g300)}
+.events li{position:relative;display:flex;flex-wrap:wrap;justify-content:space-between;gap:0 var(--s3)}
+.events li::before{content:"";position:absolute;left:calc(-1*var(--s4) - 4px);top:7px;width:6px;height:6px;border-radius:50%;background:var(--g700)}
+.events time{font:var(--fs-1) var(--mono);color:var(--g500)}
+.d-foot{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s3);padding:var(--s4) var(--s5);border-top:1px dashed var(--g300)}
+.d-foot .hint{flex:1 1 100%;min-height:1.5em;font-size:var(--fs-1);color:var(--g500)}
+
+footer{border-top:1px solid var(--g200)}
+footer .in{display:flex;flex-wrap:wrap;justify-content:space-between;gap:var(--s2) var(--s5);padding:var(--s5) var(--s4);font-size:var(--fs-1);color:var(--g500)}
+footer .brand{font-size:var(--fs-1);color:var(--g700)}
+
+@media (max-width:720px){.hide-sm{display:none}}
+@media (max-width:640px){
+  .stats{grid-template-columns:1fr 1fr}
+  .stat.lead{grid-column:1/-1}
+}
+@media (max-width:480px){
+  .hide-xs,.mail{display:none}
+  .orders td{padding:var(--s3) var(--s2)}
+  .sort{padding:var(--s3) var(--s2)}
+  .name{white-space:normal}
+  .d-head,.d-body,.d-foot{padding-left:var(--s4);padding-right:var(--s4)}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<!-- Replace before launch: the customers and products arrays and the order generator in the script (names, emails, addresses, SKUs, prices, 8% tax rate, flat shipping rule), the "dockside" brand name, and the nav links (all href="#"). -->
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="in">
+    <div class="brand">dockside<span>/admin</span></div>
+    <nav aria-label="Primary">
+      <ul>
+        <li><a href="#" aria-current="page">Orders</a></li>
+        <li><a href="#">Customers</a></li>
+        <li><a href="#">Inventory</a></li>
+        <li><a href="#">Reports</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <h1>Orders</h1>
+
+  <dl class="stats">
+    <div class="stat lead"><dt>Needs action</dt><dd><span id="st-action">0</span><small>Pending or paid, not yet shipped</small></dd></div>
+    <div class="stat"><dt>Orders shown</dt><dd id="st-shown">0</dd></div>
+    <div class="stat"><dt>Net value shown</dt><dd><span id="st-value">$0.00</span><small>Excludes cancelled and refunded</small></dd></div>
+  </dl>
+  <p class="note">Sample data, replace before launch.</p>
+
+  <noscript><p class="empty card">The orders table is rendered by JavaScript. Enable it to view orders.</p></noscript>
+
+  <section class="card" aria-label="Orders table">
+    <div class="bar">
+      <label class="field grow">Search
+        <input id="q" type="search" placeholder="Order ID, customer or email" autocomplete="off">
+      </label>
+      <label class="field">Status
+        <select id="status">
+          <option value="">All statuses</option>
+          <option>Pending</option><option>Paid</option><option>Shipped</option>
+          <option>Delivered</option><option>Refunded</option><option>Cancelled</option>
+        </select>
+      </label>
+      <button class="btn" id="clear" type="button" data-clear disabled>Clear filters</button>
+    </div>
+
+    <div class="scroll" role="region" aria-label="Orders, scrollable" tabindex="0">
+      <table class="orders">
+        <caption class="sr">Orders</caption>
+        <thead>
+          <tr>
+            <th scope="col" data-col="id"><button class="sort" type="button" data-key="id">Order<span class="arr" aria-hidden="true"></span></button></th>
+            <th scope="col" data-col="customer"><button class="sort" type="button" data-key="customer">Customer<span class="arr" aria-hidden="true"></span></button></th>
+            <th scope="col" data-col="date" class="hide-xs"><button class="sort" type="button" data-key="date">Date<span class="arr" aria-hidden="true"></span></button></th>
+            <th scope="col" data-col="status"><button class="sort" type="button" data-key="status">Status<span class="arr" aria-hidden="true"></span></button></th>
+            <th scope="col" data-col="items" class="num hide-sm"><button class="sort" type="button" data-key="items">Items<span class="arr" aria-hidden="true"></span></button></th>
+            <th scope="col" data-col="total" class="num"><button class="sort" type="button" data-key="total">Total<span class="arr" aria-hidden="true"></span></button></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+
+    <div class="pager">
+      <div class="left">
+        <span id="range">No orders</span>
+        <label>Rows per page
+          <select id="size"><option>10</option><option>25</option></select>
+        </label>
+      </div>
+      <nav id="pages" aria-label="Pagination"></nav>
+    </div>
+  </section>
+  <p class="sr" id="live" role="status"></p>
+</main>
+
+<footer>
+  <div class="in">
+    <span class="brand">dockside/admin</span>
+    <span>Dates in UTC. Amounts in USD.</span>
+  </div>
+</footer>
+
+<dialog class="drawer" id="drawer" aria-labelledby="d-id">
+  <div class="d-head">
+    <div>
+      <div class="eyebrow">Order slip</div>
+      <h2 id="d-id"></h2>
+      <div id="d-meta"></div>
+    </div>
+    <button class="btn icon" id="close" type="button" aria-label="Close order details">
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3l10 10M13 3L3 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="d-body">
+    <section><h3>Customer</h3><div class="stack" id="d-cust"></div></section>
+    <section>
+      <h3>Items</h3>
+      <table class="lines">
+        <thead><tr><th scope="col">Item</th><th scope="col" class="num">Qty</th><th scope="col" class="num">Amount</th></tr></thead>
+        <tbody id="d-lines"></tbody>
+      </table>
+    </section>
+    <section><h3>Totals</h3><dl class="totals" id="d-totals"></dl></section>
+    <section><h3>History</h3><ol class="events" id="d-events"></ol></section>
+  </div>
+  <div class="d-foot">
+    <button class="btn primary" id="ship" type="button" aria-describedby="ship-hint">Mark as shipped</button>
+    <button class="btn" id="close2" type="button">Close</button>
+    <p class="hint" id="ship-hint"></p>
+  </div>
+</dialog>
+
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const h = (tag, attrs = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) if (v !== false && v != null) e.setAttribute(k, v === true ? '' : v);
+  e.append(...kids);
+  return e;
+};
+
+const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' });
+const money = c => usd.format(c / 100);
+const fmtDate = t => new Date(t).toISOString().slice(0, 10);
+const fmtDateTime = t => new Date(t).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+
+const STATUSES = ['Pending', 'Paid', 'Shipped', 'Delivered', 'Refunded', 'Cancelled'];
+
+const customers = [
+  'Amara Okafor|41 Harbour Row|Bristol', 'Tomas Herrera|220 Alder Street|Austin, TX',
+  'Mei Lin Chen|8 Pinecrest Court|Vancouver, BC', 'Jonas Lindqvist|17 Kvarngatan|Uppsala',
+  'Priya Raman|63 Maple Terrace|Toronto, ON', 'Daniel Mwangi|9 Ridge Close|Nairobi',
+  'Sofia Rossi|12 Via dei Tigli|Turin', 'Hannah Schmidt|5 Lindenweg|Hamburg',
+  'Kenji Watanabe|3-14 Midori|Osaka', 'Isla MacDonald|28 Burn Brae|Glasgow',
+  'Luca Moreau|70 Rue des Lilas|Lyon', 'Zainab Hussein|301 Cedar Avenue|Chicago, IL'
+].map(s => {
+  const [name, street, city] = s.split('|');
+  return { name, street, city, email: name.toLowerCase().replace(/\s+/g, '.') + '@example.com' };
+});
+
+const products = [
+  ['Canvas tote', 'TOT-210', 2400], ['Ceramic mug', 'MUG-044', 1800], ['Desk lamp', 'LMP-318', 6400],
+  ['Notebook set', 'NBK-102', 1450], ['Wool throw', 'THR-077', 8900], ['Steel bottle', 'BTL-512', 3200],
+  ['Linen apron', 'APR-063', 3800], ['Brass keyring', 'KEY-009', 900]
+].map(([name, sku, price]) => ({ name, sku, price }));
+
+// Park-Miller generator: same sample orders on every load.
+let seed = 11;
+const rnd = () => (seed = seed * 16807 % 2147483647) / 2147483647;
+const pick = n => Math.floor(rnd() * n);
+
+const NOW = Date.now();
+const HOUR = 36e5;
+const FLOW = [['Order placed', 0], ['Payment captured', 0.1], ['Shipped', 26], ['Delivered', 96], ['Refunded', 118]];
+const STAGE = { Pending: 1, Paid: 2, Shipped: 3, Delivered: 4, Refunded: 5 };
+
+const orders = Array.from({ length: 56 }, (_, i) => {
+  const hrs = Math.round(i * 20 + rnd() * 14);
+  const t = NOW - hrs * HOUR;
+  const roll = rnd();
+  const status = hrs < 72 ? (roll < 0.6 ? 'Pending' : 'Paid')
+    : hrs < 168 ? (roll < 0.3 ? 'Paid' : 'Shipped')
+    : roll < 0.08 ? 'Refunded' : roll < 0.14 ? 'Cancelled' : 'Delivered';
+  const first = pick(products.length);
+  const lines = Array.from({ length: 1 + pick(3) }, (_, j) => ({ ...products[(first + j) % products.length], qty: 1 + pick(3) }));
+  const subtotal = lines.reduce((s, l) => s + l.price * l.qty, 0);
+  const shipping = subtotal >= 6000 ? 0 : 600;
+  const tax = Math.round(subtotal * 0.08);
+  const steps = status === 'Cancelled' ? [['Order placed', 0], ['Cancelled', 2]] : FLOW.slice(0, STAGE[status]);
+  return {
+    n: 4820 - i, id: 'ORD-' + (4820 - i), t, status, lines, subtotal, shipping, tax,
+    total: subtotal + shipping + tax,
+    units: lines.reduce((s, l) => s + l.qty, 0),
+    customer: customers[pick(customers.length)],
+    events: steps.map(([label, off]) => ({ label, t: t + off * HOUR }))
+  };
+});
+
+const sorters = {
+  id: o => o.n,
+  customer: o => o.customer.name.toLowerCase(),
+  date: o => o.t,
+  status: o => STATUSES.indexOf(o.status),
+  items: o => o.units,
+  total: o => o.total
+};
+
+const state = { q: '', status: '', sortKey: 'date', dir: 'desc', page: 1, size: 10 };
+const tbody = $('#rows');
+const live = $('#live');
+
+const badge = s => h('span', { class: 'badge', 'data-s': s }, s);
+
+function visible() {
+  const q = state.q.trim().toLowerCase();
+  const list = orders.filter(o =>
+    (!state.status || o.status === state.status) &&
+    (!q || `${o.id} ${o.customer.name} ${o.customer.email}`.toLowerCase().includes(q)));
+  const key = sorters[state.sortKey];
+  const m = state.dir === 'asc' ? 1 : -1;
+  return list.sort((a, b) => {
+    const x = key(a), y = key(b);
+    return (x < y ? -1 : x > y ? 1 : 0) * m || b.n - a.n;
+  });
+}
+
+function rowFor(o) {
+  return h('tr', { 'data-id': o.id },
+    h('td', {}, h('button', { type: 'button', class: 'idlink', 'data-open': o.id, 'aria-haspopup': 'dialog' }, o.id)),
+    h('td', {}, h('div', { class: 'cust' }, h('span', { class: 'name' }, o.customer.name), h('span', { class: 'mail' }, o.customer.email))),
+    h('td', { class: 'date hide-xs' }, fmtDate(o.t)),
+    h('td', {}, badge(o.status)),
+    h('td', { class: 'num hide-sm' }, String(o.units)),
+    h('td', { class: 'num' }, money(o.total)));
+}
+
+function pageList(cur, n) {
+  const keep = [...new Set([1, n, cur - 1, cur, cur + 1].filter(p => p >= 1 && p <= n))].sort((a, b) => a - b);
+  const out = [];
+  let prev = 0;
+  for (const p of keep) { if (p - prev > 1) out.push('…'); out.push(p); prev = p; }
+  return out;
+}
+
+function renderPager(total, pages, start, count) {
+  $('#range').textContent = total ? `Showing ${start + 1}–${start + count} of ${total}` : 'No orders';
+  const btn = (label, page, disabled, current, aria) =>
+    h('button', { type: 'button', class: 'pg', 'data-page': page, disabled, 'aria-current': current ? 'page' : false, 'aria-label': aria }, label);
+  const nav = $('#pages');
+  nav.replaceChildren(
+    btn('Previous', state.page - 1, state.page === 1),
+    ...pageList(state.page, pages).map(p => p === '…'
+      ? h('span', { class: 'gap', 'aria-hidden': 'true' }, '…')
+      : btn(String(p), p, false, p === state.page, `Page ${p}`)),
+    btn('Next', state.page + 1, state.page === pages));
+}
+
+function render() {
+  const list = visible();
+  const pages = Math.max(1, Math.ceil(list.length / state.size));
+  state.page = Math.min(state.page, pages);
+  const start = (state.page - 1) * state.size;
+  const slice = list.slice(start, start + state.size);
+
+  $('#st-action').textContent = list.filter(o => o.status === 'Pending' || o.status === 'Paid').length;
+  $('#st-shown').textContent = list.length;
+  $('#st-value').textContent = money(list.filter(o => o.status !== 'Cancelled' && o.status !== 'Refunded').reduce((s, o) => s + o.total, 0));
+
+  tbody.replaceChildren(...(slice.length ? slice.map(rowFor) : [
+    h('tr', {}, h('td', { colspan: 6, class: 'empty' },
+      h('p', {}, 'No orders match these filters.'),
+      h('button', { type: 'button', class: 'btn', 'data-clear': true }, 'Clear filters')))
+  ]));
+
+  renderPager(list.length, pages, start, slice.length);
+  document.querySelectorAll('thead th').forEach(th => {
+    if (th.dataset.col === state.sortKey) th.setAttribute('aria-sort', state.dir === 'asc' ? 'ascending' : 'descending');
+    else th.removeAttribute('aria-sort');
+  });
+  $('#clear').disabled = !(state.q || state.status);
+  live.textContent = `${list.length} orders, page ${state.page} of ${pages}`;
+}
+
+function clearFilters() {
+  state.q = ''; state.status = ''; state.page = 1;
+  $('#q').value = ''; $('#status').value = '';
+  render();
+  $('#q').focus();
+}
+
+$('#q').addEventListener('input', e => { state.q = e.target.value; state.page = 1; render(); });
+$('#status').addEventListener('change', e => { state.status = e.target.value; state.page = 1; render(); });
+$('#size').addEventListener('change', e => { state.size = +e.target.value; state.page = 1; render(); });
+document.addEventListener('click', e => { if (e.target.closest('[data-clear]')) clearFilters(); });
+
+$('thead').addEventListener('click', e => {
+  const b = e.target.closest('.sort');
+  if (!b) return;
+  const k = b.dataset.key;
+  if (state.sortKey === k) state.dir = state.dir === 'asc' ? 'desc' : 'asc';
+  else { state.sortKey = k; state.dir = ['date', 'total', 'items'].includes(k) ? 'desc' : 'asc'; }
+  state.page = 1;
+  render();
+});
+
+$('#pages').addEventListener('click', e => {
+  const b = e.target.closest('button[data-page]');
+  if (!b || b.disabled) return;
+  state.page = +b.dataset.page;
+  render();
+  $('#pages [aria-current="page"]').focus();
+});
+
+/* Drawer */
+const dlg = $('#drawer');
+const ship = $('#ship');
+const SHIP_HINT = {
+  Pending: 'Payment not captured yet.', Shipped: 'Already shipped.', Delivered: 'Already shipped.',
+  Refunded: 'Order is closed.', Cancelled: 'Order is closed.'
+};
+let current = null;
+let dirty = false;
+
+function fillDrawer() {
+  const o = current;
+  $('#d-id').textContent = o.id;
+  $('#d-meta').replaceChildren(badge(o.status), h('span', {}, fmtDateTime(o.t)));
+  $('#d-cust').replaceChildren(
+    h('strong', {}, o.customer.name), h('span', {}, o.customer.email),
+    h('span', {}, o.customer.street), h('span', {}, o.customer.city));
+  $('#d-lines').replaceChildren(...o.lines.map(l => h('tr', {},
+    h('td', {}, l.name, h('span', { class: 'sku' }, l.sku)),
+    h('td', { class: 'num' }, String(l.qty)),
+    h('td', { class: 'num' }, money(l.price * l.qty)))));
+  const row = (k, v) => h('div', { class: 'row' }, h('dt', {}, k), h('dd', {}, v));
+  $('#d-totals').replaceChildren(
+    row('Subtotal', money(o.subtotal)), row('Shipping', o.shipping ? money(o.shipping) : 'Free'),
+    row('Tax (8%)', money(o.tax)), row('Total', money(o.total)));
+  $('#d-events').replaceChildren(...o.events.map(ev => h('li', {},
+    h('span', {}, ev.label), h('time', { datetime: new Date(ev.t).toISOString() }, fmtDateTime(ev.t)))));
+  ship.disabled = o.status !== 'Paid';
+  $('#ship-hint').textContent = SHIP_HINT[o.status] || '';
+}
+
+tbody.addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-id]');
+  if (!tr) return;
+  current = orders.find(o => o.id === tr.dataset.id);
+  fillDrawer();
+  dlg.showModal();
+  $('.d-body').scrollTop = 0;
+});
+
+ship.addEventListener('click', () => {
+  if (!current || current.status !== 'Paid') return;
+  current.status = 'Shipped';
+  current.events.push({ label: 'Shipped', t: Date.now() });
+  dirty = true;
+  fillDrawer();
+  live.textContent = `${current.id} marked as shipped.`;
+  $('#close').focus();
+});
+
+$('#close').addEventListener('click', () => dlg.close());
+$('#close2').addEventListener('click', () => dlg.close());
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close(); });
+dlg.addEventListener('close', () => {
+  if (dirty) { render(); dirty = false; }
+  const btn = current && tbody.querySelector(`[data-open="${current.id}"]`);
+  (btn || $('#q')).focus();
+  current = null;
+});
+
+render();
+</script>
+</body>
+</html>
+```

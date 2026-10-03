@@ -1,0 +1,760 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orders</title>
+<style>
+  :root {
+    --gray-50: #f8f9fa;
+    --gray-100: #f1f3f5;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-500: #adb5bd;
+    --gray-600: #868e96;
+    --gray-700: #495057;
+    --gray-900: #212529;
+    --accent: #1c6dd0;
+    --accent-hover: #1558a8;
+    --accent-soft: #e7f0fb;
+    --green: #1a7f4b;
+    --green-soft: #e3f4ea;
+    --amber: #9a6400;
+    --amber-soft: #fdf1dc;
+    --red: #b3261e;
+    --red-soft: #fbe6e4;
+    --blue: #1c6dd0;
+    --blue-soft: #e7f0fb;
+    --radius: 8px;
+    --shadow: 0 1px 2px rgba(0,0,0,.06), 0 4px 12px rgba(0,0,0,.08);
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+    --fs-xs: 12px;
+    --fs-sm: 13px;
+    --fs-base: 14px;
+    --fs-lg: 16px;
+    --fs-xl: 20px;
+    --fs-2xl: 26px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--fs-base);
+    line-height: 1.5;
+    color: var(--gray-900);
+    background: var(--gray-50);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  header.app-header {
+    background: #fff;
+    border-bottom: 1px solid var(--gray-200);
+    padding: var(--space-4) var(--space-5);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  header.app-header h1 {
+    font-size: var(--fs-xl);
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.01em;
+  }
+
+  header.app-header .meta {
+    font-size: var(--fs-sm);
+    color: var(--gray-600);
+  }
+
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-5);
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    align-items: center;
+    margin-bottom: var(--space-4);
+  }
+
+  .search-wrap {
+    position: relative;
+    flex: 1 1 260px;
+    min-width: 200px;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: var(--gray-500);
+    pointer-events: none;
+  }
+
+  input[type="search"], select {
+    font: inherit;
+    color: inherit;
+    background: #fff;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius);
+    padding: 8px 12px;
+    width: 100%;
+    transition: border-color .12s, box-shadow .12s;
+  }
+
+  input[type="search"] { padding-left: 34px; }
+
+  input[type="search"]:hover, select:hover { border-color: var(--gray-500); }
+
+  input[type="search"]:focus-visible, select:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  select { width: auto; min-width: 150px; cursor: pointer; }
+
+  .result-count {
+    font-size: var(--fs-sm);
+    color: var(--gray-600);
+    margin-left: auto;
+    white-space: nowrap;
+  }
+
+  .table-card {
+    background: #fff;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .table-scroll { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-base);
+  }
+
+  thead th {
+    text-align: left;
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    color: var(--gray-700);
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0;
+    white-space: nowrap;
+  }
+
+  thead th button {
+    font: inherit;
+    font-weight: 600;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 10px var(--space-4);
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 0;
+  }
+
+  thead th button:hover { background: var(--gray-100); }
+
+  thead th button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  thead th .sort-icon {
+    width: 10px;
+    height: 10px;
+    flex: none;
+    opacity: .35;
+    transition: opacity .12s, transform .12s;
+  }
+
+  thead th[aria-sort="ascending"] .sort-icon { opacity: 1; }
+  thead th[aria-sort="descending"] .sort-icon { opacity: 1; transform: rotate(180deg); }
+
+  tbody td {
+    padding: 10px var(--space-4);
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td { border-bottom: 0; }
+
+  tbody tr { cursor: pointer; transition: background .1s; }
+  tbody tr:hover { background: var(--gray-50); }
+  tbody tr:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: -2px;
+  }
+
+  .mono { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+  .num { text-align: right; }
+
+  .badge {
+    display: inline-block;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    line-height: 1.6;
+  }
+
+  .badge.paid { background: var(--green-soft); color: var(--green); }
+  .badge.pending { background: var(--amber-soft); color: var(--amber); }
+  .badge.shipped { background: var(--blue-soft); color: var(--blue); }
+  .badge.refunded { background: var(--red-soft); color: var(--red); }
+
+  .empty-state {
+    padding: var(--space-6) var(--space-4);
+    text-align: center;
+    color: var(--gray-600);
+  }
+
+  .empty-state strong {
+    display: block;
+    color: var(--gray-900);
+    font-size: var(--fs-lg);
+    margin-bottom: var(--space-1);
+  }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-4);
+    border-top: 1px solid var(--gray-200);
+    background: #fff;
+    flex-wrap: wrap;
+  }
+
+  .pagination .page-info {
+    font-size: var(--fs-sm);
+    color: var(--gray-600);
+  }
+
+  .pagination .controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  .pagination button {
+    font: inherit;
+    font-size: var(--fs-sm);
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    background: #fff;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: background .1s, border-color .1s;
+  }
+
+  .pagination button:hover:not(:disabled) { background: var(--gray-100); border-color: var(--gray-500); }
+
+  .pagination button:focus-visible {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .pagination button[aria-current="page"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .pagination button:disabled { opacity: .45; cursor: not-allowed; }
+
+  .pagination .ellipsis {
+    padding: 0 4px;
+    color: var(--gray-500);
+    user-select: none;
+  }
+
+  /* Drawer */
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(33,37,41,.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .18s ease, visibility .18s;
+    z-index: 40;
+  }
+
+  .drawer-backdrop.open { opacity: 1; visibility: visible; }
+
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(440px, 100%);
+    background: #fff;
+    box-shadow: -8px 0 24px rgba(0,0,0,.12);
+    transform: translateX(100%);
+    transition: transform .22s ease;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .drawer.open { transform: translateX(0); }
+
+  .drawer-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .drawer-header h2 {
+    font-size: var(--fs-lg);
+    font-weight: 600;
+    margin: 0 0 2px;
+  }
+
+  .drawer-header .sub {
+    font-size: var(--fs-sm);
+    color: var(--gray-600);
+  }
+
+  .drawer-close {
+    font: inherit;
+    background: none;
+    border: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--gray-600);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+  }
+
+  .drawer-close:hover { background: var(--gray-100); color: var(--gray-900); }
+  .drawer-close:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  .drawer-body {
+    padding: var(--space-5);
+    overflow-y: auto;
+    flex: 1;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: var(--space-2) var(--space-4);
+    margin: 0 0 var(--space-5);
+    font-size: var(--fs-base);
+  }
+
+  .detail-grid dt { color: var(--gray-600); font-size: var(--fs-sm); }
+  .detail-grid dd { margin: 0; }
+
+  .drawer-body h3 {
+    font-size: var(--fs-sm);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    color: var(--gray-600);
+    margin: 0 0 var(--space-3);
+    font-weight: 600;
+  }
+
+  .line-items {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--fs-sm);
+    margin-bottom: var(--space-4);
+  }
+
+  .line-items th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--gray-600);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 6px 0;
+  }
+
+  .line-items td {
+    padding: 6px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+
+  .line-items .num { text-align: right; }
+
+  .totals {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--fs-sm);
+    padding: 4px 0;
+  }
+
+  .totals.grand {
+    font-size: var(--fs-base);
+    font-weight: 600;
+    border-top: 1px solid var(--gray-200);
+    margin-top: var(--space-2);
+    padding-top: var(--space-3);
+  }
+
+  .drawer-footer {
+    padding: var(--space-4) var(--space-5);
+    border-top: 1px solid var(--gray-200);
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .btn {
+    font: inherit;
+    font-weight: 600;
+    font-size: var(--fs-sm);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background .1s, border-color .1s;
+  }
+
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary { background: #fff; color: var(--gray-700); border-color: var(--gray-300); }
+  .btn-secondary:hover { background: var(--gray-100); border-color: var(--gray-500); }
+  .btn:focus-visible { outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+
+  .sample-note {
+    font-size: var(--fs-xs);
+    color: var(--gray-600);
+    margin-top: var(--space-3);
+    text-align: right;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+
+  @media (max-width: 640px) {
+    main { padding: var(--space-4); }
+    header.app-header { padding: var(--space-3) var(--space-4); }
+    .result-count { margin-left: 0; width: 100%; }
+    .detail-grid { grid-template-columns: 100px 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1>Orders</h1>
+  <span class="meta">Acme Storefront</span>
+</header>
+
+<main>
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <circle cx="7" cy="7" r="4.5"></circle>
+        <path d="M10.5 10.5L14 14"></path>
+      </svg>
+      <input type="search" id="search" placeholder="Search order ID, customer, or email" aria-label="Search orders">
+    </div>
+    <select id="statusFilter" aria-label="Filter by status">
+      <option value="">All statuses</option>
+      <option value="paid">Paid</option>
+      <option value="pending">Pending</option>
+      <option value="shipped">Shipped</option>
+      <option value="refunded">Refunded</option>
+    </select>
+    <span class="result-count" id="resultCount"></span>
+  </div>
+
+  <div class="table-card">
+    <div class="table-scroll">
+      <table id="ordersTable">
+        <thead>
+          <tr>
+            <th aria-sort="none"><button data-sort="id">Order <svg class="sort-icon" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 1l4 5H1z"/></svg></button></th>
+            <th aria-sort="none"><button data-sort="customer">Customer <svg class="sort-icon" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 1l4 5H1z"/></svg></button></th>
+            <th aria-sort="none"><button data-sort="date">Date <svg class="sort-icon" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 1l4 5H1z"/></svg></button></th>
+            <th aria-sort="none"><button data-sort="status">Status <svg class="sort-icon" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 1l4 5H1z"/></svg></button></th>
+            <th aria-sort="none" style="text-align:right"><button data-sort="total" style="justify-content:flex-end">Total <svg class="sort-icon" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 1l4 5H1z"/></svg></button></th>
+          </tr>
+        </thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+  <p class="sample-note">Sample data — replace before launch.</p>
+</main>
+
+<div class="drawer-backdrop" id="backdrop"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+  <div class="drawer-header">
+    <div>
+      <h2 id="drawerTitle">Order</h2>
+      <div class="sub" id="drawerSub"></div>
+    </div>
+    <button class="drawer-close" id="drawerClose" aria-label="Close details">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M3 3l10 10M13 3L3 13"></path>
+      </svg>
+    </button>
+  </div>
+  <div class="drawer-body" id="drawerBody"></div>
+  <div class="drawer-footer">
+    <button class="btn btn-primary">Mark shipped</button>
+    <button class="btn btn-secondary">Refund</button>
+  </div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  // Sample data. Replace before launch.
+  var ORDERS = [
+    { id: "ORD-1042", customer: "Maya Chen", email: "maya.chen@example.com", date: "2024-06-14", status: "paid", total: 128.00, items: [
+      { name: "Wireless Keyboard", qty: 1, price: 89.00 },
+      { name: "USB-C Cable 2m", qty: 2, price: 19.50 }
+    ]},
+    { id: "ORD-1041", customer: "Daniel Okafor", email: "d.okafor@example.com", date: "2024-06-14", status: "pending", total: 42.50, items: [
+      { name: "Desk Lamp", qty: 1, price: 42.50 }
+    ]},
+    { id: "ORD-1040", customer: "Priya Nair", email: "priya.nair@example.com", date: "2024-06-13", status: "shipped", total: 310.75, items: [
+      { name: "27\" Monitor", qty: 1, price: 249.00 },
+      { name: "Monitor Arm", qty: 1, price: 61.75 }
+    ]},
+    { id: "ORD-1039", customer: "Tomás Rivera", email: "tomas.r@example.com", date: "2024-06-13", status: "paid", total: 74.20, items: [
+      { name: "Mechanical Pencil Set", qty: 1, price: 24.20 },
+      { name: "Notebook A5", qty: 2, price: 25.00 }
+    ]},
+    { id: "ORD-1038", customer: "Aisha Bello", email: "aisha.bello@example.com", date: "2024-06-12", status: "refunded", total: 19.99, items: [
+      { name: "Phone Stand", qty: 1, price: 19.99 }
+    ]},
+    { id: "ORD-1037", customer: "Liam Walsh", email: "liam.walsh@example.com", date: "2024-06-12", status: "paid", total: 205.00, items: [
+      { name: "Ergonomic Chair", qty: 1, price: 205.00 }
+    ]},
+    { id: "ORD-1036", customer: "Sofia Rossi", email: "sofia.rossi@example.com", date: "2024-06-11", status: "shipped", total: 96.40, items: [
+      { name: "Bluetooth Speaker", qty: 1, price: 96.40 }
+    ]},
+    { id: "ORD-1035", customer: "Kenji Tanaka", email: "kenji.t@example.com", date: "2024-06-11", status: "pending", total: 58.00, items: [
+      { name: "Webcam 1080p", qty: 1, price: 58.00 }
+    ]},
+    { id: "ORD-1034", customer: "Grace Mwangi", email: "grace.m@example.com", date: "2024-06-10", status: "paid", total: 143.25, items: [
+      { name: "External SSD 1TB", qty: 1, price: 143.25 }
+    ]},
+    { id: "ORD-1033", customer: "Noah Fischer", email: "noah.fischer@example.com", date: "2024-06-10", status: "shipped", total: 67.80, items: [
+      { name: "Mouse Pad XL", qty: 1, price: 27.80 },
+      { name: "Cable Organizer", qty: 2, price: 20.00 }
+    ]},
+    { id: "ORD-1032", customer: "Elena Petrova", email: "elena.p@example.com", date: "2024-06-09", status: "paid", total: 412.00, items: [
+      { name: "Laptop Stand", qty: 1, price: 62.00 },
+      { name: "Docking Station", qty: 1, price: 350.00 }
+    ]},
+    { id: "ORD-1031", customer: "Omar Haddad", email: "omar.haddad@example.com", date: "2024-06-09", status: "refunded", total: 33.50, items: [
+      { name: "Screen Cleaner Kit", qty: 1, price: 33.50 }
+    ]},
+    { id: "ORD-1030", customer: "Hannah Kim", email: "hannah.kim@example.com", date: "2024-06-08", status: "pending", total: 88.90, items: [
+      { name: "Desk Mat", qty: 1, price: 48.90 },
+      { name: "Pen Holder", qty: 2, price: 20.00 }
+    ]},
+    { id: "ORD-1029", customer: "Lucas Silva", email: "lucas.silva@example.com", date: "2024-06-08", status: "paid", total: 156.00, items: [
+      { name: "Noise-Cancelling Headphones", qty: 1, price: 156.00 }
+    ]},
+    { id: "ORD-1028", customer: "Fatima Zahra", email: "fatima.z@example.com", date: "2024-06-07", status: "shipped", total: 29.99, items: [
+      { name: "Travel Adapter", qty: 1, price: 29.99 }
+    ]},
+    { id: "ORD-1027", customer: "Ethan Brooks", email: "ethan.brooks@example.com", date: "2024-06-07", status: "paid", total: 234.50, items: [
+      { name: "Graphics Tablet", qty: 1, price: 234.50 }
+    ]},
+    { id: "ORD-1026", customer: "Isabella Costa", email: "isabella.c@example.com", date: "2024-06-06", status: "pending", total: 51.20, items: [
+      { name: "Wireless Mouse", qty: 1, price: 51.20 }
+    ]},
+    { id: "ORD-1025", customer: "Yusuf Demir", email: "yusuf.demir@example.com", date: "2024-06-06", status: "paid", total: 178.75, items: [
+      { name: "Portable Charger", qty: 1, price: 78.75 },
+      { name: "Charging Cable", qty: 2, price: 50.00 }
+    ]},
+    { id: "ORD-1024", customer: "Chloe Martin", email: "chloe.martin@example.com", date: "2024-06-05", status: "shipped", total: 92.00, items: [
+      { name: "Desk Organizer", qty: 1, price: 92.00 }
+    ]},
+    { id: "ORD-1023", customer: "Raj Patel", email: "raj.patel@example.com", date: "2024-06-05", status: "refunded", total: 45.00, items: [
+      { name: "HDMI Cable 3m", qty: 1, price: 45.00 }
+    ]},
+    { id: "ORD-1022", customer: "Nina Novak", email: "nina.novak@example.com", date: "2024-06-04", status: "paid", total: 267.30, items: [
+      { name: "Standing Desk Converter", qty: 1, price: 267.30 }
+    ]},
+    { id: "ORD-1021", customer: "Carlos Mendes", email: "carlos.m@example.com", date: "2024-06-04", status: "pending", total: 63.40, items: [
+      { name: "Laptop Sleeve", qty: 1, price: 63.40 }
+    ]},
+    { id: "ORD-1020", customer: "Amara Osei", email: "amara.osei@example.com", date: "2024-06-03", status: "paid", total: 119.99, items: [
+      { name: "Smart Plug Pack", qty: 1, price: 119.99 }
+    ]},
+    { id: "ORD-1019", customer: "Jonas Weber", email: "jonas.weber@example.com", date: "2024-06-03", status: "shipped", total: 84.60, items: [
+      { name: "Keyboard Wrist Rest", qty: 1, price: 34.60 },
+      { name: "Mouse Bungee", qty: 1, price: 50.00 }
+    ]},
+    { id: "ORD-1018", customer: "Leila Haddad", email: "leila.h@example.com", date: "2024-06-02", status: "paid", total: 199.00, items: [
+      { name: "Document Scanner", qty: 1, price: 199.00 }
+    ]},
+    { id: "ORD-1017", customer: "Marcus Johnson", email: "marcus.j@example.com", date: "2024-06-02", status: "pending", total: 37.25, items: [
+      { name: "Sticky Notes Pack", qty: 1, price: 37.25 }
+    ]},
+    { id: "ORD-1016", customer: "Sara Lindqvist", email: "sara.l@example.com", date: "2024-06-01", status: "paid", total: 145.80, items: [
+      { name: "Desk Fan", qty: 1, price: 145.80 }
+    ]},
+    { id: "ORD-1015", customer: "Ahmed Farouk", email: "ahmed.farouk@example.com", date: "2024-06-01", status: "shipped", total: 72.00, items: [
+      { name: "Label Printer", qty: 1, price: 72.00 }
+    ]}
+  ];
+
+  var PAGE_SIZE = 8;
+  var state = {
+    search: "",
+    status: "",
+    sortKey: "date",
+    sortDir: "desc",
+    page: 1
+  };
+
+  var els = {
+    search: document.getElementById("search"),
+    statusFilter: document.getElementById("statusFilter"),
+    body: document.getElementById("ordersBody"),
+    pagination: document.getElementById("pagination"),
+    resultCount: document.getElementById("resultCount"),
+    table: document.getElementById("ordersTable"),
+    backdrop: document.getElementById("backdrop"),
+    drawer: document.getElementById("drawer"),
+    drawerTitle: document.getElementById("drawerTitle"),
+    drawerSub: document.getElementById("drawerSub"),
+    drawerBody: document.getElementById("drawerBody"),
+    drawerClose: document.getElementById("drawerClose")
+  };
+
+  var lastFocused = null;
+
+  function formatCurrency(n) {
+    return "$" + n.toFixed(2);
+  }
+
+  function formatDate(iso) {
+    var parts = iso.split("-");
+    var d = new Date(Date.UTC(+parts[0], +parts[1] - 1, +parts[2]));
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+  }
+
+  function statusLabel(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  function getFiltered() {
+    var q = state.search.trim().toLowerCase();
+    var rows = ORDERS.filter(function (o) {
+      if (state.status && o.status !== state.status) return false;
+      if (!q) return true;
+      return o.id.toLowerCase().indexOf(q) !== -1 ||
+             o.customer.toLowerCase().indexOf(q) !== -1 ||
+             o.email.toLowerCase().indexOf(q) !== -1;
+    });
+
+    var key = state.sortKey;
+    var dir = state.sortDir === "asc" ? 1 : -1;
+    rows.sort(function (a, b) {
+      var av = a[key], bv = b[key];
+      if (key === "total") return (av - bv) * dir;
+      if (key === "date") return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
+      av = String(av).toLowerCase();
+      bv = String(bv).toLowerCase();
+      return (av < bv ? -1 : av > bv ? 1 : 0) * dir;
+    });
+    return rows;
+  }
+
+  function render() {
+    var rows = getFiltered();
+    var totalPages = Math.max(1, Math.ceil(rows.length / PAGE_SIZE));
+    if (state.page > totalPages) state.page = totalPages;
+    var start = (state.page - 1) * PAGE_SIZE;
+    var pageRows = rows.slice(start, start + PAGE_SIZE);
+
+    els.body.innerHTML = "";
+
+    if (pageRows.length === 0) {
+      var tr = document.createElement("tr");
+      var td = document.createElement("td");
+      td.colSpan = 5;
+      td.className = "empty-state";
+      td.innerHTML = "<strong>No orders match</strong>Adjust the search or status filter.";
+      tr.appendChild(td);
+      els.body.appendChild(tr);
+    } else {
+      pageRows.forEach(function (o) {
+        var tr = document.createElement("tr");
+        tr.tabIndex = 0;
+        tr.setAttribute("data-id", o.id);
+        tr.innerHTML =
+          '<td class="mono">' + o.id + '</td>' +
+          '<td>' + escapeHtml(o.customer) + '</td>' +
+          '<td class="mono">' + formatDate(o.date) + '</td>' +
+          '<td><span class="badge ' + o.status + '">' + statusLabel(o.status) + '</span></td>' +
+          '<td class="num mono">' + formatCurrency(o.total) + '</td>';
+        tr.addEventListener("click", function () { openDrawer(o.id); });
+        tr.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openDrawer(o.id);
+          }
+        });
+        els.body.appendChild(tr);
+      });
+    }
+
+    els.resultCount.textContent = rows.length + (rows.length === 1 ? " order" : " orders");
+
+    renderPagination(totalPages);
+    updateSortIndicators();
+  }
+
+  function renderPagination(totalPages) {
+    els.pagination.innerHTML = "";
+    var info = document.createElement("span");
+    info.className = "page-info";
+   

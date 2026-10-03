@@ -4,9 +4,9 @@
 // Engineering module, at any git revision), on two generators, and the pages are
 // measured and judged.
 //
-//   node scripts/frontend-experiment.mjs generate <dir> [--set train|test|all]
+//   node scripts/frontend-experiment.mjs generate <dir> [--set train|test|test2|all]
 //        [--gen deepseek,claude] [--cond baseline,v2=WORKTREE,v1.1=7e7b18b] [--force]
-//   node scripts/frontend-experiment.mjs analyze  <dir> [--set train|test|all]
+//   node scripts/frontend-experiment.mjs analyze  <dir> [--set train|test|test2|all]
 //   node scripts/frontend-experiment.mjs judge    <dir> --subject v2 --against baseline,v1.1
 //        [--set test] [--gen claude,deepseek]
 //   node scripts/frontend-experiment.mjs montage  <dir> --prompt saas --out file.png
@@ -15,7 +15,9 @@
 // `analyze`, `judge` and `montage` render pages in Chromium (Playwright) and need
 // `npm i --no-save playwright axe-core` (dev-only; the package has no runtime
 // dependencies). `judge` asks Claude, blind and in both orders, to compare two
-// rendered pages. A condition is `name` (no SuperMD) or `name=REV`: SuperMD as it
+// rendered pages. Prompt sets: `train` (used while writing the module), `test` and
+// `test2` (held out when the run was made), `code` (a React component, scored by
+// keyword presence). A condition is `name` (no SuperMD) or `name=REV`: SuperMD as it
 // was at git revision REV, or WORKTREE for the files on disk.
 //
 // Measured: emoji used as icons, hard slop on the visible text, gradients, SVG
@@ -65,6 +67,9 @@ export const PROMPTS = {
   // test: held out, never used to tune the module
   meetup: { set: 'test', kind: 'page', text: `Create a single-file HTML page (${NO_EXT}) for Jakarta Rust Night, a monthly community meetup: schedule, speakers, venue, and an RSVP form. Output only the HTML.` },
   orders: { set: 'test', kind: 'page', text: `Create a single-file HTML admin page (${NO_EXT}) with an orders table: search, status filter, sortable columns, pagination, and a detail drawer. Use sample data. Output only the HTML.` },
+  // test2: a second held-out round, written after the first round exposed what to tune
+  portfolio: { set: 'test2', kind: 'page', text: `Create a single-file HTML portfolio website (${NO_EXT}) for a freelance photographer in Yogyakarta: intro, selected work, services, and contact. Output only the HTML.` },
+  docs: { set: 'test2', kind: 'page', text: `Create a single-file HTML documentation page (${NO_EXT}) for a REST endpoint, POST /v1/invoices: description, parameters table, request and response examples, error codes, and a sidebar navigation. Output only the HTML.` },
   // engineering check, scored by keyword presence
   table: { set: 'code', kind: 'code', text: 'Write a React component `UserTable` that shows a list of users fetched from /api/users, with sorting by name and pagination. Output the component code.' },
 };
@@ -173,7 +178,9 @@ async function loadModules() {
   return { chromium: playwright.chromium, axeSource };
 }
 
-const fence = (text, lang) => { const m = text.match(new RegExp('```' + lang + '\\n([\\s\\S]*?)```')); return m ? m[1] : text; };
+// Takes the first fenced block. An unclosed fence (a generation cut off at the output limit)
+// still yields the partial page instead of leaking a literal ```html into it.
+const fence = (text, lang) => { const m = text.match(new RegExp('```' + lang + '\\n([\\s\\S]*?)(?:```|$)')); return m ? m[1] : text; };
 const CLAIMS = /no credit card|cancel anytime|free forever|(?:set up|setup|launch|running) in (?:under )?\w+ minutes|takes? \w+ minutes|in minutes|thousands of|trusted by|loved by|\d+ ?% (?:faster|more|less)|\d[\d,.]*\+? (?:teams|customers|users|companies)\b/gi;
 
 const STATES = {
@@ -326,7 +333,7 @@ async function judge(dir) {
       }
     }
   } finally { await browser.close(); }
-  writeFileSync(join(dir, `judge-${subject}.json`), JSON.stringify(out, null, 2) + '\n');
+  writeFileSync(join(dir, `judge-${subject}-${opt('set', 'train')}.json`), JSON.stringify(out, null, 2) + '\n');
   console.log(`| prompt | generator | ${subject} vs | result (both orders) |\n|---|---|---|---|`);
   for (const r of out) console.log(`| ${r.prompt} | ${r.generator} | ${r.against} | ${r.result === subject ? `**${subject} wins**` : r.result === r.against ? `${r.against} wins` : r.result} |`);
   for (const other of against) {
@@ -340,6 +347,7 @@ async function judge(dir) {
 async function montage(dir) {
   const { chromium } = await loadModules();
   const id = opt('prompt'), outFile = resolve(opt('out', 'montage.png'));
+  const labels = Object.fromEntries(rest.flatMap((a, i) => (a === '--label' ? [rest[i + 1].split(/=(.*)/s).slice(0, 2)] : [])));
   const gens = list(opt('gen', 'deepseek,claude')), conds = opt('cond') ? list(opt('cond')).map(c => c.split('=')[0]) : conditionsIn(dir);
   const tmp = mkdtempSync(join(tmpdir(), 'fe-montage-'));
   const browser = await chromium.launch();
@@ -354,17 +362,54 @@ async function montage(dir) {
       await settle(page);
       await page.screenshot({ path: png, clip: { x: 0, y: 0, width: 1280, height: 1400 }, fullPage: true });
       await page.close();
-      cells.push({ label: `${g === 'claude' ? 'Claude Code' : 'DeepSeek'} · ${c}`, png, good: c !== 'baseline' });
+      cells.push({ label: `${g === 'claude' ? 'Claude Code' : 'DeepSeek'} · ${labels[c] || c}`, png, color: c === 'baseline' ? '#ff7b72' : c === conds[conds.length - 1] ? '#7ee787' : '#e3b341' });
     }
     const w = Math.floor(1960 / Math.max(cells.length, 1)) - 10;
-    const html = `<body style="margin:0;background:#0b0f17;font-family:'DejaVu Sans',sans-serif"><div style="display:flex;gap:10px;padding:14px">${cells.map(s => `<div style="width:${w}px"><div style="color:${s.good ? '#7ee787' : '#ff7b72'};font:700 12px 'DejaVu Sans',sans-serif;letter-spacing:.5px;text-transform:uppercase;padding:2px 2px 8px">${s.label}</div><div style="border:1px solid #30363d;border-radius:8px;background:#fff;overflow:hidden"><img src="${pathToFileURL(s.png)}" style="width:${w}px;display:block"></div></div>`).join('')}</div></body>`;
+    const html = `<body style="margin:0;background:#0b0f17;font-family:'DejaVu Sans',sans-serif"><div style="display:flex;gap:10px;padding:14px">${cells.map(s => `<div style="width:${w}px"><div style="color:${s.color};font:700 12px 'DejaVu Sans',sans-serif;letter-spacing:.5px;text-transform:uppercase;padding:2px 2px 8px">${s.label}</div><div style="border:1px solid #30363d;border-radius:8px;background:#fff;overflow:hidden"><img src="${pathToFileURL(s.png)}" style="width:${w}px;display:block"></div></div>`).join('')}</div></body>`;
     writeFileSync(join(tmp, 'm.html'), html);
     const page = await browser.newPage({ viewport: { width: 2000, height: 900 } });
     await page.goto(pathToFileURL(join(tmp, 'm.html')).href);
     await page.waitForTimeout(500);
-    await page.screenshot({ path: outFile, fullPage: true });
+    const height = await page.evaluate(() => Math.ceil(document.body.firstElementChild.getBoundingClientRect().bottom + 14));
+    await page.setViewportSize({ width: 2000, height });
+    await page.screenshot({ path: outFile });
     await page.close();
   } finally { await browser.close(); rmSync(tmp, { recursive: true, force: true }); }
+}
+
+// ------------------------------------------------------------------------- summary
+// Aggregates analysis.json and judge-*.json: objective counts per condition, split
+// into the prompts the module was tuned on and the held-out ones, plus the blind
+// judge's tally per subject, set, and comparison.
+function summary(dir) {
+  const analysis = JSON.parse(readFileSync(join(dir, 'analysis.json'), 'utf8'));
+  const setOf = id => PROMPTS[id].set;
+  const groups = { 'tuned on (train)': ['train'], 'held out (test, test2)': ['test', 'test2'] };
+  const metrics = [['emoji icons', r => r.emojiIcons], ['gradients', r => r.gradients], ['unsupported claims', r => r.claims], ['`[confirm]` placeholders', r => r.placeholders],
+    ['axe violations', r => r.axeViolations], ['serious axe violations', r => r.axeSerious], ['overflow at 375px (pages)', r => (r.overflow375 ? 1 : 0)],
+    ['focus style (pages)', r => (r.focusStyle ? 1 : 0)], ['reduced-motion rule (pages)', r => (r.reducedMotion ? 1 : 0)], ['all four landmarks (pages)', r => (r.landmarks >= 4 ? 1 : 0)],
+    ['design-token uses per page', r => r.tokens, true], ['words per page', r => r.words, true]];
+  const conds = opt('cond') ? list(opt('cond')) : [...new Set(Object.keys(analysis).map(k => k.split('.')[2]))];
+  for (const [label, sets] of Object.entries(groups)) {
+    const keys = Object.keys(analysis).filter(k => sets.includes(setOf(k.split('.')[0])));
+    const pages = c => keys.filter(k => k.endsWith(`.${c}`));
+    console.log(`\n#### Objective counts, prompts ${label}: ${pages(conds[0]).length} pages per condition\n`);
+    console.log(`| measure | ${conds.join(' | ')} |\n|---|${conds.map(() => '---').join('|')}|`);
+    for (const [name, fn, mean] of metrics) {
+      console.log(`| ${name} | ${conds.map(c => { const v = pages(c).reduce((n, k) => n + fn(analysis[k]), 0); return mean ? Math.round(v / pages(c).length) : v; }).join(' | ')} |`);
+    }
+  }
+  const judges = readdirSync(dir).filter(f => /^judge-.+-.+\.json$/.test(f)).sort();
+  console.log('\n#### Blind visual judge (both orders must agree to count as a win or loss)\n');
+  console.log('| subject | prompt set | against | wins | ties | losses |\n|---|---|---|---|---|---|');
+  for (const f of judges) {
+    const rows = JSON.parse(readFileSync(join(dir, f), 'utf8'));
+    for (const other of [...new Set(rows.map(r => r.against))]) {
+      const r = rows.filter(x => x.against === other), subj = r[0].subject;
+      const w = r.filter(x => x.result === subj).length, l = r.filter(x => x.result === other).length;
+      console.log(`| ${subj} | ${f.replace(/^judge-.+-|\.json$/g, '')} | ${other} | ${w} | ${r.length - w - l} | ${l} |`);
+    }
+  }
 }
 
 // ------------------------------------------------------------------------------ main
@@ -373,4 +418,5 @@ if (cmd === 'generate' && dir) await generate(dir);
 else if (cmd === 'analyze' && dir) await analyze(dir);
 else if (cmd === 'judge' && dir) await judge(dir);
 else if (cmd === 'montage' && dir) await montage(dir);
+else if (cmd === 'summary' && dir) summary(dir);
 else { console.error('usage: frontend-experiment.mjs generate|analyze|judge|montage <dir> [options]  (see the header comment)'); process.exit(2); }

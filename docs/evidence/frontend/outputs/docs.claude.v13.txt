@@ -1,0 +1,358 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POST /v1/invoices | API Reference</title>
+<!-- Sample content to replace before publishing: host (api.example.com, pay.example.com), IDs, limits, rate-limit and scope names, error codes, and all example amounts. -->
+<style>
+:root {
+  --gray-50: #f7f6f2;
+  --gray-100: #eeede8;
+  --gray-200: #dddbd3;
+  --gray-300: #c4c1b6;
+  --gray-600: #55534b;
+  --gray-700: #3d3b35;
+  --gray-900: #1c1b18;
+  --code-bg: #14201a;
+  --code-fg: #e8efe9;
+  --accent: #166534;
+  --accent-soft: #e3f0e6;
+  --on-accent: #ffffff;
+  --t-xs: 0.75rem;
+  --t-sm: 0.875rem;
+  --t-base: 1rem;
+  --t-lg: 1.25rem;
+  --t-xl: 1.75rem;
+  --t-2xl: 2.5rem;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s6: 24px; --s8: 32px; --s12: 48px;
+  --radius: 6px;
+  --shadow: 0 1px 2px rgba(28, 27, 24, .08), 0 4px 12px rgba(28, 27, 24, .06);
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: var(--s6); }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body {
+  margin: 0;
+  font: var(--t-base)/1.6 var(--sans);
+  color: var(--gray-900);
+  background: var(--gray-50);
+}
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { color: var(--gray-900); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+code { font: var(--t-sm) var(--mono); background: var(--gray-100); padding: 1px var(--s1); border-radius: 3px; }
+.skip { position: absolute; left: var(--s2); top: -48px; background: var(--accent); color: var(--on-accent); padding: var(--s2) var(--s4); border-radius: var(--radius); z-index: 10; }
+.skip:focus { top: var(--s2); }
+
+.topbar { display: flex; align-items: center; gap: var(--s3); padding: var(--s3) var(--s6); border-bottom: 1px solid var(--gray-200); background: #fff; font-size: var(--t-sm); }
+.topbar strong { font-size: var(--t-base); }
+.topbar span { color: var(--gray-600); }
+
+.layout { display: grid; grid-template-columns: 248px minmax(0, 1fr); max-width: 1120px; margin: 0 auto; }
+.side { position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto; padding: var(--s8) var(--s4) var(--s8) var(--s6); }
+.side h2 { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: .08em; color: var(--gray-600); margin: 0 0 var(--s3); }
+.side ul { list-style: none; margin: 0 0 var(--s6); padding: 0; border-left: 1px solid var(--gray-200); }
+.side a { display: block; padding: var(--s1) var(--s3); margin-left: -1px; border-left: 2px solid transparent; color: var(--gray-700); text-decoration: none; font-size: var(--t-sm); }
+.side a:hover { color: var(--accent); background: var(--accent-soft); }
+.side a[aria-current="true"] { border-left-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+main { padding: var(--s8) var(--s6) var(--s12); min-width: 0; }
+section { padding-bottom: var(--s8); margin-bottom: var(--s8); border-bottom: 1px solid var(--gray-200); }
+section:last-of-type { border-bottom: 0; }
+h1 { font-size: var(--t-2xl); line-height: 1.15; margin: 0 0 var(--s3); letter-spacing: -.02em; }
+h2 { font-size: var(--t-xl); line-height: 1.2; margin: 0 0 var(--s4); letter-spacing: -.01em; }
+h3 { font-size: var(--t-lg); margin: var(--s6) 0 var(--s2); }
+p { margin: 0 0 var(--s4); max-width: 68ch; }
+.lede { font-size: var(--t-lg); color: var(--gray-700); line-height: 1.5; }
+.note { font-size: var(--t-xs); color: var(--gray-600); }
+
+/* Signature element: the endpoint as a tear-off invoice stub */
+.stub { background: #fff; border: 1px solid var(--gray-300); border-radius: var(--radius); box-shadow: var(--shadow); margin: var(--s6) 0 var(--s3); position: relative; }
+.stub-line { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s3); padding: var(--s4) var(--s6); font-family: var(--mono); font-size: var(--t-lg); }
+.method { background: var(--accent); color: var(--on-accent); font-size: var(--t-sm); font-weight: 700; padding: var(--s1) var(--s3); border-radius: var(--radius); letter-spacing: .04em; }
+.stub-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s4); padding: var(--s4) var(--s6); border-top: 2px dashed var(--gray-300); font-size: var(--t-sm); }
+.stub-facts dt { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: .08em; color: var(--gray-600); }
+.stub-facts dd { margin: 0; font-weight: 600; }
+.stub::before, .stub::after { content: ""; position: absolute; top: calc(var(--s4) + 36px + var(--s4) - 9px); width: 16px; height: 16px; border-radius: 50%; background: var(--gray-50); border: 1px solid var(--gray-300); }
+.stub::before { left: -9px; clip-path: inset(0 0 0 50%); }
+.stub::after { right: -9px; clip-path: inset(0 50% 0 0); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--gray-200); border-radius: var(--radius); background: #fff; margin-bottom: var(--s4); }
+table { width: 100%; min-width: 600px; border-collapse: collapse; font-size: var(--t-sm); }
+th, td { text-align: left; vertical-align: top; padding: var(--s3) var(--s4); border-bottom: 1px solid var(--gray-200); }
+th { font-size: var(--t-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--gray-600); background: var(--gray-100); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+tbody tr:hover { background: var(--gray-50); }
+td:first-child { white-space: nowrap; }
+td .name { font: 600 var(--t-sm) var(--mono); }
+.type { font-family: var(--mono); color: var(--gray-600); }
+.tag { display: inline-block; font-size: var(--t-xs); font-weight: 600; padding: 0 var(--s2); border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.tag.opt { background: var(--gray-100); color: var(--gray-600); }
+.status { font: 700 var(--t-sm) var(--mono); font-variant-numeric: tabular-nums; }
+.status.ok { color: var(--accent); }
+
+.code { position: relative; margin: 0 0 var(--s4); }
+.code-label { display: flex; justify-content: space-between; align-items: center; background: #0c1510; color: #b6c4ba; font: var(--t-xs) var(--mono); padding: var(--s2) var(--s4); border-radius: var(--radius) var(--radius) 0 0; }
+.code-label button { font: inherit; color: var(--code-fg); background: transparent; border: 1px solid #3c4d42; border-radius: 4px; padding: 2px var(--s3); cursor: pointer; }
+.code-label button:hover { background: #22332a; }
+.code-label button:active { background: #2e4437; }
+.code-label button:disabled { opacity: .5; cursor: not-allowed; }
+pre { margin: 0; padding: var(--s4); background: var(--code-bg); color: var(--code-fg); border-radius: 0 0 var(--radius) var(--radius); overflow-x: auto; font: var(--t-sm)/1.55 var(--mono); tab-size: 2; }
+.k { color: #9fd3b0; } .s { color: #f3d98b; } .n { color: #f0a98a; } .b { color: #b8a9f0; }
+
+footer { border-top: 1px solid var(--gray-200); background: #fff; padding: var(--s6); font-size: var(--t-sm); color: var(--gray-600); }
+footer div { max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s3); }
+
+@media (max-width: 768px) {
+  .layout { display: block; }
+  .side { position: static; height: auto; padding: var(--s4) var(--s6) 0; border-bottom: 1px solid var(--gray-200); background: #fff; }
+  .side ul { display: flex; flex-wrap: wrap; gap: var(--s1) var(--s2); border-left: 0; margin-bottom: var(--s4); }
+  .side a { border: 1px solid var(--gray-200); border-radius: var(--radius); margin: 0; }
+  .side a[aria-current="true"] { border-color: var(--accent); }
+  h1 { font-size: var(--t-xl); }
+  .stub-line { font-size: var(--t-base); padding: var(--s4); }
+  .stub-facts { grid-template-columns: 1fr; padding: var(--s4); }
+  .stub::before, .stub::after { display: none; }
+  main { padding: var(--s6) var(--s4) var(--s8); }
+  .topbar { padding: var(--s3) var(--s4); }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <strong>Billing API</strong>
+  <span>Reference</span>
+</header>
+
+<div class="layout">
+  <aside class="side">
+    <nav aria-label="On this page">
+      <h2>Create invoice</h2>
+      <ul>
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#headers">Headers</a></li>
+        <li><a href="#parameters">Body parameters</a></li>
+        <li><a href="#request">Request example</a></li>
+        <li><a href="#response">Response</a></li>
+        <li><a href="#errors">Error codes</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main id="main">
+    <section id="overview">
+      <h1>Create an invoice</h1>
+      <p class="lede">Creates an invoice for an existing customer. With <code>auto_finalize</code> unset, the invoice is a draft you can still edit; with it set, the invoice is numbered and open for payment immediately.</p>
+
+      <div class="stub">
+        <div class="stub-line"><span class="method">POST</span><span>/v1/invoices</span></div>
+        <dl class="stub-facts">
+          <div><dt>Auth</dt><dd>Bearer token, <code>invoices:write</code></dd></div>
+          <div><dt>Idempotent</dt><dd>Via <code>Idempotency-Key</code></dd></div>
+          <div><dt>Success</dt><dd>201 with the invoice object</dd></div>
+        </dl>
+      </div>
+      <p class="note">Sample specification: hosts, IDs, limits, and amounts on this page are illustrative.</p>
+
+      <p>Amounts are integers in the currency's smallest unit, so <code>4500</code> in <code>usd</code> is $45.00. Totals are computed server-side; do not send them.</p>
+    </section>
+
+    <section id="headers">
+      <h2>Headers</h2>
+      <div class="table-wrap" role="region" aria-label="Headers table" tabindex="0">
+        <table>
+          <thead><tr><th scope="col">Header</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+            <tr><td><span class="name">Authorization</span></td><td><span class="tag">required</span></td><td><code>Bearer &lt;api_key&gt;</code>. The key needs the <code>invoices:write</code> scope.</td></tr>
+            <tr><td><span class="name">Content-Type</span></td><td><span class="tag">required</span></td><td>Must be <code>application/json</code>.</td></tr>
+            <tr><td><span class="name">Idempotency-Key</span></td><td><span class="tag opt">recommended</span></td><td>Unique string up to 64 characters. A retry with the same key and body returns the original response instead of creating a second invoice.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="parameters">
+      <h2>Body parameters</h2>
+      <div class="table-wrap" role="region" aria-label="Body parameters table" tabindex="0">
+        <table>
+          <thead><tr><th scope="col">Name</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+            <tr><td><span class="name">customer_id</span></td><td class="type">string</td><td><span class="tag">required</span></td><td>ID of the customer being billed.</td></tr>
+            <tr><td><span class="name">currency</span></td><td class="type">string</td><td><span class="tag">required</span></td><td>Three-letter ISO 4217 code, lowercase.</td></tr>
+            <tr><td><span class="name">line_items</span></td><td class="type">array</td><td><span class="tag">required</span></td><td>1 to 100 items.</td></tr>
+            <tr><td><span class="name">line_items[].description</span></td><td class="type">string</td><td><span class="tag">required</span></td><td>Shown on the invoice. Maximum 250 characters.</td></tr>
+            <tr><td><span class="name">line_items[].unit_amount</span></td><td class="type">integer</td><td><span class="tag">required</span></td><td>Price per unit in the smallest currency unit.</td></tr>
+            <tr><td><span class="name">line_items[].quantity</span></td><td class="type">integer</td><td><span class="tag opt">optional</span></td><td>Units billed. Default <code>1</code>.</td></tr>
+            <tr><td><span class="name">tax_rate_id</span></td><td class="type">string</td><td><span class="tag opt">optional</span></td><td>Tax rate applied to every line item. Omit for no tax.</td></tr>
+            <tr><td><span class="name">due_date</span></td><td class="type">string</td><td><span class="tag opt">optional</span></td><td><code>YYYY-MM-DD</code>, today or later. Default: 30 days after finalization.</td></tr>
+            <tr><td><span class="name">auto_finalize</span></td><td class="type">boolean</td><td><span class="tag opt">optional</span></td><td><code>false</code> (default) creates a <code>draft</code>. <code>true</code> assigns a number and sets status to <code>open</code>.</td></tr>
+            <tr><td><span class="name">memo</span></td><td class="type">string</td><td><span class="tag opt">optional</span></td><td>Free text printed on the invoice. Maximum 500 characters.</td></tr>
+            <tr><td><span class="name">metadata</span></td><td class="type">object</td><td><span class="tag opt">optional</span></td><td>Up to 20 string key-value pairs. Not shown to the customer.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="request">
+      <h2>Request example</h2>
+      <p>Two line items, 8% tax, finalized on creation.</p>
+      <div class="code">
+        <div class="code-label"><span>curl</span></div>
+        <pre tabindex="0"><code>curl -X POST https://api.example.com/v1/invoices \
+  -H "Authorization: Bearer $API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: 6f1c2a9e-3b7d-4e55-9a10-2d8c41f0b7aa" \
+  -d '{
+    "customer_id": "cus_8Kq2mT",
+    "currency": "usd",
+    "auto_finalize": true,
+    "due_date": "2026-11-02",
+    "tax_rate_id": "txr_us_8",
+    "memo": "October retainer and one-off audit",
+    "line_items": [
+      { "description": "Platform retainer", "quantity": 2, "unit_amount": 4500 },
+      { "description": "Security audit", "quantity": 1, "unit_amount": 12000 }
+    ],
+    "metadata": { "po_number": "PO-1182" }
+  }'</code></pre>
+      </div>
+    </section>
+
+    <section id="response">
+      <h2>Response</h2>
+      <p><span class="status ok">201 Created</span> with the invoice object. Subtotal is 2 × 4500 + 12000 = 21000; tax at 8% is 1680.</p>
+      <div class="code">
+        <div class="code-label"><span>201 application/json</span></div>
+        <pre tabindex="0" class="json"><code>{
+  "id": "inv_3Nx7Rw",
+  "object": "invoice",
+  "number": "INV-0042",
+  "status": "open",
+  "customer_id": "cus_8Kq2mT",
+  "currency": "usd",
+  "subtotal": 21000,
+  "tax": 1680,
+  "total": 22680,
+  "amount_due": 22680,
+  "due_date": "2026-11-02",
+  "hosted_invoice_url": "https://pay.example.com/i/inv_3Nx7Rw",
+  "created_at": "2026-10-03T09:14:22Z"
+}</code></pre>
+      </div>
+
+      <h3>Response fields</h3>
+      <div class="table-wrap" role="region" aria-label="Response fields table" tabindex="0">
+        <table>
+          <thead><tr><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+            <tr><td><span class="name">status</span></td><td class="type">string</td><td><code>draft</code> or <code>open</code> on creation.</td></tr>
+            <tr><td><span class="name">number</span></td><td class="type">string | null</td><td>Null while the invoice is a draft.</td></tr>
+            <tr><td><span class="name">subtotal, tax, total</span></td><td class="type">integer</td><td>Smallest currency unit, computed server-side.</td></tr>
+            <tr><td><span class="name">amount_due</span></td><td class="type">integer</td><td>Equals <code>total</code> until a payment is applied.</td></tr>
+            <tr><td><span class="name">hosted_invoice_url</span></td><td class="type">string | null</td><td>Payment page. Null for drafts.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="errors">
+      <h2>Error codes</h2>
+      <p>Errors return a JSON body with <code>error.code</code>, <code>error.message</code>, and, for validation failures, an <code>error.details</code> array naming each bad field.</p>
+      <div class="table-wrap" role="region" aria-label="Error codes table" tabindex="0">
+        <table>
+          <thead><tr><th scope="col">Status</th><th scope="col">Code</th><th scope="col">Cause and fix</th></tr></thead>
+          <tbody>
+            <tr><td><span class="status">400</span></td><td><code>invalid_json</code></td><td>Body is not parseable JSON, or <code>Content-Type</code> is wrong.</td></tr>
+            <tr><td><span class="status">401</span></td><td><code>unauthorized</code></td><td>Missing, malformed, or revoked API key.</td></tr>
+            <tr><td><span class="status">403</span></td><td><code>insufficient_scope</code></td><td>The key lacks <code>invoices:write</code>. Issue a key with that scope.</td></tr>
+            <tr><td><span class="status">404</span></td><td><code>customer_not_found</code></td><td><code>customer_id</code> or <code>tax_rate_id</code> does not exist in this account.</td></tr>
+            <tr><td><span class="status">409</span></td><td><code>idempotency_conflict</code></td><td>The <code>Idempotency-Key</code> was used earlier with a different body. Use a new key.</td></tr>
+            <tr><td><span class="status">422</span></td><td><code>validation_failed</code></td><td>A field failed validation, such as an unknown currency or a past <code>due_date</code>. See <code>error.details</code>.</td></tr>
+            <tr><td><span class="status">429</span></td><td><code>rate_limited</code></td><td>Too many requests. Wait for the number of seconds in the <code>Retry-After</code> header.</td></tr>
+            <tr><td><span class="status">500</span></td><td><code>internal_error</code></td><td>Server fault. Retry with the same <code>Idempotency-Key</code>; it will not create a duplicate.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code">
+        <div class="code-label"><span>422 application/json</span></div>
+        <pre tabindex="0" class="json"><code>{
+  "error": {
+    "code": "validation_failed",
+    "message": "Request body failed validation.",
+    "details": [
+      { "field": "due_date", "issue": "must be today or later" },
+      { "field": "line_items[1].unit_amount", "issue": "must be an integer" }
+    ]
+  }
+}</code></pre>
+      </div>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div>
+    <span>POST /v1/invoices reference</span>
+    <a href="#overview">Back to top</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var esc = function (s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;"); };
+
+  // Highlight JSON blocks; plain text remains if this script fails.
+  document.querySelectorAll("pre.json code").forEach(function (el) {
+    el.innerHTML = esc(el.textContent).replace(
+      /("(?:[^"\\]|\\.)*")(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d+)?/g,
+      function (m, str, colon, lit) {
+        if (str) return colon ? '<span class="k">' + str + "</span>" + colon : '<span class="s">' + str + "</span>";
+        if (lit) return '<span class="b">' + m + "</span>";
+        return '<span class="n">' + m + "</span>";
+      });
+  });
+
+  // Copy buttons.
+  document.querySelectorAll(".code").forEach(function (box) {
+    var label = box.querySelector(".code-label");
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "Copy";
+    if (!navigator.clipboard) btn.disabled = true;
+    btn.addEventListener("click", function () {
+      navigator.clipboard.writeText(box.querySelector("code").textContent).then(function () {
+        btn.textContent = "Copied";
+        setTimeout(function () { btn.textContent = "Copy"; }, 1500);
+      }, function () {
+        btn.textContent = "Failed";
+        setTimeout(function () { btn.textContent = "Copy"; }, 1500);
+      });
+    });
+    label.appendChild(btn);
+  });
+
+  // Mark the sidebar link for the section nearest the top of the viewport.
+  var links = {};
+  document.querySelectorAll(".side a").forEach(function (a) { links[a.getAttribute("href").slice(1)] = a; });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        Object.keys(links).forEach(function (id) { links[id].removeAttribute("aria-current"); });
+        links[e.target.id].setAttribute("aria-current", "true");
+      });
+    }, { rootMargin: "0px 0px -70% 0px" });
+    document.querySelectorAll("main section[id]").forEach(function (s) { io.observe(s); });
+  }
+})();
+</script>
+</body>
+</html>
+```

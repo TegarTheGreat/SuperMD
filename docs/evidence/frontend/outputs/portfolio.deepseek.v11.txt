@@ -1,0 +1,346 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rangga Wibowo — Photographer, Yogyakarta</title>
+<style>
+  :root{
+    --bg:#0f0e0c;
+    --surface:#1a1815;
+    --line:#2e2a24;
+    --ink:#f2ede4;
+    --muted:#a89f90;
+    --accent:#c9a227;
+    --max:1080px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit}
+  img{display:block;max-width:100%}
+
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+
+  /* ---- header ---- */
+  header{
+    position:sticky;top:0;z-index:10;
+    background:rgba(15,14,12,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .bar{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase}
+  .brand span{color:var(--accent)}
+  nav ul{display:flex;gap:28px;list-style:none}
+  nav a{
+    font-family:system-ui,-apple-system,sans-serif;
+    font-size:.82rem;letter-spacing:.08em;text-transform:uppercase;
+    text-decoration:none;color:var(--muted);transition:color .2s;
+  }
+  nav a:hover,nav a:focus-visible{color:var(--ink)}
+  .menu-btn{
+    display:none;background:none;border:1px solid var(--line);color:var(--ink);
+    font-family:system-ui,sans-serif;font-size:.8rem;letter-spacing:.08em;
+    text-transform:uppercase;padding:8px 12px;cursor:pointer;
+  }
+
+  /* ---- hero ---- */
+  .hero{padding:96px 0 72px;border-bottom:1px solid var(--line)}
+  .hero h1{
+    font-size:clamp(2.2rem,6vw,4rem);
+    line-height:1.08;font-weight:400;letter-spacing:-.01em;
+    max-width:16ch;
+  }
+  .hero h1 em{font-style:italic;color:var(--accent)}
+  .hero p{
+    margin-top:28px;max-width:52ch;color:var(--muted);font-size:1.08rem;
+  }
+  .hero .meta{
+    margin-top:36px;font-family:system-ui,sans-serif;font-size:.8rem;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--muted);
+  }
+
+  /* ---- sections ---- */
+  section{padding:80px 0;border-bottom:1px solid var(--line)}
+  .label{
+    font-family:system-ui,sans-serif;font-size:.75rem;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--accent);margin-bottom:20px;
+  }
+  h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:400;margin-bottom:16px}
+  .lede{color:var(--muted);max-width:60ch;margin-bottom:44px}
+
+  /* ---- work grid ---- */
+  .grid{
+    display:grid;gap:20px;
+    grid-template-columns:repeat(6,1fr);
+  }
+  .card{
+    position:relative;overflow:hidden;background:var(--surface);
+    border:1px solid var(--line);cursor:pointer;
+    aspect-ratio:4/5;
+  }
+  .card.wide{grid-column:span 4;aspect-ratio:16/10}
+  .card.tall{grid-column:span 2}
+  .card.half{grid-column:span 3;aspect-ratio:3/2}
+  .card .ph{
+    position:absolute;inset:0;
+    background:
+      repeating-linear-gradient(135deg,#211e19 0 12px,#1a1815 12px 24px);
+    transition:transform .5s ease;
+  }
+  .card:hover .ph,.card:focus-visible .ph{transform:scale(1.04)}
+  .card .cap{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:18px 20px;
+    background:linear-gradient(to top,rgba(15,14,12,.94),transparent);
+    display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
+  }
+  .card .cap strong{font-weight:400;font-size:1.02rem;display:block}
+  .card .cap small{
+    font-family:system-ui,sans-serif;font-size:.72rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);
+  }
+  .card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+  /* ---- services ---- */
+  .services{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+  .svc{background:var(--bg);padding:32px 28px}
+  .svc h3{font-size:1.15rem;font-weight:400;margin-bottom:10px}
+  .svc p{color:var(--muted);font-size:.95rem}
+  .svc .price{
+    margin-top:18px;font-family:system-ui,sans-serif;font-size:.8rem;
+    letter-spacing:.08em;text-transform:uppercase;color:var(--accent);
+  }
+
+  /* ---- contact ---- */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+  .contact-grid p{color:var(--muted);margin-bottom:24px}
+  .field{margin-bottom:18px}
+  .field label{
+    display:block;font-family:system-ui,sans-serif;font-size:.75rem;
+    letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;
+  }
+  .field input,.field textarea,.field select{
+    width:100%;background:var(--surface);border:1px solid var(--line);
+    color:var(--ink);font-family:inherit;font-size:1rem;padding:12px 14px;
+  }
+  .field textarea{resize:vertical;min-height:120px}
+  .field input:focus,.field textarea:focus,.field select:focus{
+    outline:none;border-color:var(--accent);
+  }
+  button.submit{
+    background:var(--accent);color:#0f0e0c;border:none;
+    font-family:system-ui,sans-serif;font-size:.82rem;letter-spacing:.1em;
+    text-transform:uppercase;padding:14px 28px;cursor:pointer;
+  }
+  button.submit:hover{background:#e0b93a}
+  .form-note{
+    margin-top:14px;font-family:system-ui,sans-serif;font-size:.8rem;
+    color:var(--muted);min-height:1.2em;
+  }
+  .form-note.ok{color:var(--accent)}
+  .form-note.err{color:#e07a5f}
+
+  footer{padding:40px 0;font-family:system-ui,sans-serif;font-size:.78rem;color:var(--muted)}
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+  @media(max-width:760px){
+    nav ul{
+      display:none;position:absolute;top:64px;left:0;right:0;
+      flex-direction:column;gap:0;background:var(--bg);
+      border-bottom:1px solid var(--line);
+    }
+    nav ul.open{display:flex}
+    nav li{border-top:1px solid var(--line)}
+    nav a{display:block;padding:16px 24px}
+    .menu-btn{display:block}
+    .grid{grid-template-columns:1fr}
+    .card,.card.wide,.card.tall,.card.half{grid-column:span 1;aspect-ratio:4/3}
+    .contact-grid{grid-template-columns:1fr;gap:40px}
+    .hero{padding:64px 0 48px}
+    section{padding:56px 0}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="brand">Rangga<span>.</span>Wibowo</div>
+    <nav>
+      <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navList">Menu</button>
+      <ul id="navList">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="top">
+    <div class="wrap">
+      <h1>Photographs made in <em>Yogyakarta</em>, for people who care how a moment is kept.</h1>
+      <p>I shoot weddings, portraits, and editorial work across Java. Ten years behind the camera, most of them in the old city — the light here is the reason I stayed.</p>
+      <div class="meta">Available for commissions · 2025</div>
+    </div>
+  </section>
+
+  <section id="work">
+    <div class="wrap">
+      <div class="label">Selected Work</div>
+      <h2>Recent commissions</h2>
+      <p class="lede">A small selection. Full archives and print availability on request.</p>
+      <div class="grid">
+        <article class="card wide" tabindex="0" role="button" aria-label="View project: Prambanan at first light">
+          <div class="ph"></div>
+          <div class="cap"><strong>Prambanan at first light</strong><small>Editorial · 2024</small></div>
+        </article>
+        <article class="card tall" tabindex="0" role="button" aria-label="View project: Malioboro nights">
+          <div class="ph"></div>
+          <div class="cap"><strong>Malioboro nights</strong><small>Street · 2024</small></div>
+        </article>
+        <article class="card half" tabindex="0" role="button" aria-label="View project: A wedding in Kotagede">
+          <div class="ph"></div>
+          <div class="cap"><strong>A wedding in Kotagede</strong><small>Wedding · 2023</small></div>
+        </article>
+        <article class="card half" tabindex="0" role="button" aria-label="View project: Batik makers of Giriloyo">
+          <div class="ph"></div>
+          <div class="cap"><strong>Batik makers of Giriloyo</strong><small>Documentary · 2023</small></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="wrap">
+      <div class="label">Services</div>
+      <h2>What I take on</h2>
+      <p class="lede">Rates below are starting points. Travel outside Yogyakarta quoted separately.</p>
+      <div class="services">
+        <div class="svc">
+          <h3>Weddings &amp; ceremonies</h3>
+          <p>Full-day coverage, two photographers, edited gallery delivered within three weeks. Includes a pre-wedding consultation.</p>
+          <div class="price">From IDR 12,000,000</div>
+        </div>
+        <div class="svc">
+          <h3>Portraits &amp; personal branding</h3>
+          <p>Studio or on location. Two-hour session, 30 retouched images, print-ready files.</p>
+          <div class="price">From IDR 2,500,000</div>
+        </div>
+        <div class="svc">
+          <h3>Editorial &amp; documentary</h3>
+          <p>Half or full-day assignments for publications, brands, and cultural institutions. Licensing discussed per project.</p>
+          <div class="price">From IDR 4,000,000 / day</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="label">Contact</div>
+      <h2>Let's talk about your project</h2>
+      <div class="contact-grid">
+        <div>
+          <p>Tell me the date, the place, and what you want the photographs to do. I reply within two working days.</p>
+          <p>
+            <strong>Email</strong><br>
+            hello@ranggawibowo.id
+          </p>
+          <p>
+            <strong>Studio</strong><br>
+            Jl. Prawirotaman II No. 14<br>
+            Yogyakarta 55153, Indonesia
+          </p>
+          <p>
+            <strong>Instagram</strong><br>
+            @rangga.wibowo
+          </p>
+        </div>
+        <form id="contactForm" novalidate>
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" required autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="type">Project type</label>
+            <select id="type" name="type">
+              <option>Wedding</option>
+              <option>Portrait</option>
+              <option>Editorial / documentary</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+          <button class="submit" type="submit">Send enquiry</button>
+          <div class="form-note" id="formNote" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> Rangga Wibowo. All rights reserved.</span>
+    <span>Yogyakarta, Indonesia</span>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  var menuBtn = document.getElementById('menuBtn');
+  var navList = document.getElementById('navList');
+  menuBtn.addEventListener('click', function () {
+    var open = navList.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', String(open));
+  });
+  navList.addEventListener('click', function (e) {
+    if (e.target.tagName === 'A') {
+      navList.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  var form = document.getElementById('contactForm');
+  var note = document.getElementById('formNote');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = form.name.value.trim();
+    var email = form.email.value.trim();
+    var message = form.message.value.trim();
+    var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+    if (!name || !emailOk || !message) {
+      note.className = 'form-note err';
+      note.textContent = !name ? 'Please enter your name.'
+        : !emailOk ? 'Please enter a valid email address.'
+        : 'Please write a short message.';
+      return;
+    }
+    note.className = 'form-note ok';
+    note.textContent = 'Thanks, ' + name + '. Your enquiry is ready to send — connect this form to your mail service to deliver it.';
+    form.reset();
+  });
+</script>
+</body>
+</html>
+```

@@ -1,0 +1,567 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orders</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --border: #d9dde3;
+    --text: #1c2024;
+    --muted: #5c6672;
+    --accent: #2563eb;
+    --accent-weak: #e8effd;
+    --focus: #1d4ed8;
+    --row-hover: #f2f5fa;
+    --shadow: 0 10px 30px rgba(16, 24, 40, 0.18);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 20px; }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    margin-bottom: 16px;
+  }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  input[type="search"], select {
+    font: inherit;
+    color: inherit;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 10px;
+    min-width: 180px;
+  }
+  input[type="search"] { min-width: 240px; }
+  input:focus-visible, select:focus-visible, button:focus-visible, .row-btn:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 1px;
+  }
+  .count { margin-left: auto; color: var(--muted); font-size: 13px; padding-bottom: 8px; }
+
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  caption { text-align: left; padding: 12px 16px 0; color: var(--muted); font-size: 13px; }
+  th, td { text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--border); }
+  thead th {
+    background: #fbfcfd;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--row-hover); }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  th.num { text-align: right; }
+
+  .sort-btn {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .sort-btn .arrow { opacity: 0.35; font-size: 10px; }
+  .sort-btn[aria-sort="ascending"] .arrow,
+  .sort-btn[aria-sort="descending"] .arrow { opacity: 1; color: var(--accent); }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid transparent;
+  }
+  .badge[data-status="paid"] { background: #e6f4ea; color: #1a7f37; border-color: #b7e0c2; }
+  .badge[data-status="pending"] { background: #fff4e0; color: #9a6400; border-color: #f0d9a8; }
+  .badge[data-status="shipped"] { background: #e8effd; color: #1d4ed8; border-color: #c3d4f7; }
+  .badge[data-status="refunded"] { background: #f2f3f5; color: #5c6672; border-color: #d9dde3; }
+  .badge[data-status="cancelled"] { background: #fdeaea; color: #b42318; border-color: #f3c2c2; }
+
+  .row-btn {
+    background: none;
+    border: 0;
+    padding: 0;
+    font: inherit;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .empty { padding: 40px 16px; text-align: center; color: var(--muted); }
+
+  .pager {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .pager button {
+    font: inherit;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  .pager button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .pager .pages { display: flex; gap: 4px; }
+  .pager .pages button { min-width: 34px; padding: 6px 8px; }
+  .pager .pages button[aria-current="page"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .pager .spacer { margin-left: auto; color: var(--muted); font-size: 13px; }
+
+  /* Drawer */
+  .scrim {
+    position: fixed;
+    inset: 0;
+    background: rgba(16, 24, 40, 0.4);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, visibility 0.18s ease;
+    z-index: 40;
+  }
+  .scrim.open { opacity: 1; visibility: visible; }
+  .drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: min(420px, 100%);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .drawer header h2 { font-size: 16px; margin: 0; }
+  .drawer .close {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .drawer .body { padding: 20px; overflow-y: auto; }
+  .drawer dl { margin: 0; display: grid; grid-template-columns: 130px 1fr; gap: 10px 16px; }
+  .drawer dt { color: var(--muted); font-size: 13px; }
+  .drawer dd { margin: 0; }
+  .drawer .items { margin-top: 20px; }
+  .drawer .items h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); margin: 0 0 8px; }
+  .drawer .items table { border: 1px solid var(--border); border-radius: 6px; }
+  .drawer .items th, .drawer .items td { padding: 8px 12px; font-size: 13px; }
+  .drawer .total { display: flex; justify-content: space-between; padding: 10px 12px; font-weight: 600; border-top: 1px solid var(--border); }
+
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Orders</h1>
+  <p class="sub">Sample data — 42 orders.</p>
+
+  <div class="toolbar">
+    <div class="field">
+      <label for="search">Search</label>
+      <input id="search" type="search" placeholder="Order ID, customer, email" autocomplete="off">
+    </div>
+    <div class="field">
+      <label for="status">Status</label>
+      <select id="status">
+        <option value="">All statuses</option>
+        <option value="paid">Paid</option>
+        <option value="pending">Pending</option>
+        <option value="shipped">Shipped</option>
+        <option value="refunded">Refunded</option>
+        <option value="cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="perPage">Rows per page</label>
+      <select id="perPage">
+        <option value="10">10</option>
+        <option value="20" selected>20</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+    <div class="count" id="count" aria-live="polite"></div>
+  </div>
+
+  <div class="table-card">
+    <table id="ordersTable">
+      <caption class="visually-hidden">Orders, sortable by column</caption>
+      <thead>
+        <tr>
+          <th scope="col"><button class="sort-btn" data-key="id">Order <span class="arrow" aria-hidden="true">▲</span></button></th>
+          <th scope="col"><button class="sort-btn" data-key="customer">Customer <span class="arrow" aria-hidden="true">▲</span></button></th>
+          <th scope="col"><button class="sort-btn" data-key="date">Date <span class="arrow" aria-hidden="true">▲</span></button></th>
+          <th scope="col"><button class="sort-btn" data-key="status">Status <span class="arrow" aria-hidden="true">▲</span></button></th>
+          <th scope="col" class="num"><button class="sort-btn" data-key="total">Total <span class="arrow" aria-hidden="true">▲</span></button></th>
+          <th scope="col"><span class="visually-hidden">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="empty" hidden>No orders match the current filters.</div>
+    <div class="pager">
+      <button id="prev" type="button">Previous</button>
+      <div class="pages" id="pages"></div>
+      <button id="next" type="button">Next</button>
+      <span class="spacer" id="range"></span>
+    </div>
+  </div>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle" aria-hidden="true">
+  <header>
+    <h2 id="drawerTitle">Order detail</h2>
+    <button class="close" id="drawerClose" type="button" aria-label="Close detail">×</button>
+  </header>
+  <div class="body" id="drawerBody"></div>
+</aside>
+
+<script>
+(function () {
+  "use strict";
+
+  var STATUSES = ["paid", "pending", "shipped", "refunded", "cancelled"];
+  var CUSTOMERS = [
+    ["Ada Lovelace", "ada@example.com"],
+    ["Grace Hopper", "grace@example.com"],
+    ["Alan Turing", "alan@example.com"],
+    ["Katherine Johnson", "katherine@example.com"],
+    ["Linus Torvalds", "linus@example.com"],
+    ["Margaret Hamilton", "margaret@example.com"],
+    ["Barbara Liskov", "barbara@example.com"],
+    ["Ken Thompson", "ken@example.com"],
+    ["Radia Perlman", "radia@example.com"],
+    ["Donald Knuth", "donald@example.com"],
+    ["Anita Borg", "anita@example.com"],
+    ["Tim Berners-Lee", "tim@example.com"]
+  ];
+  var PRODUCTS = [
+    ["Mechanical Keyboard", 129.0],
+    ["USB-C Hub", 49.5],
+    ["27\" Monitor", 319.0],
+    ["Noise-Cancelling Headphones", 249.0],
+    ["Ergonomic Mouse", 79.0],
+    ["Laptop Stand", 39.0],
+    ["Webcam 1080p", 89.0],
+    ["Desk Lamp", 45.0],
+    ["External SSD 1TB", 139.0],
+    ["Cable Organizer", 15.0]
+  ];
+
+  // Deterministic pseudo-random so the sample data is stable across reloads.
+  var seed = 20240517;
+  function rand() {
+    seed = (seed * 1103515245 + 12345) & 0x7fffffff;
+    return seed / 0x7fffffff;
+  }
+  function pick(arr) { return arr[Math.floor(rand() * arr.length)]; }
+
+  function buildOrders(n) {
+    var orders = [];
+    var base = new Date(2024, 0, 1).getTime();
+    for (var i = 0; i < n; i++) {
+      var cust = pick(CUSTOMERS);
+      var status = pick(STATUSES);
+      var itemCount = 1 + Math.floor(rand() * 3);
+      var items = [];
+      var total = 0;
+      for (var j = 0; j < itemCount; j++) {
+        var p = pick(PRODUCTS);
+        var qty = 1 + Math.floor(rand() * 3);
+        items.push({ name: p[0], price: p[1], qty: qty });
+        total += p[1] * qty;
+      }
+      var date = new Date(base + Math.floor(rand() * 150) * 86400000);
+      orders.push({
+        id: "ORD-" + String(1000 + i),
+        customer: cust[0],
+        email: cust[1],
+        date: date,
+        status: status,
+        items: items,
+        total: Math.round(total * 100) / 100
+      });
+    }
+    return orders;
+  }
+
+  var ORDERS = buildOrders(42);
+
+  var state = {
+    search: "",
+    status: "",
+    sortKey: "date",
+    sortDir: "desc",
+    page: 1,
+    perPage: 20
+  };
+
+  var els = {
+    search: document.getElementById("search"),
+    status: document.getElementById("status"),
+    perPage: document.getElementById("perPage"),
+    tbody: document.getElementById("tbody"),
+    empty: document.getElementById("empty"),
+    count: document.getElementById("count"),
+    range: document.getElementById("range"),
+    prev: document.getElementById("prev"),
+    next: document.getElementById("next"),
+    pages: document.getElementById("pages"),
+    scrim: document.getElementById("scrim"),
+    drawer: document.getElementById("drawer"),
+    drawerBody: document.getElementById("drawerBody"),
+    drawerClose: document.getElementById("drawerClose"),
+    drawerTitle: document.getElementById("drawerTitle")
+  };
+
+  var lastFocused = null;
+
+  function money(n) {
+    return "$" + n.toFixed(2);
+  }
+  function fmtDate(d) {
+    var y = d.getFullYear();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return y + "-" + m + "-" + day;
+  }
+
+  function filtered() {
+    var q = state.search.trim().toLowerCase();
+    var out = ORDERS.filter(function (o) {
+      if (state.status && o.status !== state.status) return false;
+      if (!q) return true;
+      return (
+        o.id.toLowerCase().indexOf(q) !== -1 ||
+        o.customer.toLowerCase().indexOf(q) !== -1 ||
+        o.email.toLowerCase().indexOf(q) !== -1
+      );
+    });
+    var key = state.sortKey;
+    var dir = state.sortDir === "asc" ? 1 : -1;
+    out.sort(function (a, b) {
+      var av = a[key], bv = b[key];
+      if (key === "date") { av = av.getTime(); bv = bv.getTime(); }
+      if (typeof av === "string") {
+        return av.localeCompare(bv) * dir;
+      }
+      return (av - bv) * dir;
+    });
+    return out;
+  }
+
+  function render() {
+    var rows = filtered();
+    var total = rows.length;
+    var perPage = state.perPage;
+    var pageCount = Math.max(1, Math.ceil(total / perPage));
+    if (state.page > pageCount) state.page = pageCount;
+    if (state.page < 1) state.page = 1;
+
+    var start = (state.page - 1) * perPage;
+    var pageRows = rows.slice(start, start + perPage);
+
+    els.tbody.innerHTML = "";
+    pageRows.forEach(function (o) {
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td>' + o.id + '</td>' +
+        '<td>' + escapeHtml(o.customer) + '</td>' +
+        '<td>' + fmtDate(o.date) + '</td>' +
+        '<td><span class="badge" data-status="' + o.status + '">' + capitalize(o.status) + '</span></td>' +
+        '<td class="num">' + money(o.total) + '</td>' +
+        '<td><button class="row-btn" type="button" data-id="' + o.id + '">View</button></td>';
+      els.tbody.appendChild(tr);
+    });
+
+    els.empty.hidden = total !== 0;
+
+    els.count.textContent = total + (total === 1 ? " order" : " orders");
+    var from = total === 0 ? 0 : start + 1;
+    var to = Math.min(start + perPage, total);
+    els.range.textContent = "Showing " + from + "–" + to + " of " + total;
+
+    els.prev.disabled = state.page <= 1;
+    els.next.disabled = state.page >= pageCount;
+
+    els.pages.innerHTML = "";
+    for (var p = 1; p <= pageCount; p++) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = String(p);
+      if (p === state.page) b.setAttribute("aria-current", "page");
+      b.addEventListener("click", (function (pg) {
+        return function () { state.page = pg; render(); };
+      })(p));
+      els.pages.appendChild(b);
+    }
+
+    // Reflect sort state on headers.
+    document.querySelectorAll(".sort-btn").forEach(function (btn) {
+      var key = btn.getAttribute("data-key");
+      if (key === state.sortKey) {
+        btn.setAttribute("aria-sort", state.sortDir === "asc" ? "ascending" : "descending");
+        btn.querySelector(".arrow").textContent = state.sortDir === "asc" ? "▲" : "▼";
+      } else {
+        btn.removeAttribute("aria-sort");
+        btn.querySelector(".arrow").textContent = "▲";
+      }
+    });
+  }
+
+  function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function openDrawer(id) {
+    var o = ORDERS.filter(function (x) { return x.id === id; })[0];
+    if (!o) return;
+    lastFocused = document.activeElement;
+
+    var itemsHtml = o.items.map(function (it) {
+      return '<tr><td>' + escapeHtml(it.name) + '</td><td class="num">' + it.qty +
+        '</td><td class="num">' + money(it.price) + '</td><td class="num">' + money(it.price * it.qty) + '</td></tr>';
+    }).join("");
+
+    els.drawerTitle.textContent = o.id;
+    els.drawerBody.innerHTML =
+      '<dl>' +
+        '<dt>Customer</dt><dd>' + escapeHtml(o.customer) + '</dd>' +
+        '<dt>Email</dt><dd>' + escapeHtml(o.email) + '</dd>' +
+        '<dt>Date</dt><dd>' + fmtDate(o.date) + '</dd>' +
+        '<dt>Status</dt><dd><span class="badge" data-status="' + o.status + '">' + capitalize(o.status) + '</span></dd>' +
+      '</dl>' +
+      '<div class="items">' +
+        '<h3>Items</h3>' +
+        '<table><thead><tr><th scope="col">Product</th><th scope="col" class="num">Qty</th>' +
+        '<th scope="col" class="num">Price</th><th scope="col" class="num">Subtotal</th></tr></thead>' +
+        '<tbody>' + itemsHtml + '</tbody></table>' +
+        '<div class="total"><span>Total</span><span>' + money(o.total) + '</span></div>' +
+      '</div>';
+
+    els.drawer.classList.add("open");
+    els.scrim.classList.add("open");
+    els.drawer.setAttribute("aria-hidden", "false");
+    els.drawerClose.focus();
+  }
+
+  function closeDrawer() {
+    els.drawer.classList.remove("open");
+    els.scrim.classList.remove("open");
+    els.drawer.setAttribute("aria-hidden", "true");
+    if (lastFocused && typeof lastFocused.focus === "function") lastFocused.focus();
+  }
+
+  // Events
+  els.search.addEventListener("input", function () {
+    state.search = els.search.value;
+    state.page = 1;
+    render();
+  });
+  els.status.addEventListener("change", function () {
+    state.status = els.status.value;
+    state.page = 1;
+    render();
+  });
+  els.perPage.addEventListener("change", function () {
+    state.perPage = parseInt(els.perPage.value, 10);
+    state.page = 1;
+    render();
+  });
+  els.prev.addEventListener("click", function () {
+    if (state.page > 1) { state.page--; render(); }
+  });
+  els.next.addEventListener("click", function () {
+    state.page++; render();
+  });
+
+  document.querySelectorAll(".sort-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var key = btn.getAttribute("data-key");
+      if (state.sortKey === key) {
+        state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+      } else {
+        state.sortKey = key;
+        state.sortDir = "asc";
+      }
+      render();
+    });
+  });
+
+  els.tbody.addEventListener("click", function (e) {
+    var btn = e.target.closest(".row-btn");
+    if (btn) openDrawer(btn.getAttribute("data-id"));
+  });
+
+  els.drawerClose.addEventListener("click", closeDrawer);
+  els.scrim.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && els.drawer.classList.contains("open")) closeDrawer();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
+```
