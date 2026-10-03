@@ -1,0 +1,34 @@
+[
+  {
+    "id": "commit-message",
+    "prompt": "Write the git commit message for this change. Output only the message.\n\nDiff summary:\n- src/cache/lru.ts: `get()` now moves the entry to the front of the list only when it is not already the head. Before, every hit did an unconditional unlink and relink.\n- src/cache/lru.test.ts: adds a test that 1,000 repeated hits on the head entry perform zero list mutations.\n- Motivation from the ticket: profiling showed `get()` taking 11% of request time on the hot path in the session store, almost all of it list relinking for entries that were already at the head. No behavior change is intended."
+  },
+  {
+    "id": "pr-description",
+    "prompt": "Write the pull request description for this change. Output only the description.\n\nChange: the invoice export job now streams rows to the CSV writer in batches of 500 instead of loading the whole result set into memory.\n\nFacts you may use:\n- Before: a 400,000-row export peaked at about 2.1 GB of memory and was OOM-killed twice last month on the 2 GB worker.\n- After: peak memory in a local run with the same 400,000 rows was about 180 MB. Wall-clock time went from 41 s to 47 s.\n- The batch size is a constant, `EXPORT_BATCH_ROWS`, in `jobs/export/config.ts`.\n- The CSV output is byte-identical to before (checked with a diff on a 10,000-row fixture).\n- Not done: the same pattern exists in the payments export, which is left for a follow-up.\n- Rollout: no flag, no migration."
+  },
+  {
+    "id": "code-review-comment",
+    "prompt": "You are reviewing a pull request. Write the review comment for the finding below, as you would post it on the line. Output only the comment.\n\nCode (Python):\n```python\ndef charge(order, cards):\n    for card in cards:\n        try:\n            return gateway.charge(card, order.total_cents)\n        except GatewayError:\n            continue\n    raise PaymentFailed(order.id)\n```\nContext: `gateway.charge` is not idempotent and does not take an idempotency key. A `GatewayError` can be raised on a timeout after the gateway has already captured the funds. The caller retries `charge` on `PaymentFailed`."
+  },
+  {
+    "id": "docstring",
+    "prompt": "Write the docstring for this function. Output only the docstring (Python, Google style), not the function.\n\n```python\ndef merge_intervals(intervals, gap=0):\n    if not intervals:\n        return []\n    intervals = sorted(intervals, key=lambda iv: iv[0])\n    merged = [list(intervals[0])]\n    for start, end in intervals[1:]:\n        last = merged[-1]\n        if start <= last[1] + gap:\n            last[1] = max(last[1], end)\n        else:\n            merged.append([start, end])\n    return [tuple(iv) for iv in merged]\n```"
+  },
+  {
+    "id": "error-message",
+    "prompt": "Write the user-facing error message and the one-line log message for this failure. Output both, labeled.\n\nSituation: a user uploads a profile photo in a web app. The server rejects it because the file is 14.2 MB and the limit is 8 MB. Accepted types are JPEG, PNG and WebP. The user can retry immediately with a smaller file. The request id is available to include in the log line."
+  },
+  {
+    "id": "release-notes",
+    "prompt": "Write the release notes for version 2.4.0 of an open-source CLI. Output only the notes.\n\nChanges merged since 2.3.2:\n- New: `--format json` for `report` (#412). Prints one JSON object per line.\n- New: reads `REPORT_COLOR=0` to disable color (#419).\n- Fix: `report --since` crashed on dates before 1970 (#405).\n- Fix: config file in a symlinked directory was not found (#431).\n- Changed: the default timeout drops from 60 s to 30 s (#426). Set `timeout` in the config to restore the old value.\n- Removed: the deprecated `--legacy-output` flag (#388). It has warned since 2.1.0.\n- Internal: dropped the `lodash` dependency, no user-visible change."
+  },
+  {
+    "id": "readme-intro",
+    "prompt": "Write the opening section of the README (title, one-paragraph description, and a minimal install and usage block) for this project. Output only Markdown.\n\nProject: `tidyfeed`, a Node.js library (Node 18+, no dependencies) that parses RSS 2.0 and Atom 1.0 feeds into one normalized object shape. It exposes `parseFeed(xmlString)` returning `{ title, link, items: [{ id, title, link, published, summary }] }`. `published` is an ISO 8601 string or null. It does not fetch over the network. It is MIT licensed and installed with `npm install tidyfeed`. It is not a streaming parser: the whole document is held in memory. Known gap: no support for RSS enclosures or media extensions."
+  },
+  {
+    "id": "incident-summary",
+    "prompt": "Write the incident summary for the status page and internal channel, as one short post. Output only the post.\n\nFacts:\n- 14:02 UTC: deploy of api v3.18 begins.\n- 14:09: checkout error rate rises from 0.2% to 31%.\n- 14:16: on-call identifies that v3.18 added a database migration that took a table lock on `orders` for about 7 minutes.\n- 14:20: rollback of the deploy starts. The migration had already completed, so the rollback restored the old code only.\n- 14:31: error rate back below 1%. Checkout fully recovered by 14:34.\n- Roughly 9,300 checkout attempts failed during the window. Payments were not double-charged. Failed attempts were not retried automatically.\n- Open: why the migration was not caught in staging has not been determined. A follow-up review is scheduled for Tuesday."
+  }
+]

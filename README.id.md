@@ -155,13 +155,27 @@ Apa kata run penuh terbaru (2026-10-03), tanpa dibulatkan demi keuntungan kami:
 - **Juri buta: 32 dari 34, 94%.** Juri memilih baseline pada `force-majeure` dan `supply-chain-delay`. Pada yang kedua, SuperMD meminta fakta yang belum ada alih-alih menulis draf status dengan placeholder. Sikap terlalu hati-hati itu kelemahan yang sudah diketahui dan hal berikutnya yang akan disetel.
 - **Gerbang ketat gagal.** Harness menggagalkan run bila ada skenario yang kalah dari baseline atau ada kontrak yang meleset, dan kontrak `sixty-words` mendarat di 46 kata untuk target 60 (baseline: 54).
 - **Variansnya nyata.** Dari enam run pada model yang sama, win rate juri buta berkisar 94% sampai 100%, karena API tidak deterministik bahkan pada temperature 0. Tabel mencantumkan setiap laporan, termasuk satu run tak valid pada model mode-berpikir yang batas tokennya mengosongkan sebagian besar generasi.
-- **Satu keluarga generator, satu juri.** Suite dijalankan pada model DeepSeek. Sesi Claude Code di atas hanyalah satu sampel ilustratif. Jalankan harness pada model Anda dengan API kompatibel-OpenAI apa pun: [`eval/README.md`](eval/README.md).
+- **Dasar yang sempit.** Suite dijalankan pada model DeepSeek dengan satu juri, dan sesi Claude Code di atas hanyalah satu sampel ilustratif. Benchmark di bawah menambahkan Claude Haiku dan Sonnet serta dua juri lagi, dan menunjukkan bahwa tingkat kemenangan bergantung pada cara juri diminta menilai. Jalankan harness pada model Anda dengan API kompatibel-OpenAI apa pun: [`eval/README.md`](eval/README.md).
 
 <details>
 <summary><b>Semua 41 skenario pada run terbaru</b></summary>
 <br>
 <img src="docs/assets/eval-full.png" alt="Tabel per skenario: hit slop keras, jumlah kata, pemenang juri buta, dan hasil probe untuk semua 41 skenario" width="860">
 </details>
+
+### Benchmark: setiap modul, model lain, juri lain, agen dengan alat
+
+Eval 41 skenario mencakup 28 dari 103 modul, satu keluarga generator, dan satu rubrik. [Benchmark](docs/evidence/benchmark/README.md) menjalankan setiap modul, tiga generator (DeepSeek, Claude Haiku, Claude Sonnet), tiga juri, delapan artefak rekayasa, dan Claude Code dengan alat di repositori sementara. Biayanya sekitar $18 pemakaian Claude Code. Laporannya memuat metode, data mentah, dan apa yang diperiksa dengan tangan.
+
+<div align="center">
+<img src="docs/assets/bench.png" alt="Ringkasan benchmark: slop keras 138 menjadi 12, angka tanpa sumber 31% menjadi 9%, angka yang ditahan 37% menjadi 62%, biaya agen per proses $0,071 menjadi $0,103; di bawahnya hasil pairwise buta pada tiga pengaturan juri" width="860">
+</div>
+
+- **Bertahan.** Pola terlarang turun dari 138 menjadi 12 pada seluruh 103 modul dan dari 70 menjadi 0 pada tiga generator. Jawaban 26% sampai 40% lebih pendek. Angka yang dinyatakan sebagai fakta tanpa menyebut sumber turun dari 31% menjadi 9%.
+- **Tingkat kemenangan buta bergantung pada juri.** Dengan rubrik yang menilai kepadatan, keterusterangan, kejujuran, dan struktur, SuperMD menang pada 69 dari 103 perbandingan modul (juri DeepSeek) dan 52 (juri Claude). Tanpa rubrik, juri Claude membagi 47 menang, 24 seri, 32 kalah pada modul, dan memilih baseline pada 9 dari 12 perbandingan atas jawaban Sonnet. Juri LLM cenderung menyukai jawaban yang lebih panjang, sedangkan jawaban SuperMD lebih pendek. Tidak ada penilai manusia.
+- **Kehati-hatian mengorbankan jawaban.** Permintaan yang dijawab tanpa satu angka pun naik dari 37% menjadi 62% menurut label juri. Pembacaan manual atas 23 dari 27 jawaban yang berubah menemukan sebagian benar (model memang tidak bisa tahu data pabrik Anda), sebagian kehati-hatian berlebihan pada nilai yang stabil seperti tabel toleransi terbitan resmi. Jawaban yang memberi angka dan menyebut sumbernya tidak naik (33% menjadi 31%).
+- **Agen dengan alat.** Claude Code lulus 12 dari 12 tugas kecil dengan maupun tanpa SuperMD, dengan biaya per proses 45% lebih tinggi. Agen baseline sudah tidak menulis pola terlarang.
+- **Belum diuji.** Harness lain, model GPT dan Gemini, bahasa Indonesia, tugas agen yang panjang.
 
 ### Uji frontend
 
@@ -246,9 +260,9 @@ en/  id/                  dua pohon tercermin, satu per bahasa (CI menegakkan pa
 └── docs/                 how-to-use · integrations · taxonomy · philosophy · cli
 bin/  lib/                CLI (npx supermd) dan modul yang bisa diimpor
 .claude-plugin/  plugins/ manifes marketplace dan plugin Claude Code
-eval/                     harness uji anti-slop (API kompatibel-OpenAI apa pun)
+eval/                     harness uji anti-slop dan benchmark yang lebih luas (bench.mjs)
 scripts/                  tes, pemeriksaan, serta pembuat tangkapan layar dan bukti
-docs/                     tangkapan layar README dan rekaman bukti sesi langsung
+docs/                     tangkapan layar README dan rekaman bukti (sesi langsung, frontend, benchmark)
 RESEARCH.md               basis bukti bersitasi untuk aturan-aturan
 ```
 

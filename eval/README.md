@@ -43,6 +43,22 @@ Judge and probe calls come from a reasoning model. When one returns empty conten
 
 ## Honest limitations
 
+- The rubric states what SuperMD optimizes (density, directness, honesty, structure), so a win here means "better by SuperMD's own standard". The benchmark ran the same comparisons with a second judge and with a judge given no rubric, and the margin shrank or reversed (see `docs/evidence/benchmark/`). LLM judges also favor longer answers, and SuperMD's are shorter. No human raters.
 - The judge shares training biases with the generator; that is why the deterministic lexicon scan and the counted word contract exist alongside it.
 - Exact-count contracts are capability-bound: a non-reasoning generator estimates rather than counts, so the format-contract criterion measures movement toward the contract, not perfection. With a reasoning-capable generator, expect exactness.
 - Passing this harness means "no measured slop on these probes with this model", not "no slop anywhere, ever". New leaks belong in a **Slop report** issue, which grows both `core/01-language.md` and `lexicon.json`.
+
+## Benchmark
+
+`eval/bench.mjs` runs four larger suites, each resumable and cost-tracked, and writes `docs/evidence/benchmark/results.md` and `summary.json`:
+
+```bash
+node eval/bench.mjs prompts                                # module prompts (committed in eval/bench/)
+node eval/bench.mjs modules   --judge2 --judge3            # all 103 modules, three judges
+node eval/bench.mjs models    --judge2 --judge3            # 15 scenarios on deepseek, haiku, sonnet
+node eval/bench.mjs artifacts                              # commit messages, PR text, reviews, notes
+node eval/bench.mjs agentic   --reps 3                     # Claude Code with tools in scratch repos
+node eval/bench.mjs report --write
+```
+
+It needs `DEEPSEEK_API_KEY` and the `claude` CLI. The full set cost about $18 of Claude Code usage. Method, results, and limits: [`docs/evidence/benchmark/README.md`](../docs/evidence/benchmark/README.md).

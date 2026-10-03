@@ -1,0 +1,333 @@
+{
+ "modules": {
+  "n": 103,
+  "hard": [
+   138,
+   12
+  ],
+  "words": [
+   792,
+   583
+  ],
+  "truncated": [
+   1,
+   0
+  ],
+  "unsourced": [
+   32,
+   9
+  ],
+  "flagged": [
+   34,
+   32
+  ],
+  "withheld": [
+   38,
+   64
+  ],
+  "judge1": {
+   "w": 69,
+   "t": 15,
+   "l": 19,
+   "n": 103
+  },
+  "judge2": {
+   "w": 52,
+   "t": 27,
+   "l": 24,
+   "n": 103
+  },
+  "judge3": {
+   "w": 47,
+   "t": 24,
+   "l": 32,
+   "n": 103
+  },
+  "notShorter": {
+   "w": 25,
+   "t": 6,
+   "l": 5,
+   "n": 36
+  },
+  "agree": {
+   "same": 62,
+   "differ": 41
+  },
+  "byCat": {
+   "agriculture-environment": {
+    "n": 4,
+    "w": 3,
+    "t": 1,
+    "l": 0
+   },
+   "arts-entertainment": {
+    "n": 4,
+    "w": 2,
+    "t": 2,
+    "l": 0
+   },
+   "business-finance": {
+    "n": 8,
+    "w": 6,
+    "t": 0,
+    "l": 2
+   },
+   "creative-media": {
+    "n": 6,
+    "w": 6,
+    "t": 0,
+    "l": 0
+   },
+   "education": {
+    "n": 6,
+    "w": 4,
+    "t": 1,
+    "l": 1
+   },
+   "engineering-manufacturing": {
+    "n": 12,
+    "w": 10,
+    "t": 1,
+    "l": 1
+   },
+   "healthcare": {
+    "n": 6,
+    "w": 6,
+    "t": 0,
+    "l": 0
+   },
+   "hospitality-tourism": {
+    "n": 4,
+    "w": 3,
+    "t": 1,
+    "l": 0
+   },
+   "legal": {
+    "n": 6,
+    "w": 4,
+    "t": 1,
+    "l": 1
+   },
+   "marketing-sales": {
+    "n": 7,
+    "w": 3,
+    "t": 2,
+    "l": 2
+   },
+   "public-service": {
+    "n": 6,
+    "w": 4,
+    "t": 0,
+    "l": 2
+   },
+   "science-research": {
+    "n": 6,
+    "w": 5,
+    "t": 0,
+    "l": 1
+   },
+   "skilled-trades": {
+    "n": 4,
+    "w": 2,
+    "t": 1,
+    "l": 1
+   },
+   "sports-fitness": {
+    "n": 4,
+    "w": 2,
+    "t": 1,
+    "l": 1
+   },
+   "technology": {
+    "n": 16,
+    "w": 8,
+    "t": 4,
+    "l": 4
+   },
+   "transportation-logistics": {
+    "n": 4,
+    "w": 1,
+    "t": 0,
+    "l": 3
+   }
+  }
+ },
+ "models": {
+  "deepseek": {
+   "hard": [
+    14,
+    0
+   ],
+   "words": [
+    7999,
+    4812
+   ],
+   "judge1": {
+    "w": 8,
+    "t": 3,
+    "l": 1,
+    "n": 12
+   },
+   "judge2": {
+    "w": 10,
+    "t": 0,
+    "l": 2,
+    "n": 12
+   },
+   "judge3": {
+    "w": 3,
+    "t": 2,
+    "l": 7,
+    "n": 12
+   },
+   "citations": [
+    0,
+    0,
+    1
+   ],
+   "pushback": [
+    2,
+    2,
+    2
+   ]
+  },
+  "haiku": {
+   "hard": [
+    54,
+    0
+   ],
+   "words": [
+    8942,
+    6186
+   ],
+   "judge1": {
+    "w": 12,
+    "t": 0,
+    "l": 0,
+    "n": 12
+   },
+   "judge2": {
+    "w": 11,
+    "t": 1,
+    "l": 0,
+    "n": 12
+   },
+   "judge3": {
+    "w": 7,
+    "t": 3,
+    "l": 2,
+    "n": 12
+   },
+   "citations": [
+    0,
+    0,
+    1
+   ],
+   "pushback": [
+    2,
+    2,
+    2
+   ]
+  },
+  "sonnet": {
+   "hard": [
+    2,
+    0
+   ],
+   "words": [
+    7907,
+    5257
+   ],
+   "judge1": {
+    "w": 10,
+    "t": 1,
+    "l": 1,
+    "n": 12
+   },
+   "judge2": {
+    "w": 9,
+    "t": 3,
+    "l": 0,
+    "n": 12
+   },
+   "judge3": {
+    "w": 1,
+    "t": 2,
+    "l": 9,
+    "n": 12
+   },
+   "citations": [
+    0,
+    0,
+    1
+   ],
+   "pushback": [
+    1,
+    1,
+    2
+   ]
+  }
+ },
+ "artifacts": {
+  "deepseek": {
+   "n": 8,
+   "hard": [
+    0,
+    0
+   ],
+   "words": [
+    876,
+    1028
+   ],
+   "judge1": {
+    "w": 1,
+    "t": 6,
+    "l": 1,
+    "n": 8
+   }
+  },
+  "sonnet": {
+   "n": 8,
+   "hard": [
+    1,
+    1
+   ],
+   "words": [
+    1158,
+    1057
+   ],
+   "judge1": {
+    "w": 4,
+    "t": 3,
+    "l": 1,
+    "n": 8
+   }
+  }
+ },
+ "agentic": {
+  "base": {
+   "runs": 12,
+   "passed": 12,
+   "costPerRun": 0.0709579,
+   "turns": 4.666666666666667,
+   "finalWords": 110.25,
+   "bodyWords": 7.916666666666667,
+   "hard": 0
+  },
+  "smd": {
+   "runs": 12,
+   "passed": 12,
+   "costPerRun": 0.10255479999999999,
+   "turns": 5.083333333333333,
+   "finalWords": 120.08333333333333,
+   "bodyWords": 29.833333333333332,
+   "hard": 0
+  }
+ },
+ "spend": {
+  "claudeUsd": 17.96,
+  "claudeCalls": 676,
+  "deepseekTokensIn": 1883740,
+  "deepseekTokensOut": 1417364
+ }
+}

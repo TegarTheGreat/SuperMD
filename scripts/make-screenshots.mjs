@@ -365,6 +365,27 @@ scenes['eval-full'] = () => {
     <div class="cap">Rendered from the committed report. Judge cells show the blind pairwise winner; “—” marks scenarios scored by probe or by the deterministic scan only.</div>`);
 };
 
+scenes.bench = () => {
+  const S = JSON.parse(readFileSync(join(ROOT, 'docs', 'evidence', 'benchmark', 'summary.json'), 'utf8'));
+  const m = S.modules, n = m.n, p = v => `${Math.round((100 * v) / n)}%`;
+  const cls = t => (t.l > t.w ? 'lose' : t.w - t.l >= 0.3 * t.n ? 'win' : 'mid');
+  const cell = t => (t && t.n ? `<span class="${cls(t)}">${t.w} / ${t.t} / ${t.l}</span>` : '<span class="mid">not run</span>');
+  const rows = [['103 module tasks', 'DeepSeek', m.judge1, m.judge2, m.judge3], ...Object.entries(S.models).map(([g, v]) => ['12 cross-model scenarios', ({ deepseek: 'DeepSeek', haiku: 'Haiku', sonnet: 'Sonnet' })[g] || g, v.judge1, v.judge2, v.judge3])]
+    .map(([set, gen, a, b, c]) => `<tr><td class="n">${esc(set)}</td><td>${esc(gen)}</td><td class="num">${cell(a)}</td><td class="num">${cell(b)}</td><td class="num">${cell(c)}</td></tr>`).join('');
+  const ag = S.agentic;
+  return cardHtml(`<style>${EVAL_CSS}</style>
+    <h3>SuperMD benchmark — 103 modules, 3 generators, 3 judges, an agent with tools<span>docs/evidence/benchmark · 2026-10-03</span></h3>
+    <div class="sumcards">
+      <div><b>${m.hard[0]} → ${m.hard[1]}</b><small>banned-pattern hits on the 103 task answers<br>(without → with SuperMD)</small></div>
+      <div><b>${p(m.unsourced[0])} → ${p(m.unsourced[1])}</b><small>"give me the number" requests answered with a<br>figure stated as fact and no source named</small></div>
+      <div><b class="bad">${p(m.withheld[0])} → ${p(m.withheld[1])}</b><small>requests where the answer gave no figure at all<br>(judge label; part of this is correct caution)</small></div>
+      <div><b class="mid" style="font-size:22px;white-space:nowrap">$${ag.base.costPerRun.toFixed(3)} → $${ag.smd.costPerRun.toFixed(3)}</b><small>cost per Claude Code run; ${ag.base.passed} of ${ag.base.runs} tasks pass<br>with and without SuperMD</small></div>
+    </div>
+    <div class="h4">Blind pairwise, SuperMD wins / ties / losses, by how the judge is asked</div>
+    <table><thead><tr><th>set</th><th>generator</th><th>rubric (density, directness, honesty, structure)</th><th>same rubric, Claude Sonnet</th><th>no rubric, Claude Sonnet</th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="cap">Rendered from docs/evidence/benchmark/summary.json. The advantage holds under the rubric SuperMD was written to satisfy and shrinks or reverses when the judge is only asked which answer is better for the asker. LLM judges favor longer answers, and SuperMD's are 26% to 40% shorter. No human raters. Reproduce: <code>node eval/bench.mjs</code>.</div>`);
+};
+
 scenes['before-after'] = () => {
   const { name, txt } = latestReport();
   const section = id => {

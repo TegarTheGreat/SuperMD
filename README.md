@@ -153,13 +153,27 @@ What the latest full run (2026-10-03) says, without rounding in our favor:
 - **Blind judge: 32 of 34, 94%.** The judge preferred the baseline on `force-majeure` and `supply-chain-delay`. In the second, SuperMD asked for the missing facts instead of drafting a status update with placeholders. That over-caution is a known weakness and the next thing to tune.
 - **The strict gate fails.** The harness fails a run when any scenario loses to the baseline or any contract is missed, and the `sixty-words` contract landed 46 words against a target of 60 (the baseline: 54).
 - **Variance is real.** Across the six runs on the same model, the blind win rate ranges from 94% to 100%, because the API is non-deterministic even at temperature 0. The table lists every report, including one invalid run on a thinking-mode model whose token cap emptied most generations.
-- **One generator family, one judge.** The suite ran on DeepSeek models. The Claude Code run above is a single illustrative sample. Run the harness on your model with any OpenAI-compatible API: [`eval/README.md`](eval/README.md).
+- **Narrow base.** The suite ran on DeepSeek models with one judge, and the Claude Code run above is a single illustrative sample. The benchmark below adds Claude Haiku and Sonnet and two more judges, and shows the win rate depends on how the judge is asked. Run the harness on your model with any OpenAI-compatible API: [`eval/README.md`](eval/README.md).
 
 <details>
 <summary><b>All 41 scenarios of the latest run</b></summary>
 <br>
 <img src="docs/assets/eval-full.png" alt="Per-scenario table: hard slop hits, word counts, blind judge winner, and probe results for all 41 scenarios" width="860">
 </details>
+
+### Benchmark: every module, other models, other judges, an agent with tools
+
+The 41-scenario eval covers 28 of the 103 modules, one generator family, and one rubric. The [benchmark](docs/evidence/benchmark/README.md) ran every module, three generators (DeepSeek, Claude Haiku, Claude Sonnet), three judges, eight engineering artifacts, and Claude Code with tools in scratch repositories. It cost about $18 of Claude Code usage. The write-up has the method, the raw data, and what was checked by hand.
+
+<div align="center">
+<img src="docs/assets/bench.png" alt="Benchmark summary: hard slop 138 to 12, unsourced figures 31% to 9%, withheld figures 37% to 62%, agent cost per run $0.071 to $0.103; below, blind pairwise results under three judge setups" width="860">
+</div>
+
+- **Holds up.** Banned patterns fall from 138 to 12 across all 103 modules and from 70 to 0 across three generators. Answers are 26% to 40% shorter. Figures stated as fact with no source named fall from 31% to 9%.
+- **The blind win rate depends on the judge.** With a rubric that scores density, directness, honesty, and structure, SuperMD wins 69 of 103 module comparisons (DeepSeek judge) and 52 (Claude judge). With no rubric, a Claude judge splits 47 wins, 24 ties, 32 losses on modules, and prefers the baseline in 9 of 12 comparisons on Sonnet's answers. LLM judges favor longer answers and SuperMD's are shorter. There were no human raters.
+- **Caution costs answers.** Requests answered with no figure at all rose from 37% to 62% by the judge's label. A manual read of 23 of the 27 changed answers found some are correct (the model cannot know your plant's data) and some are over-caution on stable values such as published tolerance tables. Answers that gave a figure and named the source did not rise (33% to 31%).
+- **Agents with tools.** Claude Code passed 12 of 12 small tasks with and without SuperMD, at 45% more cost per run. The baseline agent already wrote no banned patterns.
+- **Not tested.** Other harnesses, GPT and Gemini models, Indonesian, long agent tasks.
 
 ### Frontend check
 
@@ -270,9 +284,9 @@ en/  id/                  two mirrored trees, one per language (CI enforces pari
 └── docs/                 how-to-use · integrations · taxonomy · philosophy · cli
 bin/  lib/                the CLI (npx supermd) and its importable modules
 .claude-plugin/  plugins/ the Claude Code marketplace manifest and plugin
-eval/                     the anti-slop test harness (any OpenAI-compatible API)
+eval/                     the anti-slop test harness and the broader benchmark (bench.mjs)
 scripts/                  tests, checks, and the screenshot and evidence generators
-docs/                     README screenshots and the recorded live-run evidence
+docs/                     README screenshots and the recorded evidence (live run, frontend, benchmark)
 RESEARCH.md               the cited evidence base for the rules
 ```
 

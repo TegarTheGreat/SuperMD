@@ -1,0 +1,338 @@
+{
+ "commit-message|deepseek|base": {
+  "text": "perf(cache): skip relink in LRU get() when entry is already head\n\nProfiling showed get() taking 11% of request time on the session store\nhot path, almost all of it unconditional unlink/relink of entries that\nwere already at the front of the list. Only move the entry when it is\nnot already the head.\n\nAdds a test asserting 1,000 repeated hits on the head entry perform\nzero list mutations. No behavior change intended.",
+  "truncated": false
+ },
+ "pr-description|deepseek|base": {
+  "text": "## Summary\n\nThe invoice export job now streams rows to the CSV writer in batches of 500 instead of loading the entire result set into memory.\n\n## Motivation\n\nThe previous implementation held the full result set in memory. A 400,000-row export peaked at roughly 2.1 GB and was OOM-killed twice last month on the 2 GB worker.\n\n## Impact\n\n- Peak memory for a local run of the same 400,000 rows dropped from ~2.1 GB to ~180 MB.\n- Wall-clock time increased from 41 s to 47 s.\n- CSV output is byte-identical to before, verified with a diff on a 10,000-row fixture.\n\n## Implementation notes\n\n- Batch size is controlled by the `EXPORT_BATCH_ROWS` constant in `jobs/export/config.ts`.\n\n## Not included\n\n- The payments export has the same pattern and is left for a follow-up.\n\n## Rollout\n\nNo feature flag and no migration required.",
+  "truncated": false
+ },
+ "commit-message|deepseek|smd": {
+  "text": "Skip relink in LRU get() when entry is already at head\n\nProfiling showed get() at 11% of request time in the session store hot\npath, nearly all of it unlinking and relinking entries that were already\nat the head of the list. Guard the move-to-front so it only runs when the\nentry is not already the head.\n\nNo behavior change: recency order is identical, since an entry at the\nhead is already the most recently used.\n\nAdds a test asserting 1,000 repeated hits on the head entry perform zero\nlist mutations.",
+  "truncated": false
+ },
+ "pr-description|deepseek|smd": {
+  "text": "Invoice export now streams rows to the CSV writer in batches of 500 instead of materializing the full result set.\n\n**Why:** a 400,000-row export peaked at ~2.1 GB and was OOM-killed twice last month on the 2 GB worker.\n\n**Result:** peak memory on a local run of the same 400,000 rows dropped to ~180 MB. Wall-clock time went from 41 s to 47 s — the tradeoff for not holding the result set in memory.\n\n**Correctness:** CSV output is byte-identical to the previous implementation, verified with a diff on a 10,000-row fixture.\n\n**Config:** batch size is the `EXPORT_BATCH_ROWS` constant in `jobs/export/config.ts`.\n\n**Not covered:** the payments export has the same load-everything pattern and is left for a follow-up.\n\n**Rollout:** no feature flag, no migration.",
+  "truncated": false
+ },
+ "commit-message|sonnet|base": {
+  "text": "Skip list relink when LRU get() hits the head\n\n`get()` unlinked and relinked the entry on every hit, even when it was\nalready at the head of the list. Profiling showed this accounted for\nmost of the 11% of request time spent in `get()` on the session store\nhot path.\n\nOnly move the entry to the front when it is not already the head. No\nbehavior change is intended.\n\nAdd a test that 1,000 repeated hits on the head entry perform zero list\nmutations.\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01P9McqKgmFhDeiPobu8U4G6",
+  "cost": 0.0095872
+ },
+ "pr-description|sonnet|base": {
+  "text": "Stream invoice export rows to the CSV writer in batches\n\nThe invoice export job loaded the entire result set into memory before writing the CSV. A 400,000-row export peaked at about 2.1 GB, and on the 2 GB worker it was OOM-killed twice last month.\n\nThis change streams rows to the CSV writer in batches of 500. The batch size is a constant, `EXPORT_BATCH_ROWS`, in `jobs/export/config.ts`.\n\n**Results (400,000 rows, local run)**\n- Peak memory: about 2.1 GB before, about 180 MB after.\n- Wall-clock time: 41 s before, 47 s after. The export is slightly slower, which seems a fair trade for staying well under the worker's memory limit.\n\n**Verification**\n- The CSV output is byte-identical to before, checked with a diff on a 10,000-row fixture.\n- The memory and timing figures come from a local run, not from the production worker.\n\n**Not included**\n- The payments export has the same pattern and still loads everything into memory. I left it for a follow-up.\n\n**Rollout**\nNo flag and no migration. It takes effect on deploy.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nhttps://claude.ai/code/session_01P9McqKgmFhDeiPobu8U4G6",
+  "cost": 0.011235199999999999
+ },
+ "commit-message|sonnet|smd": {
+  "text": "Skip LRU relink when get() hits the head entry\n\nProfiling showed get() taking 11% of request time on the session store's hot path, almost all of it relinking entries that were already at the head. get() now moves an entry to the front only when it is not already the head, instead of unlinking and relinking on every hit.\n\nNo behavior change is intended. The new test checks that 1,000 repeated hits on the head entry perform zero list mutations.\n\nCo-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01P9McqKgmFhDeiPobu8U4G6",
+  "cost": 0.0292192
+ },
+ "pr-description|deepseek|judge": {
+  "result": "tie",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 is more precise about the memory facts, avoiding Output 2's implication that the ~2.1 GB baseline was also from a local run, while still covering config, correctness, rollout, and follow-up."
+   },
+   {
+    "winner": "base",
+    "reason": "Output 1 is more conventionally structured, includes all provided facts without adding unsupported causal framing, and keeps the PR description clear and complete."
+   }
+  ]
+ },
+ "code-review-comment|deepseek|base": {
+  "text": "This retry loop can double-charge the customer. `gateway.charge` isn't idempotent and takes no idempotency key, but `GatewayError` is also raised on timeouts — i.e. after the gateway may have already captured the funds. In that case we `continue` to the next card (or raise `PaymentFailed`), and the caller retries `charge`, charging the customer again.\n\nWe need to distinguish \"definitely not charged\" from \"unknown/possibly charged\" before retrying. Options:\n- Pass an idempotency key through to the gateway so retries are safe (requires gateway support).\n- On timeout/ambiguous errors, stop and surface a distinct state (e.g. `PaymentUnknown`) instead of `PaymentFailed`, so the caller reconciles rather than blindly retrying.\n- Only retry on errors that guarantee no capture occurred.\n\nAs written, this is unsafe to merge.",
+  "truncated": false
+ },
+ "pr-description|sonnet|smd": {
+  "text": "**Stream invoice export rows in batches of 500 to stop worker OOM kills**\n\nThe invoice export job loaded the full result set into memory before writing the CSV. A 400,000-row export peaked at about 2.1 GB and was OOM-killed twice last month on the 2 GB worker.\n\nThe job now streams rows to the CSV writer in batches of 500. The batch size is the constant `EXPORT_BATCH_ROWS` in `jobs/export/config.ts`.\n\n**Measured, 400,000 rows, local run**\n\n| | Before | After |\n|---|---|---|\n| Peak memory | ~2.1 GB | ~180 MB |\n| Wall-clock | 41 s | 47 s |\n\nThe export is 6 s slower, which I accepted for the memory headroom. The 180 MB figure is from a local run, not the 2 GB worker.\n\n**Output compatibility:** the CSV is byte-identical to the previous output, checked with a diff on a 10,000-row fixture.\n\n**Rollout:** no flag, no migration. Reverting the PR restores the old behavior.\n\n**Not in this PR:** the payments export has the same load-everything pattern. It is left for a follow-up.\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nhttps://claude.ai/code/session_01P9McqKgmFhDeiPobu8U4G6",
+  "cost": 0.0343022
+ },
+ "code-review-comment|deepseek|smd": {
+  "text": "This retries across cards on any `GatewayError`, but a timeout means the charge may already have captured. The caller then retries `charge` on `PaymentFailed`, so a timeout on card 1 can charge card 1, fall through to card 2, charge that too, and the caller's retry can charge again — the customer is billed multiple times for one order.\n\n`gateway.charge` takes no idempotency key, so there's no way to make the retry safe at this layer. Two options:\n\n1. Add an idempotency key to `gateway.charge` (keyed on `order.id`) and pass it through, so a retry of the same order is a no-op at the gateway. This is the fix if the gateway supports it.\n2. If it doesn't, don't retry on timeout. Distinguish the error: a connection-refused or pre-send failure is safe to try the next card; a timeout is not — surface it as an unknown state and reconcile against the gateway before retrying.\n\nAlso worth confirming: is falling through to the next card on *any* `GatewayError` intended? A decline on card 1 and a timeout on card 1 need different handling, and right now they're treated the same.",
+  "truncated": false
+ },
+ "commit-message|sonnet|judge": {
+  "result": "tie",
+  "passes": [
+   {
+    "winner": "base",
+    "reason": "Both are faithful and free of invented detail, but Draft 2 is better organized with a clear subject line, wrapped body, and bullets that map directly to the diff and ticket without the slight ambiguity of Draft 1's 'almo"
+   },
+   {
+    "winner": "smd",
+    "reason": "Output 2 is equally accurate but more concise, flowing directly from profiling motivation to the behavior change and test without unnecessary separation."
+   }
+  ]
+ },
+ "commit-message|deepseek|judge": {
+  "result": "tie",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 is accurate and complete without inventing a commit-type/scope convention not present in the material, and its no-behavior-change explanation is precise."
+   },
+   {
+    "winner": "base",
+    "reason": "Output 1 uses a conventional commit subject and accurately and concisely captures the profiling motivation, code change, test, and no-behavior-change note without adding unnecessary explanation."
+   }
+  ]
+ },
+ "docstring|deepseek|base": {
+  "text": "\"\"\"Merge overlapping or adjacent intervals.\n\nArgs:\n    intervals: An iterable of (start, end) tuples representing intervals.\n        The intervals may be provided in any order.\n    gap: A non-negative numeric tolerance specifying the maximum allowed\n        distance between two intervals for them to be merged. Two intervals\n        are merged when the start of the next interval is less than or equal\n        to the end of the previous interval plus ``gap``. Defaults to 0,\n        which merges only overlapping or touching intervals.\n\nReturns:\n    A list of (start, end) tuples representing the merged intervals, sorted\n    in ascending order by start. Returns an empty list if ``intervals`` is\n    empty.\n\nExamples:\n    >>> merge_intervals([(1, 3), (2, 6), (8, 10), (15, 18)])\n    [(1, 6), (8, 10), (15, 18)]\n    >>> merge_intervals([(1, 2), (4, 5)], gap=2)\n    [(1, 5)]\n\"\"\"",
+  "truncated": false
+ },
+ "docstring|deepseek|smd": {
+  "text": "```python\n\"\"\"Merge overlapping or adjacent intervals into a minimal set.\n\nSorts the input by start, then coalesces each interval into the previous\none when its start is within ``gap`` of the previous end. The result is\nsorted by start and contains no two intervals closer than ``gap``.\n\nArgs:\n    intervals: Iterable of ``(start, end)`` pairs. Each pair is unpacked\n        as exactly two values, so longer sequences raise ``ValueError``.\n        Ordering must be defined for the start values (they are compared\n        during the sort). The input is not mutated.\n    gap: Maximum distance between one interval's end and the next\n        interval's start for them to be merged. ``0`` merges only\n        overlapping or touching intervals; a positive value also merges\n        intervals separated by up to ``gap``. Negative values are not\n        rejected and will leave some overlapping intervals unmerged.\n\nReturns:\n    A new list of ``(start, end)`` tuples, sorted by start, with no two\n    intervals within ``gap`` of each other. Empty if ``intervals`` is\n    empty.\n\nRaises:\n    TypeError: If an element is not iterable or its start/end cannot be\n        compared or added to ``gap``.\n    ValueError: If an element does not unpack into exactly two values.\n\"\"\"\n```",
+  "truncated": false
+ },
+ "code-review-comment|sonnet|base": {
+  "text": "**Risk of double charging:** a `GatewayError` can be raised on a timeout after the gateway has already captured the funds, and this code treats it the same as a clean decline. It moves on and charges the next card, so the customer can be charged twice in a single call. Since `gateway.charge` isn't idempotent, there's no way to detect that the first charge went through.\n\nIt gets worse at the caller. On `PaymentFailed` the caller retries `charge`, which starts over at the first card. If funds were captured on any attempt, every retry can capture them again, and the customer ends up with several charges for one order.\n\nSuggestions:\n\n- Don't treat all `GatewayError`s as \"safe to try the next card.\" Separate definite declines (card rejected, insufficient funds), which are safe to fall through on, from ambiguous failures (timeouts, connection errors, 5xx), which should stop the loop and surface as an \"unknown outcome\" state.\n- For the ambiguous case, reconcile before any retry. Look up the charge by order ID on the gateway side, or record a pending payment attempt for the order and check it first.\n- If the gateway offers an idempotency key (or a client-supplied reference we can query by), pass a stable per-order and per-card key. If it doesn't, we need our own persisted attempt record to get the same guarantee.\n- The caller shouldn't blindly retry on `PaymentFailed`. Either use a distinct exception for \"outcome unknown\" that isn't retried, or make retries go through the reconciliation step above.\n\nI'd also add a test where the first card raises a timeout-style `GatewayError` after capturing, and assert that no second charge is attempted.",
+  "cost": 0.011840199999999999
+ },
+ "pr-description|sonnet|judge": {
+  "result": "smd",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 is more concise and scannable, presents the before/after metrics in a table, and accurately includes the local-run caveat while covering rollout and the follow-up."
+   },
+   {
+    "winner": "smd",
+    "reason": "Output 2 presents the same accurate facts more clearly and concisely with a scannable table, and its minor extra note about revert behavior does not undermine the description."
+   }
+  ]
+ },
+ "code-review-comment|deepseek|judge": {
+  "result": "tie",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 is more accurate and complete: it explains the multi-card fall-through and caller-retry double-charge, distinguishes pre-send failures from ambiguous timeouts, and recommends safe fixes without inventing a concr"
+   },
+   {
+    "winner": "base",
+    "reason": "Output 1 sticks closely to the provided details, clearly explains the double-charge risk, and gives actionable fixes without introducing unsupported error types or speculation."
+   }
+  ]
+ },
+ "error-message|deepseek|base": {
+  "text": "**User-facing error message:**\n\n> Your photo is too large (14.2 MB). The maximum size is 8 MB. Please choose a smaller file and try again. Accepted formats: JPEG, PNG, or WebP.\n\n**Log message:**\n\n> `WARN profile_photo upload rejected: file too large (14.2 MB > 8 MB limit) request_id=<request_id>`",
+  "truncated": false
+ },
+ "error-message|deepseek|smd": {
+  "text": "**User-facing message:**\nThat photo is 14.2 MB, over the 8 MB limit. Choose a smaller file (JPEG, PNG, or WebP) and try again.\n\n**Log line:**\n`request_id=<id> photo upload rejected: file_size=14.2MB exceeds limit=8MB`\n\nNotes: the user message states the actual size and the limit so the user knows how much to cut, and names the accepted types since a retry may hit the format check next. The log line carries the request id for correlation and the two numbers for triage; it omits the accepted-types list, which is static config, not failure data.",
+  "truncated": false
+ },
+ "code-review-comment|sonnet|smd": {
+  "text": "Double-charge risk. A `GatewayError` on timeout can mean the gateway already captured funds, but the `except` treats every `GatewayError` as \"not charged\" and moves on to the next card. The customer can be charged on card 1 and again on card 2. Then the caller retries on `PaymentFailed`, which can charge every card again.\n\nSince `gateway.charge` has no idempotency key, a failed call is only safe to retry if the error proves nothing was captured. Options:\n\n1. Split `GatewayError` into definite declines (card declined, validation error: safe to try the next card) and ambiguous failures (timeout, connection reset: stop). For the ambiguous case, raise a distinct exception such as `PaymentUnknown(order.id)`, not `PaymentFailed`, so the caller doesn't retry.\n2. Before any retry or fallback after an ambiguous error, look up the order's charges at the gateway (if it supports lookup by order reference) and reconcile.\n3. Longer term, use a gateway or API version that accepts idempotency keys, and derive the key from `order.id` plus the card.\n\nThe caller must also stop retrying on the ambiguous path. A regression test should mock a timeout on card 1 and assert that card 2 is never charged and that `PaymentFailed` is not raised.",
+  "cost": 0.0313772
+ },
+ "docstring|sonnet|base": {
+  "text": "```python\n\"\"\"Merge overlapping or nearby intervals into a minimal set of intervals.\n\nIntervals are sorted by start value and combined whenever the next\ninterval begins at or before the end of the current merged interval plus\n`gap`. The input is not modified.\n\nArgs:\n    intervals: An iterable of (start, end) pairs of comparable, numeric\n        values. Each pair is assumed to satisfy start <= end. The input\n        does not need to be sorted.\n    gap: The maximum distance between one interval's end and the next\n        interval's start for the two to still be merged. With the default\n        of 0, intervals merge only if they overlap or touch. Must be\n        non-negative to behave sensibly.\n\nReturns:\n    A list of (start, end) tuples, sorted by start, with no two intervals\n    overlapping or separated by `gap` or less. Returns an empty list if\n    `intervals` is empty.\n\nExamples:\n    >>> merge_intervals([(1, 3), (2, 6), (8, 10)])\n    [(1, 6), (8, 10)]\n    >>> merge_intervals([(1, 2), (4, 5)], gap=2)\n    [(1, 5)]\n\"\"\"\n```",
+  "cost": 0.0103202
+ },
+ "docstring|sonnet|smd": {
+  "text": "```python\n\"\"\"Merge overlapping or nearby intervals.\n\nIntervals are sorted by start, then combined whenever the next start is\nat most `gap` past the end of the current merged interval. Touching\nintervals (start == previous end) always merge, even when `gap` is 0.\n\nArgs:\n    intervals: Iterable of (start, end) pairs of mutually comparable\n        numbers. Each must unpack to exactly two values and is assumed\n        to satisfy start <= end; this is not validated. The input is\n        not modified.\n    gap: Maximum distance between one interval's end and the next\n        interval's start for the two to still merge. Must support\n        addition with the interval ends. Defaults to 0. A negative\n        value requires intervals to overlap by at least abs(gap)\n        before they merge.\n\nReturns:\n    A list of (start, end) tuples, sorted by start, with no two\n    intervals mergeable under `gap`. Empty if `intervals` is empty.\n\nRaises:\n    TypeError: If values cannot be compared or added to `gap`.\n    ValueError: If an element does not unpack to exactly two values.\n\"\"\"\n```",
+  "cost": 0.0307522
+ },
+ "docstring|deepseek|judge": {
+  "result": "base",
+  "passes": [
+   {
+    "winner": "base",
+    "reason": "Output 2 is concise, accurate, and includes correct examples, while Output 1 makes an incorrect claim that longer sequences always raise ValueError even though the first element is not unpacked that way."
+   },
+   {
+    "winner": "base",
+    "reason": "Output 1 is accurate, concise, and fully usable as a Google-style docstring, while Output 2 includes incorrect exception claims and extra Markdown fences."
+   }
+  ]
+ },
+ "code-review-comment|sonnet|judge": {
+  "result": "smd",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 is more precise about the ambiguous timeout failure, explicitly distinguishes an unknown outcome from PaymentFailed, and gives a complete actionable fix plus regression test without overstating what can be detec"
+   },
+   {
+    "winner": "smd",
+    "reason": "Output 2 is more precise and concise, correctly distinguishes safe declines from ambiguous failures, proposes a non-retried exception plus reconciliation/idempotency options, and includes a targeted regression test."
+   }
+  ]
+ },
+ "error-message|sonnet|base": {
+  "text": "**User-facing error message:**\nThat photo is too large (14.2 MB). The maximum size is 8 MB. Please choose a smaller JPEG, PNG, or WebP file and try again.\n\n**Log message:**\n`WARN profile_photo_upload rejected: file too large (size=14.2MB, limit=8MB) request_id=<request_id>`",
+  "cost": 0.0072532
+ },
+ "release-notes|deepseek|base": {
+  "text": "# 2.4.0\n\n## New\n\n- `report` now supports `--format json`, printing one JSON object per line (#412).\n- Color output can be disabled by setting `REPORT_COLOR=0` (#419).\n\n## Fixes\n\n- `report --since` no longer crashes on dates before 1970 (#405).\n- Config files located in symlinked directories are now found correctly (#431).\n\n## Changes\n\n- The default timeout is now 30 s, down from 60 s (#426). To restore the previous behavior, set `timeout` in your config file.\n- Removed the deprecated `--legacy-output` flag (#388). It has emitted a deprecation warning since 2.1.0.\n\n## Internal\n\n- Dropped the `lodash` dependency. No user-visible change.",
+  "truncated": false
+ },
+ "release-notes|deepseek|smd": {
+  "text": "# 2.4.0\n\n## Added\n- `report --format json` prints one JSON object per line (#412).\n- `REPORT_COLOR=0` disables color output (#419).\n\n## Fixed\n- `report --since` no longer crashes on dates before 1970 (#405).\n- Config files in symlinked directories are now found (#431).\n\n## Changed\n- Default timeout is now 30 s, down from 60 s (#426). Set `timeout` in your config to restore 60 s.\n\n## Removed\n- `--legacy-output` (#388). Deprecated since 2.1.0, where it began emitting a warning.\n\n## Internal\n- Dropped the `lodash` dependency. No user-visible change.",
+  "truncated": false
+ },
+ "error-message|sonnet|smd": {
+  "text": "**User-facing error:**\nThat photo is 14.2 MB, over the 8 MB limit. Choose a smaller JPEG, PNG, or WebP file and try again.\n\n**Log line:**\n`WARN profile_photo_upload rejected: size 14.2MB exceeds limit 8MB request_id=<request_id>`",
+  "cost": 0.0278352
+ },
+ "error-message|sonnet|judge": {
+  "result": "tie",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 is accurate, complete, and more concise, with a clear structured log line containing size, limit, and request_id."
+   },
+   {
+    "winner": "base",
+    "reason": "Output 1 is equally accurate but clearer for users and more machine-readable in the log with explicit size and limit fields and the request_id."
+   }
+  ]
+ },
+ "error-message|deepseek|judge": {
+  "result": "tie",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 is accurate and concise, and its structured log line puts the request id first with the size and limit for triage, while Output 2 adds an unspecified WARN level and a less parseable log format."
+   },
+   {
+    "winner": "base",
+    "reason": "Output 1 is fully labeled, accurate, and includes a conventional WARN-level log line with explicit request_id correlation, while Output 2 omits log severity and adds unrequested explanatory notes."
+   }
+  ]
+ },
+ "readme-intro|deepseek|base": {
+  "text": "# tidyfeed\n\n`tidyfeed` is a small, dependency-free Node.js library that parses RSS 2.0 and Atom 1.0 feeds into a single normalized object shape, so you don't have to branch on feed format in your own code. It exposes one function, `parseFeed(xmlString)`, which returns `{ title, link, items: [{ id, title, link, published, summary }] }`, where `published` is an ISO 8601 string or `null`. It performs no network requests — you bring the XML, it brings the parsing. Note that it is not a streaming parser: the entire document is held in memory, and RSS enclosures and media extensions are not currently supported.\n\n## Install\n\n```sh\nnpm install tidyfeed\n```\n\nRequires Node.js 18 or later. No dependencies.\n\n## Usage\n\n```js\nimport { parseFeed } from 'tidyfeed';\n\nconst xml = await fetch('https://example.com/feed.xml').then((r) => r.text());\nconst feed = parseFeed(xml);\n\nconsole.log(feed.title);\nfor (const item of feed.items) {\n  console.log(item.title, item.link, item.published);\n}\n```\n\n## License\n\nMIT",
+  "truncated": false
+ },
+ "release-notes|deepseek|judge": {
+  "result": "smd",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 better preserves the provided change categories, especially separating Removed, and its notes are accurate and concise."
+   },
+   {
+    "winner": "smd",
+    "reason": "Output 2 follows conventional release-note sections (Added/Fixed/Changed/Removed), keeps entries concise and accurate, and separates the removal instead of folding it into Changes."
+   }
+  ]
+ },
+ "readme-intro|deepseek|smd": {
+  "text": "# tidyfeed\n\nParse RSS 2.0 and Atom 1.0 into one normalized object shape. `parseFeed(xmlString)` returns `{ title, link, items }`, where each item is `{ id, title, link, published, summary }` and `published` is an ISO 8601 string or `null`. No dependencies, no network access: you supply the XML, tidyfeed parses it. The whole document is held in memory, so it is not suitable for feeds large enough to matter as a stream.\n\n## Install\n\n```sh\nnpm install tidyfeed\n```\n\nRequires Node 18 or later.\n\n## Usage\n\n```js\nconst { parseFeed } = require('tidyfeed');\n\nconst feed = parseFeed(xmlString);\n\nfeed.title;              // 'Example Blog'\nfeed.link;               // 'https://example.com/'\nfeed.items[0].id;        // stable id from guid or Atom id\nfeed.items[0].published; // '2024-03-01T12:00:00Z' or null\n```\n\nESM: `import { parseFeed } from 'tidyfeed';`\n\n## Not supported\n\nRSS enclosures and media extensions are ignored. tidyfeed does not fetch feeds over the network.\n\n## License\n\nMIT",
+  "truncated": false
+ },
+ "release-notes|sonnet|base": {
+  "text": "# 2.4.0\n\n## Breaking changes\n\n- **Default timeout reduced from 60 s to 30 s** (#426). To restore the previous behavior, set `timeout` in your config file.\n- **Removed the `--legacy-output` flag** (#388). It has printed a deprecation warning since 2.1.0.\n\n## New\n\n- `report` now supports `--format json`, which prints one JSON object per line (#412).\n- Color can be disabled by setting `REPORT_COLOR=0` (#419).\n\n## Fixes\n\n- Fixed a crash in `report --since` when given a date before 1970 (#405).\n- Fixed the config file not being found when it lives in a symlinked directory (#431).",
+  "cost": 0.0090112
+ },
+ "readme-intro|sonnet|base": {
+  "text": "# tidyfeed\n\ntidyfeed is a dependency-free Node.js library (Node 18+) that parses RSS 2.0 and Atom 1.0 feeds into a single normalized object shape, so your code doesn't need to care which format a feed uses. It takes an XML string and returns the feed's title and link along with a list of items, each with an `id`, `title`, `link`, `published` date (an ISO 8601 string, or `null` if absent), and `summary`. tidyfeed does not fetch feeds over the network; you supply the XML. It is not a streaming parser, so the whole document is held in memory. RSS enclosures and media extensions are not currently supported.\n\n## Install\n\n```sh\nnpm install tidyfeed\n```\n\n## Usage\n\n```js\nimport { parseFeed } from 'tidyfeed';\n\nconst xml = await (await fetch('https://example.com/feed.xml')).text();\nconst feed = parseFeed(xml);\n\nconsole.log(feed.title);\nfor (const item of feed.items) {\n  console.log(item.published, item.title, item.link);\n}\n```\n\n`parseFeed` returns:\n\n```js\n{\n  title,   // string\n  link,    // string\n  items: [\n    { id, title, link, published, summary } // published: ISO 8601 string or null\n  ]\n}\n```\n\n## License\n\nMIT",
+  "cost": 0.0109302
+ },
+ "release-notes|sonnet|smd": {
+  "text": "## 2.4.0\n\n### Breaking changes\n\n- **Removed `--legacy-output`** (#388). The flag has printed a deprecation warning since 2.1.0. Scripts that still pass it will now fail.\n- **Default timeout is now 30 s, down from 60 s** (#426). To keep the old behavior, set `timeout` in your config file to 60.\n\n### New\n\n- `report --format json` prints one JSON object per line (#412).\n- Setting `REPORT_COLOR=0` disables colored output (#419).\n\n### Fixed\n\n- `report --since` no longer crashes on dates before 1970 (#405).\n- A config file located in a symlinked directory is now found (#431).\n\n### Internal\n\n- Dropped the `lodash` dependency. No user-visible change.",
+  "cost": 0.029903199999999998
+ },
+ "readme-intro|sonnet|smd": {
+  "text": "# tidyfeed\n\ntidyfeed parses RSS 2.0 and Atom 1.0 feeds into a single normalized object shape, so calling code doesn't branch on feed format. It has no dependencies, requires Node 18+, and takes an XML string: it does not fetch over the network. It is not a streaming parser, so the whole document is held in memory. RSS enclosures and media extensions are not supported. Licensed under MIT.\n\n## Install\n\n```sh\nnpm install tidyfeed\n```\n\n## Usage\n\n```js\nimport { parseFeed } from 'tidyfeed';\n\nconst feed = parseFeed(xmlString);\n// {\n//   title, link,\n//   items: [{ id, title, link, published, summary }]\n// }\n```\n\n`published` is an ISO 8601 string, or `null` when the feed item has no date.",
+  "cost": 0.0300022
+ },
+ "release-notes|sonnet|judge": {
+  "result": "tie",
+  "passes": [
+   {
+    "winner": "base",
+    "reason": "Output 2 is accurate and appropriately user-facing, avoiding Output 1's invented claim that scripts will fail and omitting the non-user-visible internal lodash note."
+   },
+   {
+    "winner": "smd",
+    "reason": "Output 2 is more complete because it includes the internal lodash removal and clearly calls out the user impact of the removed flag, while remaining accurate to the provided changes."
+   }
+  ]
+ },
+ "incident-summary|deepseek|base": {
+  "text": "**Checkout errors (14:09–14:31 UTC) — resolved**\n\nA deploy of api v3.18 at 14:02 UTC included a database migration that took a table lock on `orders` for ~7 minutes, causing checkout error rates to spike from 0.2% to 31%. The on-call engineer identified the cause at 14:16; rollback began at 14:20 (the migration had already completed, so only the old code was restored). Error rates fell below 1% by 14:31, with full recovery at 14:34.\n\nImpact: ~9,300 checkout attempts failed. No double-charges occurred, and failed attempts were not retried automatically.\n\nOpen item: why the migration wasn't caught in staging is still under investigation. A follow-up review is scheduled for Tuesday.",
+  "truncated": false
+ },
+ "incident-summary|deepseek|smd": {
+  "text": "**Checkout errors, 14:09–14:34 UTC — resolved**\n\nA deploy of api v3.18 at 14:02 included a database migration that held a table lock on `orders` for about 7 minutes. Checkout error rates rose from 0.2% to 31% starting at 14:09. Rollback began at 14:20; because the migration had already completed, it restored the old code only. Errors fell below 1% by 14:31 and checkout fully recovered at 14:34.\n\nAbout 9,300 checkout attempts failed. No payments were double-charged, and failed attempts were not retried automatically — affected customers will need to re-attempt checkout.\n\nOpen: why the migration was not caught in staging. Review scheduled for Tuesday.",
+  "truncated": false
+ },
+ "readme-intro|deepseek|judge": {
+  "result": "tie",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 is more accurate to the provided material, avoids a potentially misleading network-fetch usage example, and documents the known enclosure/media gap while keeping the install and usage minimal."
+   },
+   {
+    "winner": "base",
+    "reason": "Output 1 is accurate and complete for the requested opening README, while Output 2 invents details about id derivation and makes an unsupported suitability claim."
+   }
+  ]
+ },
+ "incident-summary|sonnet|base": {
+  "text": "**Resolved: Checkout errors after api v3.18 deploy**\n\nBetween 14:09 and 14:31 UTC, checkout was heavily degraded, with the error rate peaking at 31% (normally 0.2%). Roughly 9,300 checkout attempts failed. Checkout was fully recovered by 14:34 UTC.\n\n**Cause:** The v3.18 deploy, which began at 14:02 UTC, included a database migration that locked the `orders` table for about 7 minutes. Rolling back the deploy (started 14:20) restored the previous code only, as the migration had already completed. The error rate dropped below 1% at 14:31.\n\n**Customer impact:** No payments were double-charged. Failed checkout attempts were not retried automatically, so affected customers will need to place their orders again.\n\n**Next steps:** We have not yet determined why the migration was not caught in staging. A follow-up review is scheduled for Tuesday, and we will share findings afterward.",
+  "cost": 0.010047200000000001
+ },
+ "incident-summary|sonnet|smd": {
+  "text": "**Resolved: Checkout errors after api v3.18 deploy**\n\nBetween 14:09 and 14:31 UTC, checkout was failing for most customers. Checkout error rate rose from 0.2% to 31% and returned below 1% at 14:31. Checkout was fully recovered by 14:34. Roughly 9,300 checkout attempts failed during this window.\n\n**Cause:** The v3.18 deploy (started 14:02) included a database migration that locked the `orders` table for about 7 minutes. Checkout requests that needed the table failed while the lock was held.\n\n**Response:** On-call identified the migration at 14:16 and started a rollback at 14:20. The migration had already completed, so the rollback restored only the previous code. Recovery followed once the lock was released and the old code was serving.\n\n**Customer impact:** No customer was double-charged. Failed attempts were not retried automatically, so affected customers need to place their order again.\n\n**Open question:** We have not yet determined why staging did not catch the migration. A review is scheduled for Tuesday, and we will post findings afterward.",
+  "cost": 0.031059200000000002
+ },
+ "docstring|sonnet|judge": {
+  "result": "smd",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 accurately documents the merge condition, edge cases, and negative-gap behavior, while Output 2 adds an unsupported non-negative-gap constraint and is less precise."
+   },
+   {
+    "winner": "smd",
+    "reason": "Output 2 documents the actual negative-gap and exception behavior more accurately, while Output 1 invents a non-negative requirement not enforced by the code."
+   }
+  ]
+ },
+ "readme-intro|sonnet|judge": {
+  "result": "smd",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Draft 1 is more concise, accurate to the provided scope, and its usage example demonstrates parseFeed directly without introducing a network-fetching pattern for a library that explicitly does not fetch."
+   },
+   {
+    "winner": "smd",
+    "reason": "Output 2 is more concise and minimal while accurately covering all required details, avoiding Output 1's extra network-fetch example and additional sections."
+   }
+  ]
+ },
+ "incident-summary|sonnet|judge": {
+  "result": "base",
+  "passes": [
+   {
+    "winner": "base",
+    "reason": "Output 2 is more accurate and concise, avoiding Output 1's overstatement that checkout was failing for \"most customers\" and not implying recovery waited on the already-completed migration lock."
+   },
+   {
+    "winner": "base",
+    "reason": "Output 1 stays accurate to the provided facts, while Output 2 overstates impact as “most customers” and adds an unsupported failure/recovery mechanism."
+   }
+  ]
+ },
+ "incident-summary|deepseek|judge": {
+  "result": "tie",
+  "passes": [
+   {
+    "winner": "smd",
+    "reason": "Output 1 is more accurate: it uses the correct full-recovery time in the header and avoids Output 2's premature 'resolved' at 14:31, with only a minor inferred customer-retry note."
+   },
+   {
+    "winner": "base",
+    "reason": "Output 1 is more faithful to the provided facts and avoids adding the unsupported customer instruction that failed checkouts must be manually re-attempted."
+   }
+  ]
+ }
+}

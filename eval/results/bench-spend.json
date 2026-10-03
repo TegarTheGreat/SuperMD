@@ -1,0 +1,112 @@
+{
+  "runs": [
+    {
+      "at": "2026-10-03T05:12:44.804Z",
+      "suite": "prompts",
+      "deepseekIn": 32121,
+      "deepseekOut": 14104,
+      "claudeUsd": 0,
+      "claudeCalls": 0,
+      "deepseekCalls": 103
+    },
+    {
+      "at": "2026-10-03T05:14:14.343Z",
+      "suite": "modules",
+      "deepseekIn": 44485,
+      "deepseekOut": 26649,
+      "claudeUsd": 0,
+      "claudeCalls": 0,
+      "deepseekCalls": 26
+    },
+    {
+      "at": "2026-10-03T05:16:12.010Z",
+      "suite": "agentic",
+      "deepseekIn": 0,
+      "deepseekOut": 0,
+      "claudeUsd": 0.4003714,
+      "claudeCalls": 2,
+      "deepseekCalls": 0,
+      "truncated": 0
+    },
+    {
+      "at": "2026-10-03T05:16:57.552Z",
+      "suite": "models",
+      "deepseekIn": 9520,
+      "deepseekOut": 3102,
+      "claudeUsd": 0.09985780000000001,
+      "claudeCalls": 8,
+      "deepseekCalls": 12,
+      "truncated": 0
+    },
+    {
+      "at": "2026-10-03T05:21:58.290Z",
+      "suite": "agentic",
+      "deepseekIn": 0,
+      "deepseekOut": 0,
+      "claudeUsd": 1.7015002,
+      "claudeCalls": 22,
+      "deepseekCalls": 0,
+      "truncated": 0
+    },
+    {
+      "at": "2026-10-03T05:29:24.570Z",
+      "suite": "models",
+      "deepseekIn": 205918,
+      "deepseekOut": 122095,
+      "claudeUsd": 2.8310968,
+      "claudeCalls": 134,
+      "deepseekCalls": 129,
+      "truncated": 1
+    },
+    {
+      "at": "2026-10-03T05:32:32.367Z",
+      "suite": "agentic",
+      "deepseekIn": 0,
+      "deepseekOut": 0,
+      "claudeUsd": 0.5339830000000001,
+      "claudeCalls": 6,
+      "deepseekCalls": 0,
+      "truncated": 0
+    },
+    {
+      "at": "2026-10-03T05:33:29.553Z",
+      "suite": "modules",
+      "deepseekIn": 1527997,
+      "deepseekOut": 1125076,
+      "claudeUsd": 5.217507600000005,
+      "claudeCalls": 208,
+      "deepseekCalls": 912,
+      "truncated": 2
+    },
+    {
+      "at": "2026-10-03T05:34:47.567Z",
+      "suite": "artifacts",
+      "deepseekIn": 63699,
+      "deepseekOut": 126338,
+      "claudeUsd": 0.32467519999999994,
+      "claudeCalls": 16,
+      "deepseekCalls": 63,
+      "truncated": 0
+    },
+    {
+      "at": "2026-10-03T05:44:18.050Z",
+      "suite": "modules",
+      "deepseekIn": 0,
+      "deepseekOut": 0,
+      "claudeUsd": 5.387937399999998,
+      "claudeCalls": 208,
+      "deepseekCalls": 0,
+      "truncated": 0
+    },
+    {
+      "at": "2026-10-03T05:45:54.616Z",
+      "suite": "models",
+      "deepseekIn": 0,
+      "deepseekOut": 0,
+      "claudeUsd": 1.4587754,
+      "claudeCalls": 72,
+      "deepseekCalls": 0,
+      "truncated": 0
+    }
+  ]
+}

@@ -6,7 +6,7 @@ Guide for AI coding agents (and humans) working on this repository. SuperMD is a
 
 - `en/`, `id/` — two mirrored trees. `SUPERMD.md` is the assembled core, `core/` the same rules split by concern, `domains/<category>/` the 103 field modules, `styles/` and `adapters/` the optional layers.
 - `bin/supermd.mjs`, `lib/` — the CLI and its importable modules (`compose`, `slop-scan`, `harnesses`, `mcp`).
-- `eval/` — the anti-slop test harness. `eval/results/` holds generated reports; never edit them by hand.
+- `eval/` — the anti-slop test harness (`run-eval.mjs`) and the broader benchmark (`bench.mjs`). `eval/results/` holds generated reports and raw benchmark data; never edit them by hand.
 - `plugins/supermd/` and `.claude-plugin/` — the Claude Code plugin and marketplace manifest. Generated parts are marked and checked in CI.
 - `scripts/` — tests and checks. `docs/` — screenshots and recorded evidence for the README.
 
