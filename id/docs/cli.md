@@ -2,7 +2,7 @@
 name: CLI
 category: docs
 version: 1.0.0
-summary: Perintah supermd — merakit prompt dan memindai teks untuk slop, dari terminal, tanpa instalasi.
+summary: Perintah supermd — merakit prompt, memasangnya ke harness agen, memindai teks untuk slop, dan menjalankan server MCP, tanpa instalasi.
 ---
 
 # CLI `supermd`
@@ -27,7 +27,7 @@ npx supermd build --core-only          # hanya core universal, tanpa yang lain
 
 Pencocokan bidang toleran: `nurse` teresolusi ke `nursing`, `frontend` ke Frontend Engineering. Ketika istilahnya ambigu atau tak dikenal, CLI menampilkan sub-bidang terdekat dan mengarahkan Anda ke `adapt`.
 
-Opsi: `--style formal|conversational|technical`, `--lang en|id`, `--core-only`, `--out FILE`, `--no-banner` (buang komentar provenance di awal).
+Opsi: `--style formal|conversational|technical`, `--lang en|id`, `--core-only`, `--out FILE`, `--no-banner` (buang komentar provenance di awal), `--keep-frontmatter`. Blok metadata YAML tiap modul dibuang dari prompt rakitan secara default, karena blok `---` kedua di tengah prompt yang ditempel membingungkan harness yang mem-parse front matter.
 
 ## Profesi apa pun — `adapt`
 
@@ -44,6 +44,31 @@ npx supermd adapt "beekeeper"
 npx supermd list                # semua 16 kategori
 npx supermd list technology     # sub-bidang satu kategori beserta slug-nya
 ```
+
+## Memasang ke harness — `install`, `uninstall`, `status`, `harnesses`
+
+Tulis aturan ke tempat agen coding membacanya, tanpa menyentuh isi Anda sendiri. Panduan lengkap berisi setiap harness, path file, dan jaminannya ada di [integrations.md](integrations.md).
+
+```bash
+npx supermd install claude-code codex --lang id   # proyek ini
+npx supermd install cursor --field backend        # core plus modul profesi
+npx supermd install claude-code --scope user      # semua proyek, lewat direktori home
+npx supermd install all --dry-run                 # pratinjau, tanpa menulis
+npx supermd status                                # apa yang terpasang, dan apakah sudah terbaru
+npx supermd uninstall all                         # hapus persis yang tadi ditulis
+npx supermd harnesses                             # harness yang didukung beserta file-nya
+```
+
+Opsi: `--field NAMA`, `--style NAMA`, `--lang en|id`, `--scope project|user`, `--dir PATH`, `--dry-run`, `--force`. Kode keluar 1 berarti ada file yang dibiarkan karena bukan milik SuperMD.
+
+## Server MCP — `mcp`
+
+```bash
+claude mcp add supermd -- npx -y supermd mcp
+codex mcp add supermd -- npx -y supermd mcp
+```
+
+Server stdio lokal dengan empat tool baca-saja (`supermd_check`, `supermd_build`, `supermd_adapt`, `supermd_list`) dan satu prompt. Agen memanggil `supermd_check` pada draf-nya sendiri dan menulis ulang sampai tidak ada hit keras. Detail dan konfigurasi untuk klien lain: [integrations.md](integrations.md#server-mcp).
 
 ## Memindai teks untuk slop — `check`
 
@@ -72,3 +97,5 @@ import { scan } from 'supermd/slop-scan';
 const { prompt } = compose({ field: 'backend', style: 'technical', lang: 'id' });
 const hits = scan(teksSaya, 'id');   // { hard: [...], soft: [...] }
 ```
+
+`supermd/harnesses` (perencana installer) dan `supermd/mcp` (server) juga bisa diimpor. Warna output mengikuti terminal; setel `FORCE_COLOR=1` untuk memaksanya atau `NO_COLOR=1` untuk mematikannya.

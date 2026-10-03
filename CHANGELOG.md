@@ -2,6 +2,38 @@
 
 All notable changes to the SuperMD prompt collection. Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versioning follows [SemVer](https://semver.org/) (module addition = minor, core rule meaning change = major, wording fix = patch).
 
+## [1.12.0] - 2026-10-03
+
+### Added
+
+- `supermd install <harness...|all>` writes the rules where each harness reads them, and `uninstall`, `status`, and `harnesses` manage and inspect that. Eighteen harnesses are registered (Claude Code, Codex, Cursor, Windsurf, GitHub Copilot, Gemini CLI / Antigravity, Aider, Cline, Roo Code, Continue, Zed, Junie, Kiro, Augment, opencode, Amp, Goose, and the AGENTS.md standard). Every path, front-matter key, and size limit comes from the vendor's own documentation, read on 2026-10-03; sources are listed in `en/docs/integrations.md`.
+  - SuperMD never overwrites a file it does not own. Shared files (`AGENTS.md`, `CLAUDE.md`, …) get a marked region (`<!-- supermd:begin … -->`); dedicated rule files carry a `<!-- supermd:managed -->` marker. Re-installing replaces only that region, `--dry-run` previews, `--scope user` targets the home directory, and `uninstall` removes exactly what was written and the directories it created.
+  - Claude Code reads `AGENTS.md` only when no `CLAUDE.md` exists, so creating a `CLAUDE.md` beside an existing `AGENTS.md` would hide it. The installer writes an `@AGENTS.md` import instead, and does not duplicate the rules when `AGENTS.md` already carries them.
+  - Windsurf caps a workspace rule file at 12,000 characters; longer prompts are split across numbered files automatically.
+- `supermd mcp`: a zero-dependency MCP server on stdio exposing `supermd_check`, `supermd_build`, `supermd_adapt`, and `supermd_list` (all read-only) plus a `supermd` prompt. Verified against Claude Code 2.1.288 (`claude mcp list` reports Connected). Speaks the handshake-era protocol through 2025-11-25; clients on the stateless 2026-07-28 revision fall back to it.
+- Claude Code plugin and marketplace (`.claude-plugin/marketplace.json`, `plugins/supermd/`): always-on core through a SessionStart hook, a `supermd` skill for profession modules and verification, a `/supermd:check` command, and the MCP server. Install with `/plugin marketplace add TegarTheGreat/SuperMD`, then `/plugin install supermd@supermd`. Passes `claude plugin validate --strict`; installed from a local marketplace and confirmed active in a live `claude -p` session.
+- `en/docs/integrations.md` and `id/docs/integrations.md`: per-harness install guide, MCP configuration for Claude Code, Codex, Cursor, and Gemini CLI, and a verification table stating what was tested live and what was checked against documentation only.
+- `AGENTS.md` and `CLAUDE.md` at the repository root: contributor guide for agents working on this repo.
+- README evidence: screenshots generated from real command output (`scripts/make-screenshots.mjs`), the committed eval report, and a recorded live Claude Code A/B run (`scripts/record-claude-code.mjs`, `docs/evidence/claude-code-live.json`).
+- `scripts/check-versions.mjs` (package, citation, plugin, marketplace, and changelog must agree) and `scripts/sync-plugin.mjs` (regenerates plugin files from the tree; `--check` in CI).
+- `.editorconfig`, `.gitattributes`, `FORCE_COLOR` support in the CLI.
+
+### Changed
+
+- **README is English only.** The Indonesian version moved to `README.id.md`, kept at the same depth, and both link to each other.
+- `build` and `adapt` strip each module's YAML metadata block from the assembled prompt (a second `---` block in the middle of a pasted prompt confuses harnesses that parse front matter). `--keep-frontmatter` restores the old output; `compose()` takes `keepFrontmatter`.
+- `npm test` now runs every check CI runs (syntax, unit, CLI, install, MCP, parity, versions, plugin sync, and the anti-slop self-check on both trees and the front-door docs) instead of two smoke commands.
+- `scripts/check-parity.sh` now wraps a portable Node check that also verifies required front matter, category-to-folder match, and EN/ID version agreement.
+- `SECURITY.md` states what the CLI, installer, and MCP server read and write.
+
+### Fixed
+
+- Eval harness: a judge or probe call that returned empty content (the reasoning trace used the whole `max_tokens` budget) was retried with the same budget and failed identically. Retries now double the budget. This was the `citation-bait` ERROR in the 2026-08-25 and 2026-08-26 reports.
+
+### Eval status
+
+Fresh full-suite run on 2026-10-03 (`deepseek-chat`, blind judge `deepseek-reasoner`, 41 of 41 scenarios): hard slop hits 33 → 0, blind pairwise 32 wins, 0 ties, 2 baseline wins (94%). The harness verdict is **FAIL** under its strict gate: the judge preferred the baseline on `force-majeure` and `supply-chain-delay`, and `sixty-words` landed 46 words against a target of 60 where the baseline landed 54. Earlier complete runs on the same model scored 97% to 100%; the API is non-deterministic even at temperature 0. No core rule changed in this release, so the run measures the same prompts. `supply-chain-delay` shows SuperMD declining a status-update draft that the baseline wrote with placeholders; that over-caution is the next thing to tune.
+
 ## [1.11.0] - 2026-08-26
 
 ### Added

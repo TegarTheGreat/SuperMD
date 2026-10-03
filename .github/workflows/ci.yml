@@ -33,7 +33,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - run: bash scripts/check-parity.sh
+
+  test:
+    runs-on: ${{ matrix.os }}
+    # The Windows leg is advisory until it has run green once on GitHub; the
+    # installer writes files, so it is worth watching there.
+    continue-on-error: ${{ matrix.os == 'windows-latest' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: [18, 20, 22]
+        exclude:
+          # keep the matrix small: the full node range on Linux, current LTS elsewhere
+          - { os: macos-latest, node: 18 }
+          - { os: macos-latest, node: 22 }
+          - { os: windows-latest, node: 18 }
+          - { os: windows-latest, node: 22 }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      # One command runs every check: syntax, unit, CLI, installer, MCP, parity,
+      # version sync, plugin sync, and the anti-slop self-check on both language
+      # trees and the front-door docs (RESEARCH.md is exempt by design: it quotes
+      # the tells it cites, so scanning the blocklist's own bibliography would be
+      # circular).
+      - run: npm test
 
   cli:
     runs-on: ubuntu-latest
@@ -42,20 +73,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: node --check bin/supermd.mjs && node --check lib/compose.mjs && node --check lib/slop-scan.mjs
-      - run: node scripts/test-slop-scan.mjs
-      - run: node scripts/test-cli.mjs
       - run: node bin/supermd.mjs version
       - run: node bin/supermd.mjs list > /dev/null
       - run: node bin/supermd.mjs build software-engineering --style technical > /dev/null
       - run: node bin/supermd.mjs build keperawatan --lang id > /dev/null
       - run: node bin/supermd.mjs adapt "beekeeper" > /dev/null
-      # The repo is gated on the rules it teaches: both language trees and the
-      # front-door files must pass the anti-slop self-check. RESEARCH.md is
-      # exempt by design — it quotes the tells it cites, so scanning the
-      # blocklist's own bibliography would be circular.
-      - run: node bin/supermd.mjs check en && node bin/supermd.mjs check id
-      - run: node bin/supermd.mjs check README.md && node bin/supermd.mjs check CHANGELOG.md && node bin/supermd.mjs check CONTRIBUTING.md
+      - run: node bin/supermd.mjs harnesses > /dev/null
       - name: check must exit non-zero on hard slop
         run: |
           if printf 'In today'"'"'s fast-paced world, delve into the tapestry. I hope this helps!' | node bin/supermd.mjs check; then
@@ -65,3 +88,23 @@ jobs:
           fi
       - name: check must pass on clean text
         run: printf 'Hash passwords with bcrypt. The lookup takes 40 ms.' | node bin/supermd.mjs check
+
+  plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Validate the Claude Code plugin and marketplace manifests
+        run: |
+          npm install --no-save @anthropic-ai/claude-code
+          npx claude plugin validate plugins/supermd --strict
+          npx claude plugin validate . --strict
+
+  no-runtime-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: package.json must declare no dependencies
+        run: node -e "const p=require('./package.json');for(const k of ['dependencies','optionalDependencies','peerDependencies']){if(p[k]&&Object.keys(p[k]).length){console.error(k+' must stay empty');process.exit(1)}}"

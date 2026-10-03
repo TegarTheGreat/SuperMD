@@ -7,7 +7,8 @@ abstract: >-
   claims, and structure that stands in for substance — and pairs each ban with
   the concrete behavior that replaces it. It composes a universal core with
   per-profession domain modules across 16 categories and 103 sub-fields, ships in
-  English and Bahasa Indonesia, is grounded in published research on the
+  English and Bahasa Indonesia, installs into Claude Code, Codex, Cursor and more
+  than a dozen other agent harnesses, is grounded in published research on the
   statistical signatures of machine text, and is verified by an eval harness.
 type: software
 authors:
@@ -17,8 +18,8 @@ authors:
 repository-code: "https://github.com/TegarTheGreat/SuperMD"
 url: "https://github.com/TegarTheGreat/SuperMD"
 license: CC-BY-4.0
-version: 1.11.0
-date-released: "2026-08-15"
+version: 1.12.0
+date-released: "2026-10-03"
 keywords:
   - system-prompt
   - prompt-engineering

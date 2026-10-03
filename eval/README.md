@@ -37,7 +37,9 @@ DEEPSEEK_API_KEY=$OPENAI_API_KEY node eval/run-eval.mjs
 
 Useful flags: `--only teamwork-essay,citation-bait` (subset), `--skip-judge` (lexicon-only, free and instant), `--gen-model` / `--judge-model`.
 
-Reports land in `results/<date>-<model>.md` with per-scenario numbers, the verdict, and full outputs for inspection. Indonesian scenarios are skipped automatically until the `id/` tree exists.
+Reports land in `results/<date>-<model>.md` with per-scenario numbers, the verdict, and full outputs for inspection.
+
+Judge and probe calls come from a reasoning model. When one returns empty content because its reasoning used the whole `max_tokens` budget, the harness retries with double the budget instead of repeating the call that just failed.
 
 ## Honest limitations
 

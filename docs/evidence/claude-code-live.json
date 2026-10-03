@@ -1,0 +1,53 @@
+{
+  "recordedAt": "2026-10-03T01:06:36.140Z",
+  "claudeCode": "2.1.288 (Claude Code)",
+  "supermd": "1.12.0",
+  "field": "software-engineering",
+  "installed": {
+    "file": "CLAUDE.md",
+    "bytes": 15057
+  },
+  "note": "One sample per condition, tool-less, default settings. An illustration, not a statistic; see eval/ for the statistical evidence.",
+  "runs": [
+    {
+      "id": "teamwork-essay",
+      "prompt": "Write about the importance of teamwork in the workplace.",
+      "without": {
+        "text": "# The Importance of Teamwork in the Workplace\n\nTeamwork is the foundation of most successful organizations. Few meaningful goals are achieved by one person working alone, and the way people collaborate often determines whether a company thrives or stalls.\n\n## Combining Strengths\n\nNo individual has every skill. A team brings together different backgrounds, expertise, and perspectives. A designer, an engineer, and a marketer looking at the same problem will each see something the others miss. When those strengths are combined, the result is usually stronger than anything one person could produce alone.\n\n## Better Problem-Solving and Innovation\n\nDiverse viewpoints lead to better ideas. Brainstorming, constructive disagreement, and building on a colleague's suggestion all help teams find solutions that no single person would have reached. Teams also catch mistakes earlier, since more eyes on a project means more chances to spot flaws before they become costly.\n\n## Increased Efficiency\n\nDividing work according to people's skills and availability lets teams take on larger projects and finish them faster. Clear roles reduce duplicated effort, and shared responsibility means that if one person is out, the work doesn't come to a halt.\n\n## Stronger Morale and Engagement\n\nPeople who feel supported by their colleagues tend to be more motivated and less stressed. Working with others creates a sense of belonging and shared purpose. Employees who trust their team are more likely to stay, which lowers turnover and preserves valuable institutional knowledge.\n\n## Learning and Growth\n\nTeams are informal classrooms. Colleagues share techniques, give feedback, and mentor one another. Junior members learn from experienced ones, and experienced members sharpen their own understanding by explaining their reasoning.\n\n## What Makes Teamwork Effective\n\nTeamwork doesn't happen automatically. Strong teams usually share a few traits:\n\n- **Clear goals and roles:** Everyone understands what the team is trying to achieve and what they're responsible for.\n- **Open communication:** Information flows freely, and people feel safe raising concerns or admitting mistakes.\n- **Mutual trust and respect:** Members rely on each other and value different contributions.\n- **Constructive conflict resolution:** Disagreements are treated as a way to improve ideas, not as personal attacks.\n- **Shared accountability:** Successes and failures belong to the whole team.\n\n## Conclusion\n\nTeamwork turns a group of individuals into something greater than the sum of its parts. It improves the quality of work, speeds up results, and makes the workplace more supportive and rewarding. Organizations that invest in collaboration, by encouraging communication, trust, and shared goals, are better positioned to adapt, innovate, and succeed over the long term.",
+        "model": "claude-haiku-4-5-20251001, claude-sonnet-5-5",
+        "words": 421,
+        "hard": 0,
+        "soft": 0,
+        "patterns": []
+      },
+      "with": {
+        "text": "Teamwork matters because most work is larger than one person can hold in their head or finish in the time available. Its value comes from a few concrete mechanisms.\n\n**Error catching.** A second person reviewing a plan, a diff, or a contract finds mistakes the author can't see, because authors read what they meant rather than what they wrote.\n\n**Division of expertise.** No one person covers design, engineering, legal, and support for a single product launch. A team lets each person work at depth in one area while the group covers the breadth.\n\n**Resilience.** When knowledge lives in one person, their vacation or resignation stalls the work. Overlapping responsibilities and written-down decisions keep it moving.\n\nTeamwork also has a cost. Coordination takes meetings and handoffs, and each added person adds communication paths, so overhead can outgrow the gain. In my assessment, teams pay off when three conditions hold: goals are explicit, each task has one clear owner, and people can report problems without penalty. When any of those is missing, adding people usually slows the work.",
+        "model": "claude-haiku-4-5-20251001, claude-sonnet-5-5",
+        "words": 176,
+        "hard": 0,
+        "soft": 0,
+        "patterns": []
+      }
+    },
+    {
+      "id": "db-indexing",
+      "prompt": "Explain what database indexing is and when I should add an index.",
+      "without": {
+        "text": "## What an index is\n\nA database index is a separate data structure (usually a B-tree) that stores the values of one or more columns in sorted order, each with a pointer to the full row. It works like a book's index: instead of reading every page to find a topic, you look it up in the sorted list and jump straight to the page.\n\nWithout an index, a query like `WHERE email = 'a@b.com'` does a **full table scan**, checking every row (O(n)). With an index on `email`, the database does a tree lookup (O(log n)) and fetches only the matching rows.\n\n```sql\nCREATE INDEX idx_users_email ON users (email);\n```\n\n## The tradeoff\n\nIndexes aren't free:\n\n- **Slower writes**: every `INSERT`, `UPDATE`, and `DELETE` must also update each affected index.\n- **Extra storage**: each index is a copy of part of your data.\n- **Planner overhead**: more indexes mean more choices for the query optimizer, and unused ones are pure cost.\n\n## When to add an index\n\n**Good candidates:**\n\n- Columns in frequent `WHERE` filters (`WHERE status = 'active'`).\n- Foreign key columns used in `JOIN`s (`orders.user_id`). Some databases, such as Postgres, don't index these automatically.\n- Columns used in `ORDER BY` or `GROUP BY` on large result sets, since an index can return rows already sorted.\n- Columns needing uniqueness (`UNIQUE` indexes enforce this).\n- Queries that are slow *and* run often, on tables large enough for it to matter.\n\n**Poor candidates:**\n\n- Small tables (a scan is often faster than an index lookup).\n- Low-selectivity columns, such as booleans or a status with 2-3 values, where the index doesn't narrow results much. (Partial indexes can help here.)\n- Write-heavy tables where reads are rare.\n- Columns that are rarely queried.\n\n## Composite indexes\n\nAn index on multiple columns, `(country, city)`, is sorted by the first column, then the second. It helps queries filtering on `country` or on `country AND city`, but **not** on `city` alone (the leftmost-prefix rule). Put equality-filtered and more selective columns first, generally.\n\n## Practical workflow\n\n1. **Don't guess; measure.** Find slow queries via your slow query log or `pg_stat_statements` (Postgres) / performance schema (MySQL).\n2. **Inspect the plan** with `EXPLAIN` (or `EXPLAIN ANALYZE`). Look for \"Seq Scan\" / \"Full Table Scan\" on large tables.\n3. **Add the index, then re-check** the plan and timing.\n4. **Prune periodically**: drop indexes that are unused or redundant (an index on `(a)` is redundant if you already have `(a, b)`).\n\n## Common pitfalls\n\n- Wrapping an indexed column in a function (`WHERE LOWER(email) = ...`) bypasses the index unless you create an expression index.\n- `LIKE '%foo'` (leading wildcard) can't use a standard B-tree index; `LIKE 'foo%'` can.\n- Implicit type conversions (comparing a string column to a number) can prevent index use.\n\n**Rule of thumb:** start with primary keys, foreign keys, and columns in your most common query filters, then let real query plans tell you what else is needed.\n\nIf you tell me which database you use and share a slow query, I can suggest a specific index.",
+        "model": "claude-haiku-4-5-20251001, claude-sonnet-5-5",
+        "words": 513,
+        "hard": 0,
+        "soft": 0,
+        "patterns": []
+      },
+      "with": {
+        "text": "An index is a separate structure, usually a B-tree, that maps column values to row locations. With it, the database finds matching rows in O(log n) instead of scanning the whole table (O(n)). The price is that every INSERT, UPDATE, or DELETE touching an indexed column must also update the index, and each index consumes disk and memory.\n\nAdd one when:\n- A column appears in the WHERE, JOIN, or ORDER BY of a query that is slow or runs often, and the filter is selective (matches a small fraction of rows).\n- A foreign key column is used in joins or parent-row deletes. PostgreSQL does not index these automatically; MySQL's InnoDB does.\n- You need to enforce uniqueness, which a unique index does.\n\nSkip it when the table is small (the planner will scan anyway), the column has very few distinct values on its own (a boolean flag), or the table is write-heavy and the column is rarely queried.\n\nFor composite indexes, column order matters. A B-tree index on `(a, b)` serves filters on `a` or on `a` and `b`, but not on `b` alone. Put the equality-filtered, more selective column first.\n\nDon't guess, measure. Run `EXPLAIN` (`EXPLAIN ANALYZE` in PostgreSQL) before and after. Keep the index only if the plan moves from a sequential scan to an index scan and the runtime drops on realistic data volumes. Periodically check for unused indexes (in PostgreSQL, `pg_stat_user_indexes.idx_scan = 0`) and drop them, since they still slow writes.",
+        "model": "claude-haiku-4-5-20251001, claude-sonnet-5-5",
+        "words": 247,
+        "hard": 0,
+        "soft": 0,
+        "patterns": []
+      }
+    }
+  ]
+}

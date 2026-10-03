@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "supermd": {
+      "command": "npx",
+      "args": ["-y", "supermd@latest", "mcp"]
+    }
+  }
+}

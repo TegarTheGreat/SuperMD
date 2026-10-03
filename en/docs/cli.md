@@ -2,7 +2,7 @@
 name: CLI
 category: docs
 version: 1.0.0
-summary: The supermd command — compose prompts and lint text for slop, from the terminal, with no install.
+summary: The supermd command — compose prompts, install them into agent harnesses, lint text for slop, and run an MCP server, with no install.
 ---
 
 # The `supermd` CLI
@@ -27,7 +27,7 @@ npx supermd build --core-only          # just the universal core, nothing else
 
 Field matching is forgiving: `nurse` resolves to `nursing`, `frontend` to Frontend Engineering. When a term is ambiguous or unknown, the CLI lists the closest sub-fields and points you at `adapt`.
 
-Options: `--style formal|conversational|technical`, `--lang en|id`, `--core-only`, `--out FILE`, `--no-banner` (drop the leading provenance comment).
+Options: `--style formal|conversational|technical`, `--lang en|id`, `--core-only`, `--out FILE`, `--no-banner` (drop the leading provenance comment), `--keep-frontmatter`. Each module's YAML metadata block is stripped from the assembled prompt by default, because a second `---` block in the middle of a pasted prompt confuses harnesses that parse front matter.
 
 ## Any profession — `adapt`
 
@@ -44,6 +44,31 @@ npx supermd adapt "notaris" --lang id
 npx supermd list                # all 16 categories
 npx supermd list technology     # one category's sub-fields and their slugs
 ```
+
+## Install into a harness — `install`, `uninstall`, `status`, `harnesses`
+
+Write the rules where a coding agent reads them, without touching your own content. The full guide, with every harness, file path, and guarantee, is in [integrations.md](integrations.md).
+
+```bash
+npx supermd install claude-code codex          # this project
+npx supermd install cursor --field backend     # core plus a profession module
+npx supermd install claude-code --scope user   # every project, via your home directory
+npx supermd install all --dry-run              # preview, write nothing
+npx supermd status                             # what is installed, and whether it is current
+npx supermd uninstall all                      # remove exactly what was written
+npx supermd harnesses                          # the supported harnesses and their files
+```
+
+Options: `--field NAME`, `--style NAME`, `--lang en|id`, `--scope project|user`, `--dir PATH`, `--dry-run`, `--force`. Exit code 1 means a file was left untouched because SuperMD does not own it.
+
+## MCP server — `mcp`
+
+```bash
+claude mcp add supermd -- npx -y supermd mcp
+codex mcp add supermd -- npx -y supermd mcp
+```
+
+A local stdio server with four read-only tools (`supermd_check`, `supermd_build`, `supermd_adapt`, `supermd_list`) and one prompt. An agent calls `supermd_check` on its own draft and rewrites until there are no hard hits. Details and configuration for other clients: [integrations.md](integrations.md#mcp-server).
 
 ## Lint text for slop — `check`
 
@@ -73,3 +98,5 @@ import { scan } from 'supermd/slop-scan';
 const { prompt } = compose({ field: 'backend', style: 'technical', lang: 'en' });
 const hits = scan(myText, 'en');   // { hard: [...], soft: [...] }
 ```
+
+`supermd/harnesses` (the installer's planner) and `supermd/mcp` (the server) are importable too. Color output follows the terminal; set `FORCE_COLOR=1` to force it or `NO_COLOR=1` to disable it.

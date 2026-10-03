@@ -1,0 +1,34 @@
+{
+  "name": "supermd",
+  "owner": {
+    "name": "Tegar Prayuda",
+    "url": "https://github.com/TegarTheGreat"
+  },
+  "metadata": {
+    "description": "SuperMD: a universal anti-slop system prompt, composable for any profession.",
+    "version": "1.12.0"
+  },
+  "plugins": [
+    {
+      "name": "supermd",
+      "source": "./plugins/supermd",
+      "description": "Always-on anti-slop rules for Claude Code: no filler, no invented facts, no sycophancy. Adds profession modules, a slop linter, and MCP tools.",
+      "version": "1.12.0",
+      "author": {
+        "name": "Tegar Prayuda",
+        "url": "https://github.com/TegarTheGreat"
+      },
+      "homepage": "https://github.com/TegarTheGreat/SuperMD",
+      "repository": "https://github.com/TegarTheGreat/SuperMD",
+      "license": "CC-BY-4.0",
+      "category": "productivity",
+      "keywords": [
+        "anti-slop",
+        "system-prompt",
+        "writing",
+        "linter",
+        "bilingual"
+      ]
+    }
+  ]
+}

@@ -26,11 +26,8 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org
 
-      # Smoke-test the CLI from the checked-out tag before publishing anything.
-      - run: node --check bin/supermd.mjs && node --check lib/compose.mjs && node --check lib/slop-scan.mjs
-      - run: node bin/supermd.mjs version
-      - run: node bin/supermd.mjs list > /dev/null
-      - run: node bin/supermd.mjs build software-engineering > /dev/null
+      # Run the full suite from the checked-out tag before publishing anything.
+      - run: npm test
 
       # The tag must match the version in package.json, or we would publish the
       # wrong thing. Fail loudly on a mismatch.
@@ -77,7 +74,7 @@ jobs:
           node-version: 20
           registry-url: https://npm.pkg.github.com
 
-      - run: node --check bin/supermd.mjs && node --check lib/compose.mjs && node --check lib/slop-scan.mjs
+      - run: npm test
 
       - name: Check tag matches package.json
         run: |
