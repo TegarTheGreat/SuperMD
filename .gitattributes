@@ -1,0 +1,5 @@
+* text=auto eol=lf
+*.png binary
+# Generated from the en/ and id/ trees by `npm run build:integrations`.
+integrations/** linguist-generated=true
+eval/results/** linguist-generated=true

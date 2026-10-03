@@ -1,17 +1,21 @@
 {
   "name": "supermd",
-  "version": "1.11.0",
-  "description": "A universal anti-slop system prompt for any profession — compose prompts and lint text for AI slop. Pure Markdown, bilingual EN/ID, zero dependencies.",
+  "version": "1.12.0",
+  "description": "A universal anti-slop system prompt for any profession. One command installs it into Claude Code, Codex, Cursor and 15+ other agent harnesses; also a slop linter and an MCP server. Pure Markdown, bilingual EN/ID, zero dependencies.",
   "type": "module",
   "bin": {
     "supermd": "bin/supermd.mjs"
   },
   "exports": {
     "./compose": "./lib/compose.mjs",
-    "./slop-scan": "./lib/slop-scan.mjs"
+    "./slop-scan": "./lib/slop-scan.mjs",
+    "./harnesses": "./lib/harnesses.mjs",
+    "./mcp": "./lib/mcp.mjs"
   },
   "scripts": {
-    "test": "node bin/supermd.mjs list >/dev/null && node bin/supermd.mjs build software-engineering >/dev/null && echo ok",
+    "test": "node scripts/run-tests.mjs",
+    "sync:plugin": "node scripts/sync-plugin.mjs",
+    "screenshots": "node scripts/make-screenshots.mjs",
     "eval": "node eval/run-eval.mjs"
   },
   "files": [
@@ -21,6 +25,7 @@
     "id/",
     "eval/lexicon.json",
     "RESEARCH.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "keywords": [
@@ -32,7 +37,18 @@
     "prompt",
     "cli",
     "linter",
-    "bilingual"
+    "bilingual",
+    "claude-code",
+    "claude-code-plugin",
+    "codex",
+    "cursor",
+    "windsurf",
+    "copilot",
+    "gemini-cli",
+    "agents-md",
+    "mcp",
+    "mcp-server",
+    "ai-agents"
   ],
   "homepage": "https://github.com/TegarTheGreat/SuperMD",
   "repository": {

@@ -5,14 +5,17 @@
 import { readFileSync, writeFileSync, existsSync, statSync, readdirSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { homedir } from 'node:os';
 import { catalog, compose, adapt } from '../lib/compose.mjs';
 import { scan, loadLexicon, hardTotal, softTotal, detectLang } from '../lib/slop-scan.mjs';
+import { serveStdio } from '../lib/mcp.mjs';
+import { HARNESSES, findHarness, suggestHarnesses, planInstall, planUninstall, applyPlan, detect } from '../lib/harnesses.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
 
-// tiny ANSI helpers (skip when not a TTY or NO_COLOR is set)
-const useColor = process.stdout.isTTY && !process.env.NO_COLOR;
+// tiny ANSI helpers (on for a TTY or FORCE_COLOR; NO_COLOR always wins)
+const useColor = !process.env.NO_COLOR && (process.stdout.isTTY || !!process.env.FORCE_COLOR);
 const c = (code, s) => (useColor ? `\x1b[${code}m${s}\x1b[0m` : s);
 const bold = s => c('1', s), dim = s => c('2', s), red = s => c('31', s), green = s => c('32', s), yellow = s => c('33', s), cyan = s => c('36', s);
 const err = s => process.stderr.write(s + '\n');
@@ -24,7 +27,7 @@ function parseArgs(argv) {
     const a = argv[i];
     if (a.startsWith('--')) {
       const key = a.slice(2);
-      if (['core-only', 'no-banner'].includes(key)) flags[key] = true;
+      if (['core-only', 'no-banner', 'dry-run', 'force', 'keep-frontmatter'].includes(key)) flags[key] = true;
       else flags[key] = argv[++i];
     } else if (a.startsWith('-') && a.length > 1 && a !== '-') {
       const map = { h: 'help', v: 'version', l: 'lang', s: 'style', o: 'out' };
@@ -43,6 +46,11 @@ ${bold('USAGE')}
   supermd adapt <field description...> [--lang en|id] [--out f]
   supermd list [category]
   supermd check [file|dir] [--lang en|id]    (reads stdin if no target; a directory is swept recursively)
+  supermd install <harness...|all> [--field f] [--style s] [--lang en|id] [--scope project|user] [--dry-run]
+  supermd uninstall <harness...|all> [--scope project|user]
+  supermd status                             (where SuperMD is installed, and whether it is current)
+  supermd harnesses                          (supported harnesses and the files they read)
+  supermd mcp                                (MCP server on stdio: tools for any MCP client)
   supermd help | version
 
 ${bold('EXAMPLES')}
@@ -54,6 +62,10 @@ ${bold('EXAMPLES')}
   cat draft.md | supermd check               # flag KNOWN slop patterns (a filter, not a proof)
   supermd check article.txt                  # language auto-detected; --lang overrides
   supermd check docs/                        # sweep every .md under docs/, exit 1 on hard slop
+  supermd install claude-code codex          # always-on rules for Claude Code and Codex, in this project
+  supermd install cursor --field backend     # core + the Backend module, as a Cursor rule
+  supermd install claude-code --scope user   # every project, via ~/.claude/CLAUDE.md
+  supermd uninstall all                      # remove only what SuperMD wrote
 
 ${bold('OPTIONS')}
   --lang en|id     language (build/adapt default en; check auto-detects per file)
@@ -61,6 +73,12 @@ ${bold('OPTIONS')}
   --core-only      emit only the universal core
   --out FILE       write to FILE instead of stdout
   --no-banner      omit the "assembled by" comment header
+  --keep-frontmatter  keep each module's YAML metadata block in build/adapt output
+  --field NAME     install: also add a profession module (see: supermd list)
+  --scope SCOPE    install/uninstall: project (default) or user (your home directory)
+  --dir PATH       install/uninstall/status: project root (default: current directory)
+  --dry-run        install/uninstall: print the plan, write nothing
+  --force          install/uninstall: overwrite or delete a file SuperMD does not own
   -h, --help       show this help    -v, --version   print version
 
 ${dim('Docs: en/docs/how-to-use.md · the Markdown tree is the source of truth.')}`;
@@ -80,7 +98,7 @@ function cmdBuild(pos, flags) {
   const lang = flags.lang || 'en';
   const field = pos.join(' ').trim();
   if (!field && !flags['core-only']) { err(yellow('No field given. Use --core-only for just the core, or `supermd list`.')); process.exit(2); }
-  const r = compose({ field, style: flags.style, lang, coreOnly: flags['core-only'] }, ROOT);
+  const r = compose({ field, style: flags.style, lang, coreOnly: flags['core-only'], keepFrontmatter: !!flags['keep-frontmatter'] }, ROOT);
   if (!r.ok && r.error === 'field-not-found') {
     err(red(`No module for "${field}".`));
     if (r.candidates?.length) { err('Did you mean:'); r.candidates.forEach(f => err(`  ${cyan(f.slug)}  ${dim('· ' + f.categoryName)}`)); }
@@ -98,7 +116,7 @@ function cmdAdapt(pos, flags) {
   const lang = flags.lang || 'en';
   const field = pos.join(' ').trim();
   if (!field) { err(yellow('Usage: supermd adapt "<field description>"')); process.exit(2); }
-  const r = adapt(field, lang, ROOT);
+  const r = adapt(field, lang, ROOT, { keepFrontmatter: !!flags['keep-frontmatter'] });
   err(green(`Universal adapter instantiated for "${field}" (${lang})`));
   writeResult(r.prompt, flags);
 }
@@ -174,6 +192,123 @@ async function cmdCheck(pos, flags) {
   if (results.some(r => r.hard > 0)) process.exitCode = 1;
 }
 
+
+// ---------------------------------------------------------------- harnesses
+const ACTION_STYLE = { create: green, update: yellow, unchanged: dim, skip: dim, delete: red, conflict: red };
+const pad = (s, n) => s + ' '.repeat(Math.max(1, n - String(s).length));
+
+function resolveHarnessIds(pos) {
+  if (!pos.length) return null;
+  if (pos.includes('all')) return HARNESSES.map(h => h.id);
+  const ids = [];
+  for (const q of pos) {
+    const h = findHarness(q);
+    if (!h) {
+      err(red(`Unknown harness: ${q}`));
+      const near = suggestHarnesses(q);
+      if (near.length) err('Did you mean: ' + near.map(n => cyan(n.id)).join(', '));
+      err(dim('Run `supermd harnesses` for the full list.'));
+      process.exit(2);
+    }
+    ids.push(h.id);
+  }
+  return ids;
+}
+
+function scopeAndDirs(flags) {
+  const scope = flags.scope || 'project';
+  if (!['project', 'user'].includes(scope)) { err(red(`--scope must be project or user, got "${scope}"`)); process.exit(2); }
+  const dir = resolve(process.cwd(), flags.dir || '.');
+  if (!existsSync(dir) || !statSync(dir).isDirectory()) { err(red(`Not a directory: ${flags.dir}`)); process.exit(2); }
+  const home = resolve(flags.home || homedir());
+  return { scope, dir, home };
+}
+
+function printPlan(items, { dir, home, scope }) {
+  const w = Math.min(46, Math.max(...items.map(i => (i.rel || '').length), 10) + 2);
+  for (const it of items) {
+    const label = pad(it.action, 10);
+    const where = scope === 'user' ? it.abs.replace(home, '~') : (relative(dir, it.abs) || it.rel);
+    out(`  ${ACTION_STYLE[it.action](label)}${pad(where, w)}${dim(it.harness.name + (it.note ? ' · ' + it.note : ''))}`);
+  }
+}
+
+function cmdInstall(pos, flags) {
+  const ids = resolveHarnessIds(pos);
+  if (!ids) {
+    err(yellow('Usage: supermd install <harness...|all> [--field <profession>] [--scope project|user] [--dry-run]'));
+    err(dim('Harnesses: ' + HARNESSES.map(h => h.id).join(', ')));
+    process.exit(2);
+  }
+  const lang = flags.lang || 'en';
+  const { scope, dir, home } = scopeAndDirs(flags);
+  const r = compose({ field: flags.field, style: flags.style, lang, coreOnly: !flags.field }, ROOT);
+  if (!r.ok && r.error === 'field-not-found') {
+    err(red(`No module for "${flags.field}".`));
+    r.candidates?.forEach(f => err(`  ${cyan(f.slug)}  ${dim('· ' + f.categoryName)}`));
+    err(dim(`Or cover any profession: supermd adapt "${flags.field}"`));
+    process.exit(1);
+  }
+  if (!r.ok) { err(red(r.error)); process.exit(1); }
+  r.warnings.forEach(w => err(yellow('! ' + w)));
+
+  const meta = { v: VERSION, lang, field: r.field?.slug, style: flags.style };
+  const { items, warnings } = planInstall(ids, { prompt: r.prompt, meta, scope, dir, home, force: !!flags.force });
+  const applied = applyPlan(items, { dryRun: !!flags['dry-run'], root: scope === 'user' ? home : dir });
+
+  out(`${bold(flags['dry-run'] ? 'Plan (nothing written)' : 'SuperMD ' + VERSION)} ${dim('· ' + (r.field ? `core + ${r.field.categoryName} / ${r.field.name}` : 'universal core') + (flags.style ? ' + ' + flags.style : '') + ` · ${lang} · ${scope} scope`)}`);
+  printPlan(applied, { dir, home, scope });
+  warnings.forEach(w => err(yellow('! ' + w)));
+
+  const written = applied.filter(i => ['create', 'update'].includes(i.action)).length;
+  const conflicts = applied.filter(i => i.action === 'conflict');
+  const kb = (r.prompt.length / 1024).toFixed(1);
+  if (conflicts.length) err(red(`${conflicts.length} file(s) left untouched: they exist and SuperMD does not own them. Re-run with --force to overwrite.`));
+  if (!flags['dry-run']) out(dim(`${written} file(s) written · ${kb} KB of rules · review with \`git diff\` · remove with \`supermd uninstall ${pos.join(' ')}\``));
+  if (conflicts.length) process.exitCode = 1;
+}
+
+function cmdUninstall(pos, flags) {
+  const ids = resolveHarnessIds(pos);
+  if (!ids) { err(yellow('Usage: supermd uninstall <harness...|all> [--scope project|user]')); process.exit(2); }
+  const { scope, dir, home } = scopeAndDirs(flags);
+  const { items } = planUninstall(ids, { scope, dir, home, force: !!flags.force });
+  const applied = applyPlan(items, { dryRun: !!flags['dry-run'], root: scope === 'user' ? home : dir });
+  const touched = applied.filter(i => i.action !== 'skip');
+  if (!touched.length) { out(dim('Nothing to remove: no SuperMD files found.')); return; }
+  out(bold(flags['dry-run'] ? 'Plan (nothing removed)' : 'Removed SuperMD') + dim(` · ${scope} scope`));
+  printPlan(touched, { dir, home, scope });
+  if (touched.some(i => i.action === 'conflict')) process.exitCode = 1;
+}
+
+function cmdStatus(flags) {
+  const dir = resolve(process.cwd(), flags.dir || '.');
+  const home = resolve(flags.home || homedir());
+  const found = detect({ dir, home });
+  if (!found.length) { out(dim('SuperMD is not installed in this project or in your home directory.')); out(dim('Try: supermd install claude-code')); return; }
+  const w = Math.min(44, Math.max(...found.map(f => (f.rel + (f.extra ? ` (+${f.extra} more)` : '')).length)) + 2);
+  for (const f of found) {
+    const m = f.meta;
+    const current = m.v === VERSION;
+    const what = [m.field ? `core + ${m.field}` : 'core', m.style, m.lang].filter(Boolean).join(' · ');
+    const where = f.rel + (f.extra ? ` (+${f.extra} more)` : '');
+    const harness = f.harness.id === 'agents-md' ? 'AGENTS.md readers' : f.harness.name;
+    out(`  ${pad(where, w)}${pad(harness, 26)}${dim(pad(f.scope, 9))}${pad(what, 30)}${current ? green('v' + m.v + ' ✓') : yellow('v' + (m.v || '?') + ' → v' + VERSION)}${f.via ? dim(' via ' + f.via) : ''}`);
+  }
+  if (found.some(f => f.meta.v !== VERSION)) err(dim('Update: re-run `supermd install <harness>` with the same options; it replaces only the SuperMD block.'));
+}
+
+function cmdHarnesses() {
+  out(`${bold('Supported harnesses')} ${dim('(id · project file · user file)')}`);
+  for (const h of HARNESSES) {
+    const p = h.targets.filter(t => t.scope === 'project').map(t => t.path).join(', ') || dim('—');
+    const u = h.targets.filter(t => t.scope === 'user').map(t => t.path).join(', ') || dim('—');
+    out(`  ${cyan(pad(h.id, 13))}${pad(p, 38)}${dim(u)}`);
+  }
+  out('');
+  out(dim('Shared files (AGENTS.md) are written once. `supermd install all` installs everything; pick only what you use.'));
+}
+
 const { flags, pos } = parseArgs(process.argv.slice(2));
 const cmd = pos.shift();
 if (flags.version || cmd === 'version') { out(`supermd ${VERSION}`); process.exit(0); }
@@ -184,6 +319,11 @@ try {
   else if (cmd === 'adapt') cmdAdapt(pos, flags);
   else if (cmd === 'list') cmdList(pos, flags);
   else if (cmd === 'check') await cmdCheck(pos, flags);
+  else if (cmd === 'install') cmdInstall(pos, flags);
+  else if (cmd === 'uninstall') cmdUninstall(pos, flags);
+  else if (cmd === 'status') cmdStatus(flags);
+  else if (cmd === 'harnesses') cmdHarnesses();
+  else if (cmd === 'mcp') await serveStdio({ root: ROOT, version: VERSION });
   else { err(red(`Unknown command: ${cmd}`)); err(dim('Run `supermd help`.')); process.exit(2); }
 } catch (e) {
   err(red('Error: ' + (e?.message || e)));

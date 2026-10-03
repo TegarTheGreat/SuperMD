@@ -1,0 +1,24 @@
+name: Harness support
+description: A harness changed where it reads instructions, or a new harness should be installable
+title: "[harness] "
+labels: [harness]
+body:
+  - type: input
+    id: harness
+    attributes:
+      label: Harness and version
+      placeholder: Cursor 3.1, Codex CLI 0.80, ...
+    validations:
+      required: true
+  - type: textarea
+    id: convention
+    attributes:
+      label: The convention
+      description: The file path(s), front matter, and any size limit, with a link to the vendor's documentation. Documentation links only; a blog post is not enough.
+    validations:
+      required: true
+  - type: textarea
+    id: observed
+    attributes:
+      label: What `supermd install` did, and what you expected
+      description: Paste the output of `supermd install <harness> --dry-run` and `supermd status`.

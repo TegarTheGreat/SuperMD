@@ -92,14 +92,18 @@ function extractJson(text) {
 
 // A judging/probe call must return JSON. The reasoning model occasionally
 // returns empty or non-JSON content on a 200 — a transient failure, not a
-// verdict. Retry the call itself before giving up.
-async function chatJson(model, messages, opts) {
+// verdict. Empty content usually means the reasoning trace used up the whole
+// max_tokens budget before the answer started, so each retry doubles the
+// budget instead of repeating the call that just failed.
+async function chatJson(model, messages, opts = {}) {
   let lastErr;
+  let maxTokens = opts.maxTokens ?? 1600;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      return extractJson(await chat(model, messages, opts));
+      return extractJson(await chat(model, messages, { ...opts, maxTokens }));
     } catch (err) {
       lastErr = err;
+      maxTokens *= 2;
     }
   }
   throw lastErr;

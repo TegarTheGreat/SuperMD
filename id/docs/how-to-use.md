@@ -2,7 +2,7 @@
 name: Cara Menggunakan
 category: docs
 version: 1.0.0
-summary: Merakit system prompt SuperMD dan memasangnya di platform-platform umum.
+summary: Merakit system prompt SuperMD dan memasangnya di platform chat maupun agen coding.
 ---
 
 # Cara menggunakan SuperMD
@@ -19,7 +19,7 @@ CORE  +  DOMAIN (0 atau lebih)  +  STYLE (0 atau 1)
 2. **DOMAIN** — pilih bidang Anda dari `id/domains/`. Ambil file kategori (`_category.md`) plus file sub-bidang jika tersedia. Jika bidang Anda belum tercakup, isi `id/adapters/UNIVERSAL-ADAPTER.md` — satu langkah yang mencakup profesi apa pun.
 3. **STYLE** — opsional: tambahkan satu file dari `id/styles/` untuk mengunci register (formal, percakapan, atau teknis).
 
-Tempel semuanya ke system prompt dalam urutan itu. Blok YAML di bagian atas setiap file hanyalah metadata; disertakan atau dibuang, perilaku model tidak berubah.
+Tempel semuanya ke system prompt dalam urutan itu. Blok YAML di bagian atas setiap file hanyalah metadata; disertakan atau dibuang, perilaku model tidak berubah. `supermd build` membuangnya untuk Anda.
 
 **Contoh — perawat yang butuh output dokumentasi formal:**
 
@@ -30,6 +30,16 @@ id/SUPERMD.md
 + id/styles/formal.md
 ```
 
+## Agen coding: satu perintah
+
+Untuk Claude Code, Codex, Cursor, Windsurf, Copilot, Gemini CLI, dan selusin lainnya, lewati proses menempel:
+
+```bash
+npx supermd install claude-code codex --lang id
+```
+
+Perintah itu menulis aturan ke file yang dibaca tiap harness, menjaga semua yang Anda tulis, dan bisa dicopot bersih. Lihat [integrations.md](integrations.md).
+
 ## Tempat menempelkannya
 
 | Platform | Lokasi |
@@ -37,7 +47,7 @@ id/SUPERMD.md
 | ChatGPT | Settings → Personalization → Custom Instructions, atau instruksi sebuah Project |
 | Claude | Instruksi Project, atau Settings → Profile preferences |
 | API (vendor mana pun) | Parameter `system` / system message pertama |
-| Tool IDE sejenis Copilot | File instruksi workspace (mis. `.github/copilot-instructions.md`, `CLAUDE.md`) |
+| Agen coding dan tool IDE | `supermd install <harness>`, atau tempel ke file instruksi workspace (`CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`) |
 | Model lokal (Ollama, LM Studio) | Kolom system prompt di modelfile atau UI chat |
 
 Jika platform membatasi panjang system prompt, pertahankan CORE dan buang STYLE lebih dulu, lalu file kategori — modul sub-bidang plus CORE adalah pasangan bernilai tertinggi.

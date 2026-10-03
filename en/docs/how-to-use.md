@@ -2,7 +2,7 @@
 name: How to Use
 category: docs
 version: 1.0.0
-summary: Assembling a SuperMD system prompt and installing it on common platforms.
+summary: Assembling a SuperMD system prompt and installing it on chat platforms and coding agents.
 ---
 
 # How to use SuperMD
@@ -19,7 +19,7 @@ CORE  +  DOMAIN (0 or more)  +  STYLE (0 or 1)
 2. **DOMAIN** — pick your field from `en/domains/`. Take the category file (`_category.md`) plus your sub-field file if one exists. If your field isn't covered, instantiate `en/adapters/UNIVERSAL-ADAPTER.md` — it covers any profession in one step.
 3. **STYLE** — optionally add one file from `en/styles/` to pin the register (formal, conversational, or technical).
 
-Paste them into the system prompt in that order. The YAML block at the top of each file is metadata; keeping or stripping it makes no difference to model behavior.
+Paste them into the system prompt in that order. The YAML block at the top of each file is metadata; keeping or stripping it makes no difference to model behavior. `supermd build` strips it for you.
 
 **Example — a nurse wanting formal documentation output:**
 
@@ -30,6 +30,16 @@ en/SUPERMD.md
 + en/styles/formal.md
 ```
 
+## Coding agents: one command
+
+For Claude Code, Codex, Cursor, Windsurf, Copilot, Gemini CLI, and a dozen more, skip the pasting:
+
+```bash
+npx supermd install claude-code codex
+```
+
+It writes the rules to the file each harness reads, preserves everything you wrote, and uninstalls cleanly. See [integrations.md](integrations.md).
+
 ## Where to paste it
 
 | Platform | Location |
@@ -37,7 +47,7 @@ en/SUPERMD.md
 | ChatGPT | Settings → Personalization → Custom Instructions, or a Project's instructions |
 | Claude | Project instructions, or Settings → Profile preferences |
 | API (any vendor) | The `system` parameter / first system message |
-| Copilot-style IDE tools | Workspace instruction file (e.g. `.github/copilot-instructions.md`, `CLAUDE.md`) |
+| Coding agents and IDE tools | `supermd install <harness>`, or paste into the workspace instruction file (`CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`) |
 | Local models (Ollama, LM Studio) | The system prompt field of the modelfile or chat UI |
 
 If the platform limits system prompt length, keep CORE and drop STYLE first, then the category file — the sub-field module plus CORE is the highest-value pair.
