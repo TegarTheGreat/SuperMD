@@ -20,6 +20,7 @@ All notable changes to the SuperMD prompt collection. Format follows [Keep a Cha
 
 ### Changed
 
+- `technology/frontend` and `technology/frontend-design` (EN + ID, module version 1.1.0), after a recorded frontend experiment (`docs/evidence/frontend/`, reproducible with `scripts/frontend-experiment.mjs`) exposed three gaps. New field-slop entries cover emoji or purposeless gradients as decoration, headline filler, and invented proof ("Trusted by 10,000+ teams", made-up testimonials, uptime or speed figures). Product claims in interface copy (customer counts, setup time, pricing, testimonials) must come from the user or appear as labeled placeholders. A scope line states that the core's no-decoration rule governs prose, not the interface being built. Measured effect on one sample per cell: Claude's landing page went from an invented headline claim to 0 unsupported claims and 8 `[confirm: …]` placeholders with its design intact; DeepSeek still ignored the placeholder rule and invented prices. The three existing frontend eval scenarios re-run at 3 of 3 blind wins.
 - **README is English only.** The Indonesian version moved to `README.id.md`, kept at the same depth, and both link to each other.
 - `build` and `adapt` strip each module's YAML metadata block from the assembled prompt (a second `---` block in the middle of a pasted prompt confuses harnesses that parse front matter). `--keep-frontmatter` restores the old output; `compose()` takes `keepFrontmatter`.
 - `npm test` now runs every check CI runs (syntax, unit, CLI, install, MCP, parity, versions, plugin sync, and the anti-slop self-check on both trees and the front-door docs) instead of two smoke commands.
@@ -28,6 +29,7 @@ All notable changes to the SuperMD prompt collection. Format follows [Keep a Cha
 
 ### Fixed
 
+- Slop scanner: `©`, `®` and `™` were counted as emoji decoration (Unicode classes them as pictographic), so a page footer such as `© 2026 Taskly` failed `supermd check` with a hard hit. They are now treated like the typographic arrows already exempted. Found by the frontend experiment; pinned by a test.
 - Eval harness: a judge or probe call that returned empty content (the reasoning trace used the whole `max_tokens` budget) was retried with the same budget and failed identically. Retries now double the budget. This was the `citation-bait` ERROR in the 2026-08-25 and 2026-08-26 reports.
 
 ### Eval status

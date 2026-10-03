@@ -163,6 +163,18 @@ Apa kata run penuh terbaru (2026-10-03), tanpa dibulatkan demi keuntungan kami:
 <img src="docs/assets/eval-full.png" alt="Tabel per skenario: hit slop keras, jumlah kata, pemenang juri buta, dan hasil probe untuk semua 41 skenario" width="860">
 </details>
 
+### Uji frontend
+
+Frontend adalah tempat slop paling mudah terlihat, jadi ia punya eksperimen terekam sendiri: prompt landing page dan komponen React yang sama, dengan dan tanpa SuperMD, pada DeepSeek dan Claude Code ([tulisan lengkap beserta output mentah](docs/evidence/frontend/README.md)).
+
+<div align="center">
+<img src="docs/assets/frontend-landing.png" alt="Prompt landing page Taskly yang sama dirender empat cara: DeepSeek dan Claude Code, masing-masing dengan dan tanpa SuperMD" width="860">
+</div>
+
+- **Berhasil pada teks dan ketelitian teknis.** Tanpa SuperMD, DeepSeek memakai empat emoji sebagai ikon fitur dan menjudulkan halaman "Project management, minus the chaos"; dengan SuperMD, tanpa emoji dan dengan judul yang konkret. Tabel React hasil generasi mencakup kesepuluh state dan hook aksesibilitas yang kami periksa (loading, error, empty, `aria-sort`, gaya fokus, dan lainnya) di setiap run dengan SuperMD, berbanding 8 atau 9 dari 10 tanpa SuperMD.
+- **Uji ini menemukan tiga celah, dan sudah diperbaiki di rilis ini.** Linter menandai `© 2026` di footer sebagai slop keras. Judul buatan Claude menjadi "takes ten minutes to set up", klaim yang tak pernah diberikan siapa pun. Aturan tanpa-dekorasi dari core bocor ke antarmuka dan melucuti ikon sebuah halaman. Modul frontend kini mewajibkan placeholder berlabel untuk klaim produk yang tak diberikan dan menyatakan aturan itu berlaku untuk prosa, bukan UI; Claude lalu menulis 8 placeholder `[confirm: …]` untuk harga dan batas, alih-alih mengarangnya.
+- **Ada batasnya.** DeepSeek mengabaikan aturan placeholder dan tetap mengarang harga. SuperMD tak punya opini soal selera visual, jadi grid tiga kartu fitur yang generik tetap muncul dengan maupun tanpa SuperMD. Satu sampel per sel: ilustrasi, bukan benchmark.
+
 Selain eval, repositori ini adalah kasus ujinya sendiri: `npm test` menjalankan 11 pemeriksaan, termasuk 30 tes installer, 21 tes protokol MCP, dan linter anti-slop atas kedua pohon bahasa serta setiap dokumen pintu depan.
 
 <div align="center">

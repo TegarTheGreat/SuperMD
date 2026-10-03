@@ -1,0 +1,113 @@
+```tsx
+import { useEffect, useMemo, useState } from "react";
+
+type User = { id: number | string; name: string; email: string };
+type Status = "loading" | "error" | "ready";
+
+export function UserTable({ pageSize = 10 }: { pageSize?: number }) {
+  const [users, setUsers] = useState<User[]>([]);
+  const [status, setStatus] = useState<Status>("loading");
+  const [sortAsc, setSortAsc] = useState(true);
+  const [page, setPage] = useState(0);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setStatus("loading");
+    fetch("/api/users", { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json() as Promise<User[]>;
+      })
+      .then((data) => {
+        setUsers(data);
+        setPage(0);
+        setStatus("ready");
+      })
+      .catch((err) => {
+        // Abort fires on unmount and on StrictMode's dev double-invoke; not an error state.
+        if (err.name !== "AbortError") setStatus("error");
+      });
+    return () => controller.abort();
+  }, [reloadKey]);
+
+  const sorted = useMemo(() => {
+    const collator = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
+    const dir = sortAsc ? 1 : -1;
+    return [...users].sort((a, b) => dir * collator.compare(a.name, b.name));
+  }, [users, sortAsc]);
+
+  const pageCount = Math.max(1, Math.ceil(sorted.length / pageSize));
+  const visible = sorted.slice(page * pageSize, (page + 1) * pageSize);
+
+  if (status === "loading") return <p role="status">Loading users…</p>;
+
+  if (status === "error") {
+    return (
+      <div role="alert">
+        <p>Failed to load users.</p>
+        <button type="button" onClick={() => setReloadKey((k) => k + 1)}>
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (users.length === 0) return <p>No users found.</p>;
+
+  return (
+    <div>
+      <table>
+        <caption className="sr-only">Users</caption>
+        <thead>
+          <tr>
+            <th scope="col" aria-sort={sortAsc ? "ascending" : "descending"}>
+              <button
+                type="button"
+                onClick={() => {
+                  setSortAsc((asc) => !asc);
+                  setPage(0);
+                }}
+              >
+                Name <span aria-hidden="true">{sortAsc ? "▲" : "▼"}</span>
+              </button>
+            </th>
+            <th scope="col">Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {visible.map((u) => (
+            <tr key={u.id}>
+              <td>{u.name}</td>
+              <td>{u.email}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <nav aria-label="Pagination">
+        <button type="button" onClick={() => setPage((p) => p - 1)} disabled={page === 0}>
+          Previous
+        </button>
+        <span aria-live="polite">
+          Page {page + 1} of {pageCount}
+        </span>
+        <button
+          type="button"
+          onClick={() => setPage((p) => p + 1)}
+          disabled={page >= pageCount - 1}
+        >
+          Next
+        </button>
+      </nav>
+    </div>
+  );
+}
+```
+
+Assumptions, none verified against your codebase:
+
+- `/api/users` returns a bare `User[]` with `id`, `name`, `email`. Sorting and paging are client-side, which stops scaling once the list is too large to ship in one response. At that point, move both to query params (`?sort=name&page=2`) and let the server do the work.
+- React 16.8+ (hooks only). I wrote TSX; drop the types for JS.
+- It's unstyled. Hover, focus-visible, and disabled styling should come from your design system's button and table classes, and `sr-only` assumes a utility class of that name exists.
+- Not run or tested.

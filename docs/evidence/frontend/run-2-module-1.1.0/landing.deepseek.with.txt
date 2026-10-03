@@ -1,0 +1,266 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taskly — project management for small teams</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #16181d;
+    --muted: #5b6270;
+    --line: #e3e6ec;
+    --accent: #2f5bea;
+    --accent-fg: #ffffff;
+    --surface: #f6f7f9;
+    --radius: 10px;
+    --maxw: 1040px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101216;
+      --fg: #e8eaee;
+      --muted: #9aa1ae;
+      --line: #262a32;
+      --accent: #6d8dff;
+      --accent-fg: #0b0d11;
+      --surface: #171a20;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  a { color: var(--accent); }
+  .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }
+  header.site {
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; background: var(--bg); z-index: 10;
+  }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { font-weight: 700; letter-spacing: -0.02em; font-size: 18px; }
+  .logo span { color: var(--accent); }
+  nav.top a { color: var(--muted); text-decoration: none; margin-left: 20px; font-size: 14px; }
+  nav.top a:hover { color: var(--fg); }
+  nav.top a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  .hero { padding: 72px 0 56px; }
+  .hero h1 {
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    margin: 0 0 16px;
+    max-width: 18ch;
+  }
+  .hero p.lede { font-size: 18px; color: var(--muted); max-width: 56ch; margin: 0 0 28px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .btn {
+    display: inline-block; padding: 11px 18px; border-radius: var(--radius);
+    font-size: 15px; font-weight: 600; text-decoration: none; border: 1px solid transparent;
+    cursor: pointer;
+  }
+  .btn.primary { background: var(--accent); color: var(--accent-fg); }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn.ghost { border-color: var(--line); color: var(--fg); background: transparent; }
+  .btn.ghost:hover { background: var(--surface); }
+  .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .note { font-size: 13px; color: var(--muted); }
+
+  section { padding: 56px 0; border-top: 1px solid var(--line); }
+  h2 { font-size: 24px; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .sub { color: var(--muted); margin: 0 0 32px; max-width: 60ch; }
+
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .feature h3 { font-size: 16px; margin: 0 0 6px; }
+  .feature p { margin: 0; color: var(--muted); font-size: 15px; }
+  .feature .ico {
+    width: 28px; height: 28px; margin-bottom: 12px; color: var(--accent);
+  }
+
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; align-items: start; }
+  .plan {
+    border: 1px solid var(--line); border-radius: var(--radius); padding: 24px;
+    background: var(--surface);
+  }
+  .plan.featured { border-color: var(--accent); background: var(--bg); }
+  .plan h3 { margin: 0 0 4px; font-size: 17px; }
+  .plan .price { font-size: 30px; font-weight: 700; letter-spacing: -0.02em; margin: 8px 0 2px; }
+  .plan .price small { font-size: 14px; font-weight: 400; color: var(--muted); }
+  .plan .desc { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+  .plan ul { list-style: none; padding: 0; margin: 0 0 20px; font-size: 14px; }
+  .plan li { padding: 5px 0 5px 22px; position: relative; }
+  .plan li::before {
+    content: ""; position: absolute; left: 0; top: 12px;
+    width: 10px; height: 6px; border-left: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent); transform: rotate(-45deg);
+  }
+  .plan .btn { width: 100%; text-align: center; }
+  .badge {
+    display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--accent); margin-bottom: 8px;
+  }
+
+  footer.site { border-top: 1px solid var(--line); padding: 32px 0; color: var(--muted); font-size: 14px; }
+  .foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .foot nav a { color: var(--muted); text-decoration: none; margin-right: 16px; }
+  .foot nav a:hover { color: var(--fg); }
+  .foot nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+  .billing-toggle { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; margin-bottom: 28px; }
+  .billing-toggle button {
+    border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 14px;
+    padding: 6px 16px; border-radius: 999px; cursor: pointer;
+  }
+  .billing-toggle button[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); }
+  .billing-toggle button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap bar">
+    <div class="logo">Task<span>ly</span></div>
+    <nav class="top" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#footer">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero wrap" style="border-top:0">
+    <h1>Project management that fits a team of five.</h1>
+    <p class="lede">Taskly gives small teams boards, assignments, and deadlines without the enterprise setup. Create a workspace, invite your people, and start tracking work in under a minute.</p>
+    <div class="cta">
+      <a class="btn primary" href="#pricing">Start free</a>
+      <a class="btn ghost" href="#features">See features</a>
+      <span class="note">No credit card required.</span>
+    </div>
+  </section>
+
+  <section id="features" class="wrap">
+    <h2>What you get</h2>
+    <p class="sub">The essentials for keeping a small team aligned, nothing you have to configure away.</p>
+    <div class="features">
+      <div class="feature">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 4v16"/></svg>
+        <h3>Kanban boards</h3>
+        <p>Drag tasks across columns. Every board keeps its own workflow, so design and ops don't share a status list.</p>
+      </div>
+      <div class="feature">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <h3>Assignments</h3>
+        <p>Assign an owner and a due date to any task. Overdue items surface at the top of the board automatically.</p>
+      </div>
+      <div class="feature">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 19V5M4 19h16"/><path d="M8 15l4-5 3 3 5-7"/></svg>
+        <h3>Progress view</h3>
+        <p>A single screen shows what's done, in progress, and blocked across every project in the workspace.</p>
+      </div>
+      <div class="feature">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg>
+        <h3>Comments &amp; mentions</h3>
+        <p>Discuss work on the task itself. @-mention a teammate to pull them in without a separate chat thread.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing" class="wrap">
+    <h2>Pricing</h2>
+    <p class="sub">Per user, per month. Switch or cancel any time.</p>
+
+    <div class="billing-toggle" role="group" aria-label="Billing period">
+      <button type="button" id="btn-monthly" aria-pressed="true">Monthly</button>
+      <button type="button" id="btn-yearly" aria-pressed="false">Yearly (save 20%)</button>
+    </div>
+
+    <div class="plans">
+      <div class="plan">
+        <h3>Free</h3>
+        <p class="price" data-monthly="$0" data-yearly="$0">$0<small> / user / mo</small></p>
+        <p class="desc">For trying Taskly with a small group.</p>
+        <ul>
+          <li>Up to 3 members</li>
+          <li>Unlimited tasks</li>
+          <li>2 boards</li>
+        </ul>
+        <a class="btn ghost" href="#">Get started</a>
+      </div>
+
+      <div class="plan featured">
+        <span class="badge">Most popular</span>
+        <h3>Team</h3>
+        <p class="price" data-monthly="$8" data-yearly="$6.40">$8<small> / user / mo</small></p>
+        <p class="desc">For teams that run their week in Taskly.</p>
+        <ul>
+          <li>Unlimited members</li>
+          <li>Unlimited boards</li>
+          <li>Progress view &amp; reporting</li>
+          <li>Priority email support</li>
+        </ul>
+        <a class="btn primary" href="#">Start free trial</a>
+      </div>
+
+      <div class="plan">
+        <h3>Business</h3>
+        <p class="price" data-monthly="$16" data-yearly="$12.80">$16<small> / user / mo</small></p>
+        <p class="desc">For teams that need control and audit.</p>
+        <ul>
+          <li>Everything in Team</li>
+          <li>SSO &amp; audit log</li>
+          <li>Custom roles</li>
+          <li>Dedicated support</li>
+        </ul>
+        <a class="btn ghost" href="#">Contact sales</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="footer" class="site">
+  <div class="wrap foot">
+    <div>
+      <div class="logo" style="margin-bottom:6px">Task<span>ly</span></div>
+      <div>&copy; <span id="year"></span> Taskly. All rights reserved.</div>
+    </div>
+    <nav aria-label="Footer">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </nav>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  (function () {
+    var monthly = document.getElementById('btn-monthly');
+    var yearly = document.getElementById('btn-yearly');
+    var prices = document.querySelectorAll('.price');
+
+    function setPeriod(period) {
+      var isYearly = period === 'yearly';
+      monthly.setAttribute('aria-pressed', String(!isYearly));
+      yearly.setAttribute('aria-pressed', String(isYearly));
+      prices.forEach(function (el) {
+        var value = el.getAttribute(isYearly ? 'data-yearly' : 'data-monthly');
+        el.innerHTML = value + '<small> / user / mo</small>';
+      });
+    }
+
+    monthly.addEventListener('click', function () { setPeriod('monthly'); });
+    yearly.addEventListener('click', function () { setPeriod('yearly'); });
+  })();
+</script>
+
+</body>
+</html>
+```

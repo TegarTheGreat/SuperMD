@@ -1,0 +1,12 @@
+{
+  "supermd": "1.12.0 (working tree)",
+  "deepseekModel": "deepseek-chat (temperature 0)",
+  "claudeCode": "2.1.288 (Claude Code)",
+  "tasks": [
+    "landing",
+    "table"
+  ],
+  "recordedAt": "2026-10-03",
+  "frontendModuleVersion": "1.1.0",
+  "note": "Recorded after adding the visual-slop, invented-proof, and no-decoration-scope deltas."
+}

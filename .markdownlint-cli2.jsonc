@@ -1,8 +1,9 @@
 {
-  // Generated eval reports and tool state are not subject to authoring lint.
+  // Generated eval reports (and the recorded subset report under docs/evidence) and tool state are not subject to authoring lint.
   "ignores": [
     "node_modules/**",
     "eval/results/**",
+    "docs/evidence/frontend/eval-*.md",
     ".remember/**"
   ]
 }

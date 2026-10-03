@@ -161,6 +161,18 @@ What the latest full run (2026-10-03) says, without rounding in our favor:
 <img src="docs/assets/eval-full.png" alt="Per-scenario table: hard slop hits, word counts, blind judge winner, and probe results for all 41 scenarios" width="860">
 </details>
 
+### Frontend check
+
+Frontend is where slop is easiest to see, so it has its own recorded experiment: the same landing-page and React-component prompts, with and without SuperMD, on DeepSeek and on Claude Code ([full write-up and raw outputs](docs/evidence/frontend/README.md)).
+
+<div align="center">
+<img src="docs/assets/frontend-landing.png" alt="The same Taskly landing-page prompt rendered four ways: DeepSeek and Claude Code, each with and without SuperMD" width="860">
+</div>
+
+- **It works on copy and on engineering rigor.** Without SuperMD, DeepSeek used four emoji as feature icons and headlined the page "Project management, minus the chaos"; with it, no emoji and a concrete headline. A generated React table covered all ten states and accessibility hooks we checked (loading, error, empty, `aria-sort`, focus style, and more) in every run with SuperMD, against 8 or 9 of 10 without.
+- **The test found three gaps, and they are fixed in this release.** The linter flagged `© 2026` in a footer as hard slop. Claude's headline became "takes ten minutes to set up", a claim nobody supplied. The core's no-decoration rule leaked into the interface and stripped a page's icons. The frontend modules now require labeled placeholders for unsupplied product claims and say the rule governs prose, not the UI; Claude then wrote 8 `[confirm: …]` placeholders for prices and limits instead of inventing them.
+- **It has limits.** DeepSeek ignored the placeholder rule and still invented prices. SuperMD has no opinion on visual taste, so the stock three-card feature grid survives with and without it. One sample per cell: an illustration, not a benchmark.
+
 Beyond the eval, the repository is its own test case: `npm test` runs 11 checks, including 30 installer tests, 21 MCP protocol tests, and the anti-slop linter over both language trees and every front-door document.
 
 <div align="center">

@@ -1,0 +1,505 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taskly — Project management for small teams</title>
+<meta name="description" content="Taskly is a simple, fast project management tool built for small teams. Plan, track, and ship work without the bloat.">
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --text: #1c1917;
+    --muted: #57534e;
+    --border: #e7e5e4;
+    --brand: #4f46e5;
+    --brand-dark: #4338ca;
+    --brand-soft: #eef2ff;
+    --accent: #10b981;
+    --radius: 14px;
+    --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(28,25,23,.06);
+    --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0c0a09;
+      --surface: #171412;
+      --text: #f5f5f4;
+      --muted: #a8a29e;
+      --border: #292524;
+      --brand: #818cf8;
+      --brand-dark: #a5b4fc;
+      --brand-soft: #1e1b4b;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  .container { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+  :focus-visible { outline: 3px solid var(--brand); outline-offset: 3px; border-radius: 6px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    padding: .75rem 1.4rem; border-radius: 10px; font-weight: 600; font-size: 1rem;
+    border: 1px solid transparent; cursor: pointer; font-family: inherit;
+    transition: transform .15s, background .15s, border-color .15s;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-dark); }
+  @media (prefers-color-scheme: dark) { .btn-primary { color: #0c0a09; } }
+  .btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--muted); }
+
+  /* Header */
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { display: flex; align-items: center; gap: .6rem; font-weight: 800; font-size: 1.25rem; letter-spacing: -.02em; }
+  .logo-mark {
+    width: 30px; height: 30px; border-radius: 8px; background: var(--brand);
+    display: grid; place-items: center;
+  }
+  .logo-mark svg { width: 18px; height: 18px; stroke: #fff; }
+  @media (prefers-color-scheme: dark) { .logo-mark svg { stroke: #0c0a09; } }
+  .nav-links { display: flex; align-items: center; gap: 2rem; list-style: none; }
+  .nav-links a:not(.btn) { color: var(--muted); font-weight: 500; transition: color .15s; }
+  .nav-links a:not(.btn):hover { color: var(--text); }
+  .nav-links .btn { padding: .5rem 1rem; font-size: .95rem; }
+  .menu-btn { display: none; background: none; border: 0; color: var(--text); cursor: pointer; padding: .5rem; }
+  .menu-btn svg { width: 24px; height: 24px; display: block; }
+
+  /* Hero */
+  .hero { padding: 5rem 0 4rem; text-align: center; position: relative; overflow: hidden; }
+  .hero::before {
+    content: ""; position: absolute; inset: -20% 0 auto; height: 520px; z-index: -1;
+    background: radial-gradient(ellipse 60% 60% at 50% 0%, var(--brand-soft), transparent 70%);
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .3rem .9rem; border-radius: 999px; font-size: .85rem; font-weight: 600;
+    background: var(--brand-soft); color: var(--brand); margin-bottom: 1.5rem;
+  }
+  .badge i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); display: block; }
+  h1 {
+    font-size: clamp(2.4rem, 6vw, 4.2rem); line-height: 1.08; letter-spacing: -.035em;
+    font-weight: 800; max-width: 16ch; margin: 0 auto 1.25rem;
+  }
+  h1 span { color: var(--brand); }
+  .hero p.lead { font-size: 1.2rem; color: var(--muted); max-width: 54ch; margin: 0 auto 2rem; }
+  .hero-cta { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+  .hero-note { margin-top: 1rem; font-size: .9rem; color: var(--muted); }
+
+  /* Board mockup */
+  .mock {
+    margin: 4rem auto 0; max-width: 940px; text-align: left;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .mock-bar { display: flex; align-items: center; gap: .4rem; padding: .8rem 1rem; border-bottom: 1px solid var(--border); }
+  .mock-bar i { width: 11px; height: 11px; border-radius: 50%; background: var(--border); display: block; }
+  .mock-bar b { margin-left: .75rem; font-size: .85rem; color: var(--muted); font-weight: 600; }
+  .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1.25rem; }
+  .col h4 { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: .75rem; display: flex; justify-content: space-between; }
+  .card {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: .8rem .9rem; margin-bottom: .6rem; font-size: .92rem; font-weight: 500;
+    cursor: pointer; transition: border-color .15s, transform .15s;
+  }
+  .card:hover { border-color: var(--brand); transform: translateY(-1px); }
+  .card small { display: flex; align-items: center; justify-content: space-between; margin-top: .5rem; color: var(--muted); font-weight: 400; font-size: .78rem; }
+  .tag { padding: .05rem .5rem; border-radius: 999px; font-size: .72rem; font-weight: 600; }
+  .t-design { background: #fce7f3; color: #be185d; }
+  .t-dev { background: #dbeafe; color: #1d4ed8; }
+  .t-mkt { background: #fef3c7; color: #b45309; }
+  .avatar { width: 20px; height: 20px; border-radius: 50%; display: inline-grid; place-items: center; font-size: .65rem; font-weight: 700; color: #fff; }
+  .card.done { opacity: .6; text-decoration: line-through; }
+
+  /* Sections */
+  section { padding: 5rem 0; }
+  .section-head { text-align: center; max-width: 620px; margin: 0 auto 3.5rem; }
+  .eyebrow { color: var(--brand); font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .75rem; }
+  h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); letter-spacing: -.025em; line-height: 1.15; margin-bottom: 1rem; }
+  .section-head p { color: var(--muted); font-size: 1.1rem; }
+
+  /* Features */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; }
+  .feature {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.75rem; transition: transform .2s, box-shadow .2s;
+  }
+  .feature:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
+  .icon {
+    width: 44px; height: 44px; border-radius: 11px; background: var(--brand-soft);
+    display: grid; place-items: center; margin-bottom: 1.1rem;
+  }
+  .icon svg { width: 22px; height: 22px; stroke: var(--brand); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .feature h3 { font-size: 1.15rem; margin-bottom: .4rem; }
+  .feature p { color: var(--muted); }
+
+  /* Pricing */
+  #pricing { background: var(--surface); border-block: 1px solid var(--border); }
+  .toggle { display: flex; align-items: center; justify-content: center; gap: .9rem; margin-bottom: 3rem; font-weight: 600; }
+  .toggle .off { color: var(--muted); }
+  .switch {
+    width: 52px; height: 30px; border-radius: 999px; border: 0; cursor: pointer;
+    background: var(--border); position: relative; transition: background .2s;
+  }
+  .switch::after {
+    content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px;
+    border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.3); transition: transform .2s;
+  }
+  .switch[aria-checked="true"] { background: var(--brand); }
+  .switch[aria-checked="true"]::after { transform: translateX(22px); }
+  .save { background: #d1fae5; color: #047857; font-size: .75rem; padding: .15rem .55rem; border-radius: 999px; }
+  .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; max-width: 980px; margin: 0 auto; align-items: stretch; }
+  .plan {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 18px;
+    padding: 2rem; display: flex; flex-direction: column; position: relative;
+  }
+  .plan.popular { border: 2px solid var(--brand); box-shadow: var(--shadow); }
+  .plan .pill {
+    position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+    background: var(--brand); color: #fff; font-size: .75rem; font-weight: 700;
+    padding: .25rem .8rem; border-radius: 999px; white-space: nowrap;
+  }
+  @media (prefers-color-scheme: dark) { .plan .pill { color: #0c0a09; } }
+  .plan h3 { font-size: 1.2rem; }
+  .plan .desc { color: var(--muted); font-size: .95rem; margin: .25rem 0 1.25rem; }
+  .price { font-size: 3rem; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+  .price small { font-size: 1rem; font-weight: 500; color: var(--muted); letter-spacing: 0; }
+  .billed { font-size: .85rem; color: var(--muted); margin: .4rem 0 1.5rem; min-height: 1.3em; }
+  .plan ul { list-style: none; margin-bottom: 2rem; flex: 1; }
+  .plan li { display: flex; gap: .6rem; padding: .35rem 0; font-size: .95rem; }
+  .plan li::before { content: "✓"; color: var(--accent); font-weight: 800; }
+  .plan .btn { width: 100%; }
+
+  /* CTA band */
+  .cta {
+    background: var(--brand); color: #fff; border-radius: 22px; text-align: center;
+    padding: 4rem 1.5rem;
+  }
+  @media (prefers-color-scheme: dark) { .cta { color: #0c0a09; } }
+  .cta h2 { margin-bottom: .75rem; }
+  .cta p { opacity: .9; margin-bottom: 1.75rem; font-size: 1.1rem; }
+  .cta .btn { background: #fff; color: #4338ca; }
+  @media (prefers-color-scheme: dark) { .cta .btn { background: #0c0a09; color: #a5b4fc; } }
+
+  /* Footer */
+  footer { padding: 4rem 0 2rem; border-top: 1px solid var(--border); margin-top: 5rem; }
+  .foot-grid { display: grid; grid-template-columns: 1.6fr repeat(3, 1fr); gap: 2rem; margin-bottom: 3rem; }
+  .foot-grid p { color: var(--muted); max-width: 30ch; margin-top: .75rem; font-size: .95rem; }
+  .foot-grid h5 { font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 1rem; }
+  .foot-grid ul { list-style: none; }
+  .foot-grid li { margin-bottom: .6rem; }
+  .foot-grid li a { color: var(--muted); font-size: .95rem; transition: color .15s; }
+  .foot-grid li a:hover { color: var(--text); }
+  .foot-bottom { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--muted); font-size: .88rem; }
+
+  /* Responsive */
+  @media (max-width: 760px) {
+    .menu-btn { display: block; }
+    .nav-links {
+      display: none; position: absolute; top: 64px; left: 0; right: 0;
+      flex-direction: column; align-items: stretch; gap: 0; padding: 1rem 1.25rem 1.5rem;
+      background: var(--bg); border-bottom: 1px solid var(--border);
+    }
+    .nav-links.open { display: flex; }
+    .nav-links li { padding: .6rem 0; }
+    .board { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr 1fr; }
+    .hero { padding-top: 3rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a href="#top" class="logo" aria-label="Taskly home">
+      <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+      Taskly
+    </a>
+    <button class="menu-btn" id="menuBtn" aria-label="Toggle menu" aria-expanded="false" aria-controls="navLinks">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#pricing">Pricing</a></li>
+      <li><a href="#footer">Contact</a></li>
+      <li><a href="#pricing" class="btn btn-primary">Start free</a></li>
+    </ul>
+  </div>
+</header>
+
+<main id="top">
+  <!-- Hero -->
+  <div class="hero">
+    <div class="container">
+      <div class="badge"><i></i> Built for teams of 2–25</div>
+      <h1>Get work done, <span>together.</span></h1>
+      <p class="lead">Taskly is the project management tool that stays out of your way. Plan sprints, assign tasks, and ship on time — without the enterprise bloat.</p>
+      <div class="hero-cta">
+        <a href="#pricing" class="btn btn-primary">Start free for 14 days</a>
+        <a href="#features" class="btn btn-ghost">See how it works</a>
+      </div>
+      <p class="hero-note">No credit card required · Set up in under 5 minutes</p>
+
+      <div class="mock" aria-label="Example Taskly board">
+        <div class="mock-bar"><i></i><i></i><i></i><b>Website relaunch · Sprint 12</b></div>
+        <div class="board" id="board">
+          <div class="col">
+            <h4>To do <span>3</span></h4>
+            <div class="card">Write launch announcement<small><span class="tag t-mkt">Marketing</span><span class="avatar" style="background:#f59e0b">M</span></small></div>
+            <div class="card">Audit mobile navigation<small><span class="tag t-design">Design</span><span class="avatar" style="background:#ec4899">J</span></small></div>
+            <div class="card">Set up error monitoring<small><span class="tag t-dev">Dev</span><span class="avatar" style="background:#3b82f6">A</span></small></div>
+          </div>
+          <div class="col">
+            <h4>In progress <span>2</span></h4>
+            <div class="card">Build pricing page<small><span class="tag t-dev">Dev</span><span class="avatar" style="background:#3b82f6">A</span></small></div>
+            <div class="card">New onboarding illustrations<small><span class="tag t-design">Design</span><span class="avatar" style="background:#ec4899">J</span></small></div>
+          </div>
+          <div class="col">
+            <h4>Done <span>2</span></h4>
+            <div class="card done">Finalize brand colors<small><span class="tag t-design">Design</span><span class="avatar" style="background:#ec4899">J</span></small></div>
+            <div class="card done">Migrate blog content<small><span class="tag t-dev">Dev</span><span class="avatar" style="background:#10b981">S</span></small></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <section id="features">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Features</div>
+        <h2>Everything your team needs. Nothing it doesn't.</h2>
+        <p>Powerful where it counts, simple everywhere else.</p>
+      </div>
+      <div class="grid">
+        <article class="feature">
+          <div class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="18" rx="1.5"/><rect x="14" y="3" width="7" height="11" rx="1.5"/></svg></div>
+          <h3>Flexible boards</h3>
+          <p>Drag tasks across kanban boards, or switch to list and calendar views with one click.</p>
+        </article>
+        <article class="feature">
+          <div class="icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-3.5 3-5.5 6.5-5.5s6 2 6.5 5.5"/><path d="M16 4.7a3.5 3.5 0 010 6.6M18 14.7c2 .7 3.2 2.4 3.5 5.3"/></svg></div>
+          <h3>Real-time collaboration</h3>
+          <p>Comment, @mention, and edit together. Everyone sees changes the moment they happen.</p>
+        </article>
+        <article class="feature">
+          <div class="icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <h3>Timelines &amp; deadlines</h3>
+          <p>Visualize dependencies, set due dates, and get nudged before things slip.</p>
+        </article>
+        <article class="feature">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg></div>
+          <h3>Automations</h3>
+          <p>Skip the busywork. Auto-assign, move, and notify with simple "when this, do that" rules.</p>
+        </article>
+        <article class="feature">
+          <div class="icon"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+          <h3>Progress reports</h3>
+          <p>Clear burndown charts and workload views so you always know where the team stands.</p>
+        </article>
+        <article class="feature">
+          <div class="icon"><svg viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></div>
+          <h3>Secure by default</h3>
+          <p>Encryption in transit and at rest, granular permissions, and optional two-factor sign-in.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section id="pricing">
+    <div class="container">
+      <div class="section-head">
+        <div class="eyebrow">Pricing</div>
+        <h2>Simple pricing that scales with you</h2>
+        <p>Start free. Upgrade when your team is ready. Cancel anytime.</p>
+      </div>
+
+      <div class="toggle">
+        <span id="lblMonthly">Monthly</span>
+        <button class="switch" id="billing" role="switch" aria-checked="false" aria-label="Bill annually"></button>
+        <span id="lblYearly" class="off">Yearly <span class="save">Save 20%</span></span>
+      </div>
+
+      <div class="plans">
+        <div class="plan">
+          <h3>Starter</h3>
+          <p class="desc">For tiny teams getting organized.</p>
+          <div class="price">$0<small> /user/mo</small></div>
+          <div class="billed">Free forever</div>
+          <ul>
+            <li>Up to 5 members</li>
+            <li>3 active projects</li>
+            <li>Kanban &amp; list views</li>
+            <li>1 GB file storage</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Get started</a>
+        </div>
+
+        <div class="plan popular">
+          <span class="pill">Most popular</span>
+          <h3>Team</h3>
+          <p class="desc">For growing teams that ship often.</p>
+          <div class="price"><span data-monthly="8" data-yearly="6.40">$8</span><small> /user/mo</small></div>
+          <div class="billed" data-monthly="Billed monthly" data-yearly="Billed annually ($76.80/user)">Billed monthly</div>
+          <ul>
+            <li>Unlimited members</li>
+            <li>Unlimited projects</li>
+            <li>Timelines &amp; calendar</li>
+            <li>Automations (500 runs/mo)</li>
+            <li>100 GB file storage</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Start 14-day trial</a>
+        </div>
+
+        <div class="plan">
+          <h3>Business</h3>
+          <p class="desc">For teams that need more control.</p>
+          <div class="price"><span data-monthly="14" data-yearly="11.20">$14</span><small> /user/mo</small></div>
+          <div class="billed" data-monthly="Billed monthly" data-yearly="Billed annually ($134.40/user)">Billed monthly</div>
+          <ul>
+            <li>Everything in Team</li>
+            <li>Advanced reports</li>
+            <li>Unlimited automations</li>
+            <li>SSO &amp; audit log</li>
+            <li>Priority support</li>
+          </ul>
+          <a href="#" class="btn btn-ghost">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section>
+    <div class="container">
+      <div class="cta">
+        <h2>Ready to get your team on the same page?</h2>
+        <p>Join thousands of small teams shipping faster with Taskly.</p>
+        <a href="#pricing" class="btn">Start free today</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <a href="#top" class="logo">
+          <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>
+          Taskly
+        </a>
+        <p>Project management for small teams who'd rather build than manage tools.</p>
+      </div>
+      <div>
+        <h5>Product</h5>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#">Changelog</a></li>
+          <li><a href="#">Roadmap</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="mailto:hello@taskly.example">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Legal</h5>
+        <ul>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Security</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year">2026</span> Taskly, Inc. All rights reserved.</span>
+      <span>Made for teams that get things done.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu
+  const menuBtn = document.getElementById('menuBtn');
+  const navLinks = document.getElementById('navLinks');
+  menuBtn.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open);
+  });
+  navLinks.addEventListener('click', e => {
+    if (e.target.closest('a')) {
+      navLinks.classList.remove('open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Billing toggle
+  const sw = document.getElementById('billing');
+  const lblM = document.getElementById('lblMonthly');
+  const lblY = document.getElementById('lblYearly');
+  function setBilling(yearly) {
+    sw.setAttribute('aria-checked', yearly);
+    lblM.classList.toggle('off', yearly);
+    lblY.classList.toggle('off', !yearly);
+    const key = yearly ? 'yearly' : 'monthly';
+    document.querySelectorAll('.price [data-monthly]').forEach(el => {
+      el.textContent = '$' + el.dataset[key];
+    });
+    document.querySelectorAll('.billed[data-monthly]').forEach(el => {
+      el.textContent = el.dataset[key];
+    });
+  }
+  sw.addEventListener('click', () => setBilling(sw.getAttribute('aria-checked') !== 'true'));
+
+  // Interactive demo board: click a card to advance it to the next column
+  const cols = document.querySelectorAll('#board .col');
+  function updateCounts() {
+    cols.forEach(c => { c.querySelector('h4 span').textContent = c.querySelectorAll('.card').length; });
+  }
+  document.getElementById('board').addEventListener('click', e => {
+    const card = e.target.closest('.card');
+    if (!card) return;
+    const col = card.closest('.col');
+    const idx = [...cols].indexOf(col);
+    const next = cols[(idx + 1) % cols.length];
+    next.appendChild(card);
+    card.classList.toggle('done', next === cols[cols.length - 1]);
+    updateCounts();
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
+```

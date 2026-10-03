@@ -1,0 +1,674 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taskly · project management for small teams</title>
+  <style>
+    /* ---------- RESET & BASE ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      background: #f9fafc;
+      color: #1e293b;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---------- TYPOGRAPHY & UTILS ---------- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    h1, h2, h3 {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: 3.2rem;
+      margin-bottom: 1.2rem;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-subhead {
+      font-size: 1.2rem;
+      color: #475569;
+      max-width: 600px;
+      margin: 0 auto 3rem auto;
+      text-align: center;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    /* ---------- BUTTONS ---------- */
+    .btn {
+      display: inline-block;
+      background: #2563eb;
+      color: white;
+      font-weight: 500;
+      padding: 0.8rem 2rem;
+      border-radius: 40px;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.1s ease;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #2563eb;
+      border: 1.5px solid #2563eb;
+      box-shadow: none;
+    }
+
+    .btn-outline:hover {
+      background: #eff6ff;
+      transform: translateY(-1px);
+    }
+
+    /* ---------- HEADER / NAV (minimal) ---------- */
+    .nav {
+      padding: 1.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: #2563eb;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #334155;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #2563eb;
+    }
+
+    /* ---------- HERO ---------- */
+    .hero {
+      padding: 3rem 0 5rem 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .hero-content {
+      flex: 1 1 400px;
+    }
+
+    .hero-content p {
+      font-size: 1.25rem;
+      color: #475569;
+      margin-bottom: 2rem;
+      max-width: 500px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .hero-visual {
+      flex: 1 1 400px;
+      background: linear-gradient(145deg, #ffffff, #f1f5f9);
+      border-radius: 32px;
+      padding: 2rem 1.5rem;
+      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.15);
+      border: 1px solid #e2e8f0;
+    }
+
+    .task-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.2rem 1.2rem 1rem 1.2rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      border: 1px solid #eef2f6;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .task-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .task-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .task-check.done {
+      background: #22c55e;
+    }
+
+    .task-text {
+      flex: 1;
+      font-weight: 500;
+      color: #1e293b;
+    }
+
+    .task-text small {
+      display: block;
+      font-weight: 400;
+      color: #64748b;
+      font-size: 0.8rem;
+      margin-top: 2px;
+    }
+
+    .task-badge {
+      background: #eef2ff;
+      color: #2563eb;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    /* ---------- FEATURES ---------- */
+    .features {
+      padding: 5rem 0;
+      background: white;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .feature-card {
+      background: #f8fafc;
+      border-radius: 24px;
+      padding: 2rem 1.8rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid #e9eef3;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.08);
+      background: white;
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1.2rem;
+      display: inline-block;
+      background: #e0e7ff;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      color: #2563eb;
+    }
+
+    .feature-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .feature-card p {
+      color: #475569;
+      font-size: 0.98rem;
+    }
+
+    /* ---------- PRICING ---------- */
+    .pricing {
+      padding: 5rem 0;
+      background: #f9fafc;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      align-items: stretch;
+    }
+
+    .pricing-card {
+      background: white;
+      border-radius: 28px;
+      padding: 2rem 1.8rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.02);
+      border: 1px solid #e9eef3;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.1);
+    }
+
+    .pricing-card.popular {
+      border: 2px solid #2563eb;
+      position: relative;
+      background: #ffffff;
+      box-shadow: 0 20px 30px -12px rgba(37, 99, 235, 0.15);
+    }
+
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2563eb;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.3rem 1rem;
+      border-radius: 40px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .pricing-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .price {
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 1rem 0 0.5rem 0;
+      color: #0f172a;
+    }
+
+    .price span {
+      font-size: 1rem;
+      font-weight: 400;
+      color: #64748b;
+      letter-spacing: 0;
+    }
+
+    .pricing-desc {
+      color: #475569;
+      margin-bottom: 1.8rem;
+      font-size: 0.95rem;
+    }
+
+    .pricing-features {
+      list-style: none;
+      margin: 1.5rem 0 2rem 0;
+      flex: 1;
+    }
+
+    .pricing-features li {
+      padding: 0.5rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #334155;
+      font-size: 0.95rem;
+    }
+
+    .pricing-features li::before {
+      content: "✓";
+      color: #2563eb;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .pricing-card .btn {
+      width: 100%;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    /* ---------- FOOTER ---------- */
+    .footer {
+      background: #0f172a;
+      color: #cbd5e1;
+      padding: 3rem 0 2rem 0;
+      margin-top: 2rem;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .footer-brand .logo {
+      color: white;
+      font-size: 1.6rem;
+      display: inline-block;
+      margin-bottom: 0.8rem;
+    }
+
+    .footer-brand p {
+      max-width: 260px;
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+    }
+
+    .footer-col h4 {
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      letter-spacing: 0.01em;
+    }
+
+    .footer-col a {
+      display: block;
+      color: #94a3b8;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 0.6rem;
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover {
+      color: white;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #1e293b;
+      padding-top: 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 700px) {
+      h1 {
+        font-size: 2.4rem;
+      }
+      h2 {
+        font-size: 1.8rem;
+      }
+      .hero {
+        padding: 2rem 0 3rem 0;
+      }
+      .nav-links {
+        display: none; /* simplified for mobile, no hamburger needed for demo */
+      }
+      .footer-content {
+        flex-direction: column;
+      }
+      .footer-links {
+        gap: 2rem;
+      }
+      .footer-bottom {
+        flex-direction: column;
+        gap: 0.8rem;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- minimal header / nav -->
+  <div class="container">
+    <nav class="nav">
+      <a href="#" class="logo">Taskly<span>.</span></a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#" class="btn" style="padding: 0.5rem 1.4rem; font-size: 0.9rem;">Sign in</a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- HERO -->
+  <div class="container">
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Project management,<br>minus the chaos.</h1>
+        <p>Taskly keeps small teams aligned, focused, and shipping. No bloat, no steep learning curve — just the tools you actually need.</p>
+        <div class="hero-actions">
+          <a href="#" class="btn">Start free trial</a>
+          <a href="#" class="btn btn-outline">See how it works</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="task-card">
+          <div class="task-check done">✓</div>
+          <div class="task-text">Design system review <small>Today · 2 comments</small></div>
+          <div class="task-badge">Done</div>
+        </div>
+        <div class="task-card">
+          <div class="task-check"></div>
+          <div class="task-text">Update onboarding flow <small>Tomorrow · assigned to Mia</small></div>
+          <div class="task-badge">In progress</div>
+        </div>
+        <div class="task-card">
+          <div class="task-check"></div>
+          <div class="task-text">Sprint planning <small>Fri, 10:00 · 4 tasks</small></div>
+          <div class="task-badge">Planned</div>
+        </div>
+        <div class="task-card">
+          <div class="task-check done">✓</div>
+          <div class="task-text">Fix login redirect <small>Yesterday · QA passed</small></div>
+          <div class="task-badge">Done</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2 class="text-center">Everything you need, nothing you don't</h2>
+      <p class="section-subhead">Taskly is built for small teams who want to move fast without drowning in features.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Simple boards</h3>
+          <p>Drag-and-drop tasks across columns. Visualise progress at a glance without configuration overload.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <h3>Team sync</h3>
+          <p>Assign tasks, leave comments, and get notified when things change. Everyone stays in the loop.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⏱️</div>
+          <h3>Time tracking</h3>
+          <p>Log hours directly on tasks. See where time goes and keep projects on budget — no extra tools.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Lightweight reports</h3>
+          <p>Burndown, workload, and completion rates. Useful insights without the enterprise complexity.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <h2 class="text-center">Straightforward pricing</h2>
+      <p class="section-subhead">Start free, upgrade when your team grows. No hidden fees.</p>
+      <div class="pricing-grid">
+        <!-- free -->
+        <div class="pricing-card">
+          <h3>Free</h3>
+          <div class="price">$0 <span>/ month</span></div>
+          <p class="pricing-desc">For solo makers and tiny teams just getting started.</p>
+          <ul class="pricing-features">
+            <li>Up to 3 projects</li>
+            <li>Basic boards & tasks</li>
+            <li>2 team members</li>
+            <li>Community support</li>
+          </ul>
+          <a href="#" class="btn btn-outline">Get started</a>
+        </div>
+        <!-- pro (popular) -->
+        <div class="pricing-card popular">
+          <div class="popular-badge">Most popular</div>
+          <h3>Pro</h3>
+          <div class="price">$12 <span>/ user / month</span></div>
+          <p class="pricing-desc">For growing teams that need more power and flexibility.</p>
+          <ul class="pricing-features">
+            <li>Unlimited projects</li>
+            <li>Time tracking & reports</li>
+            <li>Up to 20 team members</li>
+            <li>Priority email support</li>
+            <li>Guest access</li>
+          </ul>
+          <a href="#" class="btn">Start free trial</a>
+        </div>
+        <!-- business -->
+        <div class="pricing-card">
+          <h3>Business</h3>
+          <div class="price">$24 <span>/ user / month</span></div>
+          <p class="pricing-desc">For teams that need advanced control and security.</p>
+          <ul class="pricing-features">
+            <li>Everything in Pro</li>
+            <li>Unlimited team members</li>
+            <li>Advanced permissions</li>
+            <li>SSO & audit logs</li>
+            <li>Dedicated support</li>
+          </ul>
+          <a href="#" class="btn btn-outline">Contact sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <a href="#" class="logo">Taskly<span>.</span></a>
+          <p>Project management for small teams who want to focus on the work, not the tool.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Product</h4>
+            <a href="#">Features</a>
+            <a href="#">Pricing</a>
+            <a href="#">Integrations</a>
+            <a href="#">Changelog</a>
+          </div>
+          <div class="footer-col">
+            <h4>Company</h4>
+            <a href="#">About</a>
+            <a href="#">Blog</a>
+            <a href="#">Careers</a>
+            <a href="#">Contact</a>
+          </div>
+          <div class="footer-col">
+            <h4>Legal</h4>
+            <a href="#">Privacy</a>
+            <a href="#">Terms</a>
+            <a href="#">Security</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2025 Taskly Inc. All rights reserved.</span>
+        <span>Made for small teams · Built with care</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- tiny JS for smooth anchor scrolling (optional, no external) -->
+  <script>
+    (function() {
+      // smooth scroll for anchor links (features, pricing)
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          const href = this.getAttribute('href');
+          if (href === "#" || href === "") return;
+          const target = document.querySelector(href);
+          if (target) {
+            e.preventDefault();
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
+```

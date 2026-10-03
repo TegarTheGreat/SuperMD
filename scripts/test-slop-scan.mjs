@@ -123,6 +123,11 @@ t('arrows in technical text are not emoji-decoration', () => {
   assert.equal(hardTotal(hits), 0, JSON.stringify(hits.hard));
 });
 
+t('legal marks in a UI footer are not emoji-decoration', () => {
+  const hits = scan('© 2026 Taskly. Taskly™ and Taskly® are trademarks of Taskly Ltd.', 'en');
+  assert.ok(!hits.hard.some(h => h.name === 'emoji-decoration'), JSON.stringify(hits.hard));
+});
+
 t('real emoji decoration is still caught', () => {
   const hits = scan('Great work team! 🚀 Ship it! ✅', 'en');
   assert.ok(hits.hard.some(h => h.name === 'emoji-decoration'), JSON.stringify(hits.hard));

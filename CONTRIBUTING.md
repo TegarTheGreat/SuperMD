@@ -44,7 +44,14 @@ The README images are generated from real command output by `scripts/make-screen
 
 The prompt collection releases under SemVer, tracked in `CHANGELOG.md`. Adding a module is minor; changing a core rule's meaning is major; wording fixes are patch.
 
-Releasing is automated: bump the version in `package.json` and `CITATION.cff`, add a `CHANGELOG.md` entry, run `npm run sync:plugin` to carry the version into the plugin manifests (`npm test` fails if any of them disagree), then push a matching `vX.Y.Z` tag. The `Publish to npm` workflow smoke-tests the CLI, checks the tag matches `package.json`, and publishes to npm with provenance — using the repository secret `NPM_TOKEN` (an npm Automation token, which never touches the repo).
+Releasing is automated. To cut a release:
+
+1. Bump the version in `package.json` and `CITATION.cff`, add a `CHANGELOG.md` entry, and run `npm run sync:plugin` to carry the version into the plugin manifests. `npm test` fails if any of them disagree.
+2. Merge to `main`, then push a matching `vX.Y.Z` tag.
+
+The `Publish packages` workflow then runs the full test suite, checks the tag against `package.json`, and publishes `supermd` to npm and `@tegarthegreat/supermd` to GitHub Packages. It also creates a GitHub Release whose notes are that version's `CHANGELOG.md` section. The three jobs are independent, so one failing does not block the others.
+
+**npm authentication.** The workflow uses the `NPM_TOKEN` repository secret when it is set (an npm Automation or granular access token with publish rights). With no secret, it falls back to npm trusted publishing (OIDC), which needs no token: on npmjs.com, open the package's Settings, add a Trusted Publisher for GitHub Actions with owner `TegarTheGreat`, repository `SuperMD`, and workflow filename `npm-publish.yml`. The `repository.url` in `package.json` must match the GitHub repository exactly. If neither is set up, the npm job fails with `ENEEDAUTH`, which is what stopped v1.10.0 and v1.11.0 from reaching npm. After a release, confirm with `npm view supermd version`.
 
 ---
 
@@ -90,4 +97,11 @@ Gambar README dihasilkan dari output perintah asli oleh `scripts/make-screenshot
 
 Koleksi prompt dirilis dengan SemVer, dicatat di `CHANGELOG.md`. Menambah modul = minor; mengubah makna aturan inti = major; perbaikan redaksi = patch.
 
-Rilis otomatis: naikkan versi di `package.json` dan `CITATION.cff`, tambahkan entri `CHANGELOG.md`, jalankan `npm run sync:plugin` untuk membawa versi ke manifes plugin (`npm test` gagal bila ada yang berbeda), lalu push tag `vX.Y.Z` yang cocok. Workflow `Publish to npm` men-smoke-test CLI, memeriksa tag cocok dengan `package.json`, dan menerbitkan ke npm dengan provenance — memakai repository secret `NPM_TOKEN` (npm Automation token, yang tak pernah menyentuh repo).
+Rilis berjalan otomatis. Untuk merilis:
+
+1. Naikkan versi di `package.json` dan `CITATION.cff`, tambahkan entri `CHANGELOG.md`, dan jalankan `npm run sync:plugin` untuk membawa versi ke manifes plugin. `npm test` gagal bila ada yang berbeda.
+2. Merge ke `main`, lalu push tag `vX.Y.Z` yang cocok.
+
+Workflow `Publish packages` kemudian menjalankan seluruh suite tes, mencocokkan tag dengan `package.json`, lalu menerbitkan `supermd` ke npm dan `@tegarthegreat/supermd` ke GitHub Packages. Workflow itu juga membuat GitHub Release yang catatannya adalah bagian `CHANGELOG.md` untuk versi tersebut. Ketiga job berdiri sendiri, jadi satu yang gagal tidak menghalangi yang lain.
+
+**Autentikasi npm.** Workflow memakai repository secret `NPM_TOKEN` bila ada (token Automation atau granular access token npm dengan hak publish). Tanpa secret, ia beralih ke npm trusted publishing (OIDC) yang tidak butuh token: di npmjs.com, buka Settings paket, tambahkan Trusted Publisher untuk GitHub Actions dengan owner `TegarTheGreat`, repository `SuperMD`, dan nama file workflow `npm-publish.yml`. `repository.url` di `package.json` harus persis sama dengan repositori GitHub. Jika keduanya belum disiapkan, job npm gagal dengan `ENEEDAUTH`, yang menghentikan v1.10.0 dan v1.11.0 sampai ke npm. Setelah rilis, pastikan dengan `npm view supermd version`.

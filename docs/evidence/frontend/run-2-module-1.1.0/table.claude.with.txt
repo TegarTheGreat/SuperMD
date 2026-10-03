@@ -1,0 +1,119 @@
+```tsx
+import { useEffect, useMemo, useState } from "react";
+
+type User = { id: number | string; name: string; email: string };
+type Status = "loading" | "error" | "ready";
+
+const collator = new Intl.Collator(undefined, { sensitivity: "base" });
+
+export function UserTable({ pageSize = 10 }: { pageSize?: number }) {
+  const [users, setUsers] = useState<User[]>([]);
+  const [status, setStatus] = useState<Status>("loading");
+  const [direction, setDirection] = useState<"asc" | "desc">("asc");
+  const [page, setPage] = useState(0);
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch("/api/users", { signal: controller.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json() as Promise<User[]>;
+      })
+      .then((data) => {
+        setUsers(data);
+        setStatus("ready");
+      })
+      .catch((err) => {
+        if (err.name !== "AbortError") setStatus("error");
+      });
+    return () => controller.abort();
+  }, [attempt]);
+
+  const sorted = useMemo(() => {
+    const sign = direction === "asc" ? 1 : -1;
+    return [...users].sort((a, b) => sign * collator.compare(a.name, b.name));
+  }, [users, direction]);
+
+  const pageCount = Math.max(1, Math.ceil(sorted.length / pageSize));
+  const current = Math.min(page, pageCount - 1);
+  const rows = sorted.slice(current * pageSize, (current + 1) * pageSize);
+
+  function toggleSort() {
+    setDirection((d) => (d === "asc" ? "desc" : "asc"));
+    setPage(0);
+  }
+
+  function retry() {
+    setStatus("loading");
+    setAttempt((n) => n + 1);
+  }
+
+  if (status === "loading") {
+    return <p role="status">Loading users…</p>;
+  }
+
+  if (status === "error") {
+    return (
+      <div role="alert">
+        <p>Could not load users.</p>
+        <button type="button" onClick={retry}>
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  if (users.length === 0) {
+    return <p>No users found.</p>;
+  }
+
+  return (
+    <div>
+      <table>
+        <thead>
+          <tr>
+            <th scope="col" aria-sort={direction === "asc" ? "ascending" : "descending"}>
+              <button type="button" onClick={toggleSort}>
+                Name {direction === "asc" ? "▲" : "▼"}
+              </button>
+            </th>
+            <th scope="col">Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((user) => (
+            <tr key={user.id}>
+              <td>{user.name}</td>
+              <td>{user.email}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <nav aria-label="User table pagination">
+        <button type="button" onClick={() => setPage(current - 1)} disabled={current === 0}>
+          Previous
+        </button>
+        <span aria-live="polite">
+          Page {current + 1} of {pageCount}
+        </span>
+        <button
+          type="button"
+          onClick={() => setPage(current + 1)}
+          disabled={current >= pageCount - 1}
+        >
+          Next
+        </button>
+      </nav>
+    </div>
+  );
+}
+```
+
+Assumptions, none verified against your API or lockfile:
+
+- `/api/users` returns a bare JSON array of `{ id, name, email }`. If it wraps the array (`{ data: [...] }`) or paginates server-side, the fetch and the sort/slice logic change.
+- Sorting and pagination run client-side, which is fine up to a few thousand rows. Beyond that, move both to query params (`?sort=name&page=2`).
+- React 18+ and TypeScript. The effect aborts on unmount, so StrictMode's double-invoke in development doesn't leave a stale response.
+- Markup is unstyled. Hover, focus-visible and disabled styles should come from your design system's table and button classes, and the `▲`/`▼` glyphs should be swapped for its icon set.
