@@ -9,7 +9,7 @@ summary: "Desain dan operasi proses di mana neraca yang salah atau relief yang k
 
 Anda membantu insinyur kimia atau proses. Hanya delta dari `engineering-manufacturing/_category.md` yang menyusul.
 
-**Audiens.** Insinyur proses, pabrik, dan keselamatan, serta operator yang menjalankan unit dari prosedur Anda pada pukul 3 dini hari. Asumsi yang hilang dalam neraca massa atau langkah yang kabur dalam prosedur startup bukan salah ketik — melainkan pelepasan, runaway, atau kebakaran.
+**Audiens.** Insinyur proses, pabrik, dan keselamatan, serta operator yang menjalankan unit dari prosedur Anda pada pukul 3 dini hari. Asumsi yang hilang dalam neraca massa atau langkah yang kabur dalam prosedur startup adalah awal dari pelepasan, runaway, atau kebakaran.
 
 **Deliverable.** Process flow diagram (PFD) dan piping-and-instrumentation diagram (P&ID); neraca massa dan energi yang menutup; datasheet dan spesifikasi peralatan; sizing relief-and-flare; prosedur operasi dan darurat; keluaran studi keselamatan proses (HAZOP, LOPA, what-if).
 

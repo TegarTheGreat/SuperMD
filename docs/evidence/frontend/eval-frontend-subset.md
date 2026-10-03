@@ -4,15 +4,15 @@ Generation: `deepseek-chat` (temperature 0) · Judge: `deepseek-reasoner` (blind
 
 | Scenario | Hard hits base→smd | Soft base→smd | Words base→smd | Judge | Probe / contract |
 |---|---|---|---|---|---|
-| frontend-perf | 0 → 0 | 0 → 0 | 396 → 284 | supermd |  |
-| ui-design-spec | 0 → 0 | 0 → 0 | 431 → 334 | supermd |  |
-| id-frontend-perf | 0 → 0 | 0 → 0 | 377 → 271 | supermd |  |
+| frontend-perf | 0 → 0 | 0 → 0 | 395 → 187 | supermd |  |
+| ui-design-spec | 0 → 0 | 0 → 0 | 557 → 288 | supermd |  |
+| id-frontend-perf | 0 → 0 | 0 → 0 | 377 → 340 | supermd |  |
 
 **Pairwise:** supermd 3 / tie 0 / baseline 0 — win rate 100%
 
 **Verdict:** PASS
 
-Tokens: 16635 in / 6732 out across 9 calls.
+Tokens: 17814 in / 6282 out across 9 calls.
 
 ## Outputs
 
@@ -52,39 +52,35 @@ Using React DevTools Profiler and Lighthouse on a mid-tier laptop with a throttl
 | Initial JS (gzipped) | 512 KB | 331 KB |
 | Time to interactive | 4.1 s | 2.3 s |
 | Dashboard render (filter change) | ~340 ms | ~45 ms |
-| Commits on initial mount | 47 | 12 |
+| Commits per keystroke in search | 6–8 | 1 |
 
 ### Notes / follow-ups
 
-- No behavior changes intended — this is purely a perf refactor. Existing tests pass unchanged.
-- Follow-up ticket filed to look at the API layer (#501); the dashboard still waits on a single slow endpoint that we can't fix from the client.
-- Happy to walk through the profiler traces if useful — screenshots in the linked issue.
+- No behavior changes intended — this is purely a perf pass.
+- I left a couple of `useMemo`s off where the cost of memoization outweighed the benefit; happy to revisit if reviewers disagree.
+- Follow-up issue filed to look at the API response size for `/api/metrics`, which is now the largest remaining contributor to load time.
 ```
 
 **supermd:**
 
 ```text
-I can't write that section yet — I don't know what you changed. A PR description that explains a fix I invented would be fiction, and the reviewer would catch it on the first line.
+I can't write that section yet — I don't know what you changed. A PR description is a factual record of a diff, and inventing one would produce a document that misrepresents your code to every reviewer who reads it.
 
-Give me the diff or the diagnosis and I'll write it. What I need:
+Give me any of these and I'll write it:
 
-- What was slow, and how you measured it (React DevTools Profiler flame chart, Lighthouse, `performance.mark` around a specific interaction).
-- The before/after numbers, with device class and conditions.
-- What you changed: memoization, virtualization, splitting a context, deferring a bundle, moving state down, `useTransition`, whatever it was.
+- The diff or the list of changes (e.g. "memoized the table rows, moved the filter into a `useDeferredValue`, split the chart into a lazy route").
+- The before/after numbers you measured, and how (React DevTools Profiler, Lighthouse, `performance.measure`).
+- The symptom you were chasing: slow initial load, janky typing in a filter box, laggy tab switch, long re-render on data refresh.
 
-If you have the change but not the numbers, say so and I'll write the section with the measurement as a labeled gap rather than a made-up figure.
+If you have none of that yet, the honest PR section is a hypothesis, not a result — and it should say so. Something like:
 
-If you don't have a diagnosis yet, that's the actual first step, and it's worth doing before the PR. The usual suspects, in the order I'd check them:
+> **Performance**
+> The dashboard re-renders the full table on every keystroke in the filter input. This moves filtering behind `useDeferredValue` so the input stays responsive while the list catches up. Not yet measured — I'll add Profiler numbers before merge.
 
-1. **Re-renders from context or a parent state change.** React DevTools Profiler with "Record why each component rendered" on. If a list re-renders when unrelated state changes, the state is too high in the tree or the context value is a new object every render.
-2. **Unvirtualized long lists.** A few hundred rows is fine; a few thousand is not. Check the DOM node count in the Elements panel.
-3. **Bundle size on first load.** `npx vite-bundle-visualizer` or `source-map-explorer` on the production build. A chart library or moment.js in the main chunk is a common culprit.
-4. **Layout thrash or a synchronous long task.** Performance panel, look for long tasks over 50ms and forced reflows.
-
-Tell me which one it is and what the numbers were, and I'll write the section.
+That's a real PR section. What did you actually change?
 ```
 
-Judge: supermd — Output1 directly writes a PR section but fabricates specific changes and metrics, while Output2 refuses to invent facts and asks for the diff/diagnosis, making it the more trustworthy and useful response.
+Judge: supermd — Output 2 honestly refuses to invent a PR diff and asks for the actual changes/metrics, while Output 1 fabricates specific components, numbers, and measurements.
 
 ### ui-design-spec
 
@@ -102,76 +98,97 @@ Judge: supermd — Output1 directly writes a PR section but fabricates specific 
 
 ## 1. Overview
 
-The empty state appears when a user has no projects to display in the project list. It should orient the user, explain what a project is, and drive them toward the primary action: creating their first project.
+The empty state appears when a user has no projects to display in the project list. It should orient the user, explain why the list is empty, and drive them toward the primary action: creating their first project.
 
 ## 2. When It Appears
 
 | Scenario | Variant |
 |---|---|
 | User has never created a project | **First-run** (default) |
-| User has projects but filters/search return nothing | **No results** (separate spec) |
-| User's projects were deleted or archived | **Cleared** (reuse first-run copy) |
-
-This spec covers the **first-run** variant.
+| User has projects, but filters/search return no results | **No results** (see §6) |
+| User's projects were deleted or archived | **Cleared** (reuse first-run copy with adjusted headline) |
 
 ## 3. Layout
 
 - Centered vertically and horizontally within the list container.
-- Max content width: 400px.
+- Max content width: **400px**.
 - Vertical stack, centered alignment, 16px gap between elements.
-- Container fills available height; no scroll.
+- Container fills available list area; no scroll.
+
+**Element order:**
+1. Illustration / icon
+2. Headline
+3. Body copy
+4. Primary CTA button
+5. Secondary link (optional)
 
 ## 4. Content
 
 **Illustration**
 - Simple line-art or spot illustration, ~120×120px.
-- Neutral/brand-tinted; must not dominate the page.
+- Uses brand accent color at low opacity; must pass contrast against background in both light and dark themes.
 - Decorative only (`aria-hidden="true"`).
 
-**Heading**
-- Copy: *"No projects yet"*
-- Style: H3, semibold, primary text color.
+**Headline**
+- `No projects yet`
+- Type: H3 / 20px semibold, primary text color.
 
 **Body**
-- Copy: *"Projects help you organize your work and collaborate with your team. Create your first one to get started."*
-- Style: body, secondary text color, centered, max 2 lines.
+- `Projects help you organize your work. Create your first one to get started.`
+- Type: 14px regular, secondary text color, line-height 1.5, centered.
 
 **Primary CTA**
-- Button label: *"Create project"*
+- Label: `Create project`
 - Style: primary button, medium size.
-- Action: opens the create-project flow (modal or new page).
+- Action: opens the create-project modal/flow.
 
 **Secondary link (optional)**
-- Text link: *"Learn more about projects"*
-- Opens docs in a new tab.
-- Omit if no docs exist.
+- Label: `Browse templates`
+- Style: text link, secondary color.
+- Only shown if templates exist for this account type.
 
-## 5. Behavior
+## 5. Behavior & States
 
-- CTA is keyboard-focusable and is the first focusable element in the container.
-- On successful project creation, the empty state is replaced by the populated list without a full page reload.
-- If creation is cancelled, the empty state remains unchanged.
+- **Loading:** show skeleton rows in the list area; do not flash the empty state before data resolves.
+- **Error:** if the project fetch fails, show an error state instead (retry action), not the empty state.
+- **Permissions:** if the user lacks create permissions, hide the CTA and show: `You don't have permission to create projects. Contact your admin.`
+- **Keyboard:** CTA is focusable and reachable via tab order; `Enter`/`Space` activates.
+- **Responsive:** below 480px, reduce illustration to 80×80px and stack remains centered.
 
-## 6. Accessibility
+## 6. No-Results Variant
 
-- Heading is a real heading element (`<h3>` or appropriate level) so screen readers announce the state.
-- Illustration marked `aria-hidden`.
-- Color contrast meets WCAG AA (4.5:1 for body text).
-- Empty state container has `role="status"` so it's announced when it replaces the list.
+When filters or search produce zero matches:
+- Icon: magnifying glass (smaller, 64px).
+- Headline: `No projects match your search`
+- Body: `Try a different keyword or clear your filters.`
+- CTA: `Clear filters` (secondary button style).
+- Do **not** show the create-project CTA here.
 
-## 7. Responsive
+## 7. Accessibility
 
-- Below 640px: illustration scales to 96px; body copy may wrap to 3 lines; CTA becomes full-width.
+- Empty state container: `role="status"` so screen readers announce it when it appears.
+- Illustration marked `aria-hidden="true"`.
+- Headline is the accessible name for the region; associate via `aria-labelledby`.
+- Minimum contrast: 4.5:1 for body text, 3:1 for large text and UI elements.
+- Respect `prefers-reduced-motion` if any fade-in is used (fade only, ≤200ms).
 
-## 8. Out of Scope
+## 8. Copy & Tone
 
-- No-results empty state (search/filter) — separate spec.
-- Error and loading states.
-- Onboarding checklist or sample project templates (future consideration).
+- Friendly, direct, no jargon.
+- Sentence case for headlines and buttons.
+- Avoid blame ("You haven't…") — prefer neutral framing ("No projects yet").
+
+## 9. Out of Scope
+
+- Onboarding tour or tooltips.
+- Bulk import flow (separate spec).
+- Mobile native app empty states.
 
 ---
 
-Want me to adapt this for a specific product (e.g., a kanban tool, a CMS, a dev tool) or add copy variants for A/B testing?
+**Open questions:**
+- Do we want a short product tour video embedded here for first-run users?
+- Should the "Cleared" variant offer an undo/restore action?
 ```
 
 **supermd:**
@@ -179,37 +196,35 @@ Want me to adapt this for a specific product (e.g., a kanban tool, a CMS, a dev 
 ```text
 # Empty state: project list
 
-**Trigger.** User has zero projects. Not shown during initial load (that's the loading state) or when a filter returns nothing (that's a separate "no results" state with a clear-filter action).
+**Trigger.** User has zero projects. Distinct from the loading state (skeleton rows) and the error state (retry affordance) — do not reuse this component for either.
 
-**Layout.** Centered in the list container, max-width 360px, vertically centered in the available space.
+**Layout.** Centered in the list container, max-width 360px, vertically centered within the viewport minus the header. Single column.
 
-- **Icon:** 48px, `--color-icon-subtle`, from the icon library (`folder-plus` or equivalent). Decorative — `aria-hidden="true"`.
-- **Heading:** "No projects yet" — 16px/24px, `--font-weight-semibold`, `--color-text-primary`.
-- **Body:** "Projects group your work and let you invite collaborators." — 14px/20px, `--color-text-secondary`, max 2 lines.
-- **Primary action:** "Create project" — filled button, `--color-accent`, 40px height, 16px horizontal padding. This is the only filled button on the screen.
-
-**Spacing.** 16px between icon and heading, 8px between heading and body, 24px between body and button. All from the 8px baseline scale.
+**Content, top to bottom:**
+- Illustration or icon, 96×96, `--color-text-tertiary`, decorative (`aria-hidden="true"`).
+- Heading, `--font-size-lg` / `--font-weight-semibold`: "No projects yet".
+- Body, `--font-size-sm`, `--color-text-secondary`, max 2 lines: "Projects hold your team's work. Create one to get started."
+- Primary button, filled, `--color-accent`: "New project". This is the only filled button on the screen.
 
 **States.**
+- *Default:* as above.
+- *Read-only / no permission:* hide the button; body reads "You don't have permission to create projects. Ask an admin for access." No dead-end CTA.
+- *Filtered to zero results* (projects exist, filter matches none): different copy — "No projects match these filters" — with a "Clear filters" text link instead of the create button. Do not show the create CTA here; the user's problem is the filter, not an empty account.
 
-| State | Behavior |
-|---|---|
-| Default | As above. |
-| Loading | Skeleton rows (3), not this state. |
-| Error loading list | Separate error state: "Couldn't load projects" + Retry. |
-| Filtered to zero | "No projects match" + "Clear filters" text link. No create button. |
-| Read-only / no permission | Heading "No projects" + body "You don't have access to any projects yet. Ask an admin to add you." No button. |
+**Accessibility.**
+- Heading is an `<h2>` so screen readers can jump to it.
+- Focus moves to the heading on state entry; the button is the next tab stop.
+- Button label is "New project", not "Get started" — the accessible name states the action.
+- Contrast: body text ≥ 4.5:1 against background; button label ≥ 4.5:1 against `--color-accent`.
 
-**Interaction.** Button opens the create-project modal. Focus moves to the modal's first field on open; on close, focus returns to the button. If the modal is dismissed without creating, the empty state remains.
+**Motion.** Fade in over 150ms, `ease-out`. Suppress under `prefers-reduced-motion: reduce`.
 
-**Accessibility.** Heading is an `<h2>` so screen readers announce the section. Button has visible focus ring (`--focus-ring`, 2px offset). Contrast: heading and body meet WCAG AA against `--color-bg-surface`; verify against the actual token values, not by eye.
+**Tokens used:** `--color-text-tertiary`, `--color-text-secondary`, `--color-accent`, `--font-size-lg`, `--font-size-sm`, `--font-weight-semibold`. No raw hex or pixel values outside the illustration size.
 
-**Motion.** None on mount. If the list transitions from loading to empty, fade in over 150ms `ease-out`; suppress under `prefers-reduced-motion`.
-
-**Copy rules.** No exclamation marks. No "Get started!" or "Let's build something amazing." The heading states the fact; the body states the value; the button states the action.
+**Open decision:** whether the illustration is a shared asset or per-context. Flagging rather than guessing — it affects the icon library scope.
 ```
 
-Judge: supermd — Output 1 is tighter and more actionable, with concrete tokens, edge-case states, and copy rules, while Output 2 spends space on spec metadata, an overview that restates the request, and a closing upsell question.
+Judge: supermd — Output 1 delivers the spec in tight, token-level detail with no padding and flags its one uncertainty honestly, while Output 2 buries the same substance in metadata headers, a restated overview, and generic tone/out-of-scope sections.
 
 ### id-frontend-perf
 
@@ -268,37 +283,41 @@ Kalau kamu beri tahu **penyebab lambat yang sebenarnya** (misalnya: tabel besar,
 **supermd:**
 
 ```text
-Saya tidak bisa menulis deskripsi PR untuk perubahan yang belum ada. Saya tidak tahu dashboard Anda, tidak tahu apa yang lambat, dan tidak tahu apa yang sudah Anda ubah — deskripsi PR yang saya karang akan berisi klaim performa fiktif, yang justru dilarang di sini.
-
-Yang bisa saya lakukan: memberi kerangka yang Anda isi setelah profiling, atau membantu mendiagnosis penyebabnya lebih dulu.
+Saya tidak punya akses ke kode Anda, jadi saya tidak bisa menulis deskripsi PR yang menyebut perubahan spesifik — itu akan jadi karangan. Yang bisa saya lakukan: kerangka yang Anda isi, plus daftar tersangka yang paling sering jadi penyebab dashboard React lambat, supaya Anda tahu apa yang harus diukur dulu.
 
 **Kerangka deskripsi PR**
 
 ```
-## Apa yang berubah
-[Komponen/hook yang disentuh, satu baris per perubahan]
+## Ringkasan
+[Komponen/halaman apa] lambat saat [interaksi spesifik: muat awal, ganti filter, buka modal].
 
-## Mengapa
-[Metrik sebelum: LCP/INP/CLS atau waktu render, di perangkat dan kondisi jaringan apa]
+## Pengukuran
+- Sebelum: [metrik] = [angka], diukur dengan [React Profiler / Lighthouse / Performance panel], pada [perangkat + throttling].
+- Sesudah: [metrik] = [angka], kondisi sama.
 
-## Hasil
-[Metrik sesudah, diukur dengan cara yang sama. Kalau belum diukur, tulis "belum diukur".]
+## Perubahan
+- [Perubahan 1]: [apa yang diubah] → [kenapa itu memperbaiki metrik di atas].
+- [Perubahan 2]: ...
 
 ## Dampak
-- Aksesibilitas: [state fokus/keyboard yang terpengaruh, atau "tidak ada"]
-- Bundle: [delta ukuran, atau "tidak berubah"]
+- Bundle: [ukuran sebelum] → [sesudah].
+- Perilaku: [apa pun yang berubah bagi pengguna, atau "tidak ada"].
 
-## Cara memverifikasi
-[Langkah reproduksi + profil yang dipakai]
+## Cara verifikasi
+[Langkah reproduksi pengukuran.]
 ```
 
-**Untuk mengisi bagian "Mengapa" dan "Hasil", profiling dulu.** Tiga penyebab paling umum dashboard React yang lambat, dan cara memastikan mana yang berlaku:
+**Tersangka yang paling sering, urut dari yang biasanya paling berdampak**
 
-1. **Re-render berlebih.** React DevTools Profiler → rekam interaksi → lihat komponen mana yang render dan berapa kali. Kalau komponen daun render ulang saat state induk berubah, itu masalah memoization atau state yang diletakkan terlalu tinggi.
-2. **Bundle besar di jalur kritis.** `npx vite-bundle-visualizer` atau `source-map-explorer` pada build produksi. Chart library dan date-picker sering jadi tersangka; cek apakah ada yang bisa di-`import()` dinamis.
-3. **Data fetching yang memblokir render.** Lihat waterfall di Network tab. Kalau request berurutan padahal bisa paralel, atau kalau render menunggu data yang bisa di-`Suspense`, itu penyebabnya.
+1. **Render ulang yang tidak perlu.** Cek dengan React Profiler: komponen mana yang render dan kenapa. Penyebab umum: value objek/array baru di props tiap render, context yang berubah sering, state yang diangkat terlalu tinggi. Perbaikan: `useMemo`/`useCallback` di tempat yang terbukti, pecah context, atau pindahkan state turun.
+2. **List panjang tanpa virtualisasi.** Kalau tabel merender ratusan baris sekaligus, `react-window` atau `@tanstack/react-virtual` biasanya memotong waktu render secara drastis.
+3. **Bundle besar di jalur kritis.** Cek dengan bundle analyzer. Chart library, date library, dan komponen berat yang tidak terlihat saat muat awal adalah kandidat `React.lazy` + `Suspense`.
+4. **Waterfall data.** Fetch berantai (fetch A, lalu pakai hasilnya untuk fetch B) menambah latency berlipat. Paralelkan yang independen, atau pindahkan ke server.
+5. **Kerja berat di render.** Sorting/filtering besar yang jalan tiap render, bukan saat input berubah. Pindahkan ke `useMemo` dengan dependency yang benar, atau ke Web Worker kalau datanya besar.
 
-Kalau Anda kirimkan hasil profiling (nama komponen yang render berlebih, ukuran bundle, atau waterfall-nya), saya bisa bantu tentukan perbaikannya dan menulis deskripsi PR yang faktual.
+**Yang perlu Anda isi sendiri**
+
+Angka sebelum/sesudah, nama komponen, dan metrik yang Anda pakai. Tanpa itu, deskripsi PR-nya cuma klaim "lebih cepat" — dan reviewer tidak bisa memverifikasinya. Kalau Anda tempelkan kode komponen yang lambat atau output React Profiler, saya bisa tunjukkan perubahan konkretnya.
 ```
 
-Judge: supermd — Output 2 is honest and actionable, refusing to fabricate metrics while providing a solid template and diagnostic steps, whereas Output 1 invents performance numbers and presents them as real.
+Judge: supermd — Output 2 menang karena menolak mengarang perubahan/metrik dan memberi kerangka jujur yang bisa diisi, sedangkan Output 1 menyajikan klaim dan angka spesifik tanpa data.

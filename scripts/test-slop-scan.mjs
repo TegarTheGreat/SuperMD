@@ -128,6 +128,17 @@ t('legal marks in a UI footer are not emoji-decoration', () => {
   assert.ok(!hits.hard.some(h => h.name === 'emoji-decoration'), JSON.stringify(hits.hard));
 });
 
+t('contrast punchline is a soft hit, never a hard one', () => {
+  const hits = scan('"No niche" is not a strategy, it\'s the absence of one. A $5,000 budget is not tight; it is a non-budget.', 'en');
+  assert.ok(hits.soft.some(h => h.name === 'contrast-punchline' && h.count >= 2), JSON.stringify(hits.soft));
+  assert.equal(hardTotal(hits), 0, JSON.stringify(hits.hard));
+});
+
+t('a plain correction without the echoed pivot is not flagged', () => {
+  const hits = scan('Hashing is one-way, so it cannot be reversed. Encryption is reversible with the key.', 'en');
+  assert.ok(!hits.soft.some(h => h.name === 'contrast-punchline'), JSON.stringify(hits.soft));
+});
+
 t('real emoji decoration is still caught', () => {
   const hits = scan('Great work team! 🚀 Ship it! ✅', 'en');
   assert.ok(hits.hard.some(h => h.name === 'emoji-decoration'), JSON.stringify(hits.hard));

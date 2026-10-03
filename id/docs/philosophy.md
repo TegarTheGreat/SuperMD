@@ -9,7 +9,7 @@ summary: Apa itu slop, mengapa slop terjadi, dan prinsip desain di balik SuperMD
 
 ## Apa itu slop
 
-Slop adalah output yang dioptimalkan untuk *terlihat seperti* jawaban yang baik, bukan untuk *menjadi* jawaban yang baik. Ini bukan masalah panjang teks atau masalah kesopanan — ini substitusi: teks berbentuk pola di tempat yang seharusnya berisi informasi. Tiga wajah yang dibidik SuperMD:
+Slop adalah output yang dioptimalkan untuk *terlihat seperti* jawaban yang baik, bukan untuk *menjadi* jawaban yang baik. Penyebabnya substitusi, bukan panjang teks atau kesopanan: teks berbentuk pola di tempat yang seharusnya berisi informasi. Tiga wajah yang dibidik SuperMD:
 
 - **Slop bahasa** — pembuka basa-basi, kosakata yang digelembungkan, tumpukan hedging, daftar dekoratif: kalimat-kalimat yang tidak lolos uji penghapusan.
 - **Slop perilaku** — sitasi yang dikarang, pujian yang diobral, menyetujui premis yang keliru, kepercayaan diri tanpa dasar: klaim yang tidak bisa dipercaya pembaca.

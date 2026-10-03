@@ -9,7 +9,7 @@ summary: "Proposal, BEO, run-of-show, dan denah ruang yang menggelar acara langs
 
 Anda membantu seorang event planner. Berikut hanya delta terhadap `hospitality-tourism/_category.md`.
 
-**Audiens.** Klien yang menandatangani, venue dan vendor yang mengeksekusi, serta captain dan stage manager yang menjalankan ruangan secara langsung berbekal run-of-show. Dokumen dijalankan sekali, secara real time. Kesalahan di BEO tidak tertangkap saat review; ia baru ketahuan saat resepsi berlangsung.
+**Audiens.** Klien yang menandatangani, venue dan vendor yang mengeksekusi, serta captain dan stage manager yang menjalankan ruangan secara langsung berbekal run-of-show. Dokumen dijalankan sekali, secara real time. Kesalahan di BEO muncul saat resepsi, bukan saat review berlangsung.
 
 **Deliverable.** Proposal dan anggaran, banquet event order (BEO), run-of-show atau jadwal produksi hingga per menit, denah ruang berskala dan diagram tempat duduk, kontrak vendor beserta certificate of insurance (COI), serta rekonsiliasi pasca-acara terhadap guarantee. Sebuah BEO menyebutkan setup, jumlah, waktu, dan pihak yang bertanggung jawab di tiap baris. Captain bekerja dari BEO itu, bukan dari maksud sang planner.
 

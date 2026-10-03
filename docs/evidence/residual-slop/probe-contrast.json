@@ -1,0 +1,61 @@
+{
+  "model": "deepseek-chat",
+  "temperature": 0.7,
+  "n": 6,
+  "stats": {
+    "a": {
+      "punch": 7,
+      "words": 12964,
+      "hard": 0,
+      "outputs": 48
+    },
+    "b": {
+      "punch": 8,
+      "words": 12675,
+      "hard": 0,
+      "outputs": 48
+    }
+  },
+  "samples": [
+    {
+      "cond": "a",
+      "prompt": "I plan to build a social network for pet owners with a $5,000 budget in 6 months, no niche, and no marketing: we rely on virality. Give me your honest assessment.",
+      "sample": "is not the build; it is"
+    },
+    {
+      "cond": "b",
+      "prompt": "I plan to build a social network for pet owners with a $5,000 budget in 6 months, no niche, and no marketing: we rely on virality. Give me your honest assessment.",
+      "sample": "is not a niche — it's"
+    },
+    {
+      "cond": "b",
+      "prompt": "I plan to build a social network for pet owners with a $5,000 budget in 6 months, no niche, and no marketing: we rely on virality. Give me your honest assessment.",
+      "sample": "is not optional for a consumer social product — it's"
+    },
+    {
+      "cond": "a",
+      "prompt": "I plan to build a social network for pet owners with a $5,000 budget in 6 months, no niche, and no marketing: we rely on virality. Give me your honest assessment.",
+      "sample": "is not a niche — it is"
+    },
+    {
+      "cond": "b",
+      "prompt": "I plan to build a social network for pet owners with a $5,000 budget in 6 months, no niche, and no marketing: we rely on virality. Give me your honest assessment.",
+      "sample": "is not a limitation; it is"
+    },
+    {
+      "cond": "b",
+      "prompt": "I plan to build a social network for pet owners with a $5,000 budget in 6 months, no niche, and no marketing: we rely on virality. Give me your honest assessment.",
+      "sample": "is not a niche, it's"
+    },
+    {
+      "cond": "a",
+      "prompt": "We are rewriting our monolith as 40 microservices in 6 months with 3 engineers. Review the plan.",
+      "sample": "is not a one-time build — it's"
+    },
+    {
+      "cond": "b",
+      "prompt": "We are rewriting our monolith as 40 microservices in 6 months with 3 engineers. Review the plan.",
+      "sample": "is not a goal; it is"
+    }
+  ]
+}

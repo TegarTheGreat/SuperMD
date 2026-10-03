@@ -60,7 +60,8 @@
     { "name": "id-corporate-verbs", "pattern": "\\b(mengoptimalkan|memaksimalkan) secara|solusi (komprehensif|holistik)|tak (dapat|bisa) dipungkiri", "severity": "soft", "langs": ["id"] },
     { "name": "id-transition-stack", "pattern": "^(selain itu|lebih lanjut|terlebih lagi|oleh karena itu),", "severity": "soft", "langs": ["id"] },
     { "name": "id-food-slop", "pattern": "menggugah selera|di setiap suapan|kelezatan yang|memanjakan lidah|cita rasa yang (kaya|mewah|istimewa)|berkualitas (tinggi|premium) (yang|nan)|perpaduan (yang )?harmonis", "severity": "soft", "langs": ["id"] },
-    { "name": "id-praise-adjectives", "pattern": "\\b(mewah|elegan|menggugah|istimewa|sempurna|memukau) (di|nan|yang|dan)", "severity": "soft", "langs": ["id"] }
+    { "name": "id-praise-adjectives", "pattern": "\\b(mewah|elegan|menggugah|istimewa|sempurna|memukau) (di|nan|yang|dan)", "severity": "soft", "langs": ["id"] },
+    { "name": "contrast-punchline", "pattern": "\\b(?:is|are|was|were|isn['’]t|aren['’]t|does|do|doesn['’]t|don['’]t)\\s+not\\s+(?:just\\s+|merely\\s+|only\\s+|simply\\s+)?(?:a|an|the|that)?\\s*[^.;!?\\n]{2,80}?(?:,|;|—|–|\\s-)\\s*(?:it(?:['’]s|\\s+is)|they(?:['’]re|\\s+are)|that(?:['’]s|\\s+is)|this\\s+is|but\\s+rather|rather)\\b", "severity": "soft", "langs": ["en"] }
   ],
   "structural": {
     "boldColonThreshold": 5,

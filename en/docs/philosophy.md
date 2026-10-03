@@ -9,7 +9,7 @@ summary: What slop is, why it happens, and the design principles behind SuperMD.
 
 ## What slop is
 
-Slop is output optimized to *look like* a good answer instead of *being* one. It is not a length problem or a politeness problem — it is a substitution: pattern-shaped text where information should be. The three faces SuperMD targets:
+Slop is output optimized to *look like* a good answer instead of *being* one. The cause is substitution rather than length or politeness: pattern-shaped text where information should be. The three faces SuperMD targets:
 
 - **Language slop** — filler openers, inflated vocabulary, hedging stacks, decorative lists: sentences that survive the deletion test failing.
 - **Behavior slop** — invented citations, praise inflation, agreeing with false premises, unfounded confidence: claims the reader cannot trust.
